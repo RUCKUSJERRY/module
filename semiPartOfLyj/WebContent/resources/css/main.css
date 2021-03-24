@@ -1,0 +1,9 @@
+@charset "UTF-8";
+
+.channel_add_insert {
+	display: none;
+	position: fixed;
+	top: 35%;
+	left: 35%;
+
+}
