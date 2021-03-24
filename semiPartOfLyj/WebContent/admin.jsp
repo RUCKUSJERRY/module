@@ -2,9 +2,9 @@
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+    
 <% request.setCharacterEncoding("UTF-8"); %>
 <% response.setContentType("text/html; charset=UTF-8"); %>
-    
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,20 +13,20 @@
 </head>
 <body>
 
-	<h1>Main Page</h1>
-		
+	<h1>Admin Page</h1>
+
 	<span>num : ${loginDto.member_num }, id : ${loginDto.member_id }, pw : ${loginDto.member_pw }, name : ${loginDto.member_name }</span>
-	
+
 	<div class="channel_container">
 		
 		<div class="channel_list">
 			<table border="1">
 				<tr>
-					<td><a href="ChatController?command=chatselect&channel_num=1">전체채팅방</a></td>
+					<td colspan="2"><a href="ChatController?command=chatselect&channel_num=1">전체채팅방</a></td>
 				</tr>
 	
 	<% 
-		List<RoomDto> list = (List<RoomDto>) request.getAttribute("channellist");
+		List<RoomDto> list = (List<RoomDto>) request.getAttribute("channelAdminlist");
 		
 		if (list.size() == 0) {
 	%>	
@@ -35,17 +35,21 @@
 		</tr>
 	<% 	
 		} else {
-			for (RoomDto dto : list) {
+			for (int i = 1; i < list.size(); i++) {
 	%>	
 			<tr>
-				<td><a href="ChatController?command=chatselect&channel_num=<%=dto.getChannel_num()%>"><%=dto.getChannel_name() %></a></td>
+				<td><a href="ChatController?command=chatselect&channel_num=<%=list.get(i).getChannel_num()%>"><%=list.get(i).getChannel_name() %></a></td>
+				<td>
+				<input type="button" value="수정" onclick="channelupdate(<%=list.get(i).getChannel_num() %>);" />
+				<input type="button" value="삭제" onclick="channeldelcon(<%=list.get(i).getChannel_num() %>);" />
+				</td>
 			</tr>
 	<% 		
 			}
 		}	
 	%>	
 				<tr>
-					<td align="center"><input type="button" value="채널추가" onclick="addChannel();"></td>
+					<td colspan="2" align="center"><input type="button" value="채널추가" onclick="addChannel();"></td>
 				</tr>		
 	
 			</table>
@@ -110,20 +114,20 @@ function addCancel() {
 	document.body.style.background = "white";
 }
 
-function channeldelcon(chnum, id) {
+function channeldelcon(chnum) {
 	
 	var con = confirm("해당 채널을 삭제하시겠습니까?");
 	if (con) {
-		location.href="ChatController?command=channeldelete&chnum="+chnum+"&member_id="+id;
+		location.href="ChatController?command=channeldelete&chnum="+chnum;
 	} else {
 		
 	}
 	
 }
 
-function channelupdate(chnum, id) {
+function channelupdate(chnum) {
 	console.log(chnum)
-	location.href="ChatController?command=channelupdateform&channel_num="+chnum+"&member_id="+id;
+	location.href="ChatController?command=channelupdateform&channel_num="+chnum;
 }
 
 // 채팅영역
@@ -251,7 +255,6 @@ function send() {
 
 
 </script>
-
 </body>
-<link href="resources/css/main.css" rel="stylesheet" type="text/css">
+<link href="resources/css/admin.css" rel="stylesheet" type="text/css">
 </html>

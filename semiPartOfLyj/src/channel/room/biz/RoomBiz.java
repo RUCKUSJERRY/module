@@ -18,7 +18,23 @@ public class RoomBiz {
 		return dao.roomMemberAdd(dto);
 	}
 	
-	public List<RoomDao> channelList(String member_id) {
+	public List<RoomDto> channelAdminList() {
+		return dao.channelAdminList();
+	}
+	
+	public List<RoomDto> channelList(String member_id) {
 		return dao.channelList(member_id);
+	}
+	
+	public RoomDto channelSelect(int channel_num) {
+		return dao.channelSelect(channel_num);
+	}
+	
+	public int channelUpdate(RoomDto dto) {
+		return dao.channelUpdate(dto);
+	}
+	
+	public int permissionCheck(String member_id) {
+		return dao.permissionCheck(member_id);
 	}
 }

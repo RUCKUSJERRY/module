@@ -1,6 +1,7 @@
 package channel.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -10,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import channel.room.biz.RoomBiz;
-import channel.room.dao.RoomDao;
 import channel.room.dto.RoomDto;
 import channel.room.dto.RoomMemberDto;
 
@@ -35,33 +35,77 @@ public class ChatController extends HttpServlet {
 			
 			String channelname = request.getParameter("channelname");
 			String channelinfo = request.getParameter("channelinfo");
-			String access = request.getParameter("access");
-			String channelmaster = request.getParameter("channelmaster");
+			String member_id = request.getParameter("member_id");
 			
 			RoomDto dto = new RoomDto();
 			dto.setChannel_name(channelname);
 			dto.setChannel_information(channelinfo);
-			dto.setChannel_access(access);
-			dto.setChannel_master(channelmaster);
+			dto.setMember_id(member_id);
 			
 			RoomMemberDto roomDto = new RoomMemberDto();
 			roomDto.setChannel_name(channelname);
-			roomDto.setMember_id(channelmaster);
+			roomDto.setMember_id(member_id);
 			
 			int res = biz.createRoom(dto);
 			int resAdd = biz.roomMemberAdd(roomDto);
 			
 			if (res > 0 && resAdd > 0) {	
 				System.out.println("채널 생성 완료");
-				dispatch("main.jsp", request, response);
+				dispatch("ChatController?command=channelList", request, response);
 			} else {
 				System.out.println("채널 생성 실패");
-				dispatch("main.jsp", request, response);
+				dispatch("history.back();", request, response);
 			}
 			
+		} else if (command.equals("channelAdminList")){
+			
+			List<RoomDto> list = biz.channelAdminList();
+			
+			if (list != null) {
+				request.setAttribute("channelAdminlist", list);
+				dispatch("admin.jsp", request, response);
+			}
 		} else if (command.equals("channelList")) {
 			
-			String id = request.getParameter("id");
+			String member_id = request.getParameter("member_id");
+			
+			List<RoomDto> list = biz.channelList(member_id);
+			
+			if (list != null) {
+				request.setAttribute("channellist", list);
+				dispatch("main.jsp", request, response);
+			}
+		} else if (command.equals("channelupdateform")) {
+			
+			int channel_num = Integer.parseInt(request.getParameter("channel_num"));
+			
+				RoomDto dto = biz.channelSelect(channel_num);
+				
+				request.setAttribute("roomDto", dto);
+				
+				dispatch("channel_update.jsp", request, response);
+			
+		} else if (command.equals("channelUpdate")) {
+			
+			int channel_num = Integer.parseInt(request.getParameter("channel_num"));
+			String channel_name = request.getParameter("channel_name");
+			String channel_info = request.getParameter("channel_info");
+			
+				RoomDto dto = new RoomDto();
+				dto.setChannel_num(channel_num);
+				dto.setChannel_name(channel_name);
+				dto.setChannel_information(channel_info);
+				
+				int res = biz.channelUpdate(dto);
+				
+				if (res > 0) {
+					System.out.println("채널 수정 완료");
+					dispatch("ChatController?command=channelAdminList", request, response);
+				} else {
+					System.out.println("채널 수정 실패");
+					dispatch("ChatController?command=channelupdateform&channel_num="+channel_num, request, response);
+				}
+			
 			
 			
 		}

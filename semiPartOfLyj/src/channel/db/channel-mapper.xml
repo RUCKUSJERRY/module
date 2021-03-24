@@ -23,8 +23,6 @@
 		<result property="channel_num" column="CHANNEL_NUM" />
 		<result property="channel_name" column="CHANNEL_NAME" />
 		<result property="channel_information" column="CHANNEL_INFORMATION" />
-		<result property="channel_master" column="CHANNEL_MASTER" />
-		<result property="channel_access" column="CHANNEL_ACCESS" />
 		<result property="channel_enabled" column="CHANNEL_ENABLED" />
 		<result property="channel_regdate" column="CHANNEL_REGDATE" />
 	</resultMap>
@@ -38,10 +36,34 @@
 		SYSDATE)
 	</insert>
 	
-	<select id="channelList" parameterType="String" resultMap="roomMap">
-		SELECT CHANNEL_NUM, CHANNEL_NAME, CHANNEL_INFORMATION, CHANNEL_MASTER, CHANNEL_ACCESS, CHANNEL_ENABLED, CHANNEL_REGDATE
+	<select id="channelAdminList" resultMap="roomMap">
+		SELECT CHANNEL_NUM, CHANNEL_NAME, CHANNEL_INFORMATION, CHANNEL_ENABLED, CHANNEL_REGDATE
 		FROM CHANNELROOM
-		WHERE CHANNEL_NAME IN (SELECT CHANNEL_NAME FROM ROOMMEMBER WHERE MEMBER_ID = ${member_id})
+		ORDER BY CHANNEL_NUM
+	</select>
+	
+	<select id="channelList" parameterType="String" resultMap="roomMap">
+		SELECT CHANNEL_NUM, CHANNEL_NAME, CHANNEL_INFORMATION, CHANNEL_ENABLED, CHANNEL_REGDATE
+		FROM CHANNELROOM
+		WHERE CHANNEL_NAME IN (SELECT CHANNEL_NAME FROM ROOMMEMBER WHERE MEMBER_ID = #{member_id})
+	</select>
+	
+	<select id="channelSelect" parameterType="int" resultMap="roomMap">
+		SELECT CHANNEL_NUM, CHANNEL_NAME, CHANNEL_INFORMATION, CHANNEL_ENABLED, CHANNEL_REGDATE
+		FROM CHANNELROOM
+		WHERE CHANNEL_NUM = #{channel_num}
+	</select>
+	
+	<update id="channelUpdate" parameterType="roomDto">
+		UPDATE CHANNELROOM
+		SET CHANNEL_NAME = #{channel_name}, CHANNEL_INFORMATION = #{channel_information}
+		WHERE CHANNEL_NUM = #{channel_num}
+	</update>
+	
+	<select id="permissionCheck" parameterType="String" resultType="int">
+		SELECT COUNT(*)
+		FROM CHANNELROOM
+		WHERE MEMBER_ID = #{member_id}
 	</select>
 	
 	<insert id="createRoom" parameterType="roomDto">
@@ -50,11 +72,19 @@
 		(CHANNELROOMSEQ.NEXTVAL,
 		#{channel_name},
 		#{channel_information},
-		#{channel_master},
-		#{channel_access},
+		#{member_id},
 		'Y',
 		SYSDATE)
 	</insert>
+
+
+
+
+
+
+
+
+
 
 	<select id="login" parameterType="memberDto"
 		resultMap="memberMap">

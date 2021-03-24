@@ -33,15 +33,22 @@ public class MemberController extends HttpServlet {
 		
 		if (command.equals("memberlogin")) {
 			
-			String id = request.getParameter("id");
-			String pw = request.getParameter("pw");
+			String member_id = request.getParameter("member_id");
+			String member_pw = request.getParameter("member_pw");
 			
-			MemberDto dto = biz.login(id, pw);
+			MemberDto dto = biz.login(member_id, member_pw);
 			HttpSession session = request.getSession();
 			
 			if (dto != null) {
 				session.setAttribute("loginDto", dto);
-				response.sendRedirect("main.jsp");
+				
+				if (dto.getMember_type().equals("ADMIN")) {
+					response.sendRedirect("ChatController?command=channelAdminList&member_id="+member_id);	
+				} else {
+					response.sendRedirect("ChatController?command=channelList&member_id="+member_id);
+				}
+				
+				
 			} else {
 				response.sendRedirect("login.html");
 			}
