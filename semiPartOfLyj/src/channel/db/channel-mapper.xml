@@ -35,6 +35,14 @@
 		<result property="chat_content" column="CHAT_CONTENT"/>
 		<result property="chat_regdate" column="CHAT_REGDATE"/>	
 	</resultMap>
+	
+	<resultMap type="roomMemberDto" id="roomMemberMap">
+		<result property="roommemberseq" column="ROOMMEMBERSEQ"/>
+		<result property="channel_name" column="CHANNEL_NAME"/>
+		<result property="member_id" column="MEMBER_ID"/>
+		<result property="member_name" column="MEMBER_NAME"/>
+		<result property="regdate" column="REGDATE"/>	
+	</resultMap>
 
 	<insert id="roomMemberAdd" parameterType="roomMemberDto">
 		INSERT INTO ROOMMEMBER
@@ -42,6 +50,7 @@
 		(ROOMMEMBERSEQ.NEXTVAL,
 		#{channel_name},
 		#{member_id},
+		#{member_name},
 		SYSDATE)
 	</insert>
 	
@@ -109,7 +118,18 @@
 		WHERE CHANNEL_NAME = #{channel_name}
 	</select>
 
-
+	<select id="otherMemeberList" parameterType="String" resultMap="roomMemberMap">
+		SELECT MEMBER_NAME, MEMBER_ID FROM MEMBER
+		WHERE MEMBER_NAME NOT IN
+		(SELECT MEMBER_NAME FROM ROOMMEMBER WHERE CHANNEL_NAME = #{channel_name} )
+	</select>
+	
+	<delete id="delChannelMember" parameterType="roomMemberDto">
+		DELETE FROM ROOMMEMBER
+		WHERE CHANNEL_NAME = #{channel_name}
+		AND MEMBER_ID = #{member_id}
+		AND MEMBER_NAME = #{member_name}
+	</delete>
 
 
 

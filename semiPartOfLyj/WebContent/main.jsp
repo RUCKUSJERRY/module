@@ -37,14 +37,10 @@
 		</tr>
 	<% 	
 		} else {
-			for (int i = 1; i < list.size(); i++) {
+			for (int i = 0; i < list.size(); i++) {
 	%>	
 			<tr>
 				<td><a href="javascript:void(0)" onclick="callChatList(<%=list.get(i).getChannel_num()%>);"><%=list.get(i).getChannel_name() %></a></td>
-				<td>
-				<input type="button" value="수정" onclick="channelupdate(<%=list.get(i).getChannel_num() %>);" />
-				<input type="button" value="삭제" onclick="channeldelcon(<%=list.get(i).getChannel_num() %>);" />
-				</td>
 			</tr>
 	<% 		
 			}

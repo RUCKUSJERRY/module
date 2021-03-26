@@ -9,16 +9,18 @@ public class RoomMemberDto {
 	private int roommemberseq;
 	private String channel_name;
 	private String member_id;
+	private String member_name;
 	private Date regdate;
 	
 	public RoomMemberDto() {
 		
 	}
 
-	public RoomMemberDto(int roommemberseq, String channel_name, String member_id, Date regdate) {
+	public RoomMemberDto(int roommemberseq, String channel_name, String member_id, String member_name, Date regdate) {
 		this.roommemberseq = roommemberseq;
 		this.channel_name = channel_name;
 		this.member_id = member_id;
+		this.member_name = member_name;
 		this.regdate = regdate;
 	}
 
@@ -44,6 +46,15 @@ public class RoomMemberDto {
 
 	public void setMember_id(String member_id) {
 		this.member_id = member_id;
+	}
+	
+
+	public String getMember_name() {
+		return member_name;
+	}
+
+	public void setMember_name(String member_name) {
+		this.member_name = member_name;
 	}
 
 	public Date getRegdate() {

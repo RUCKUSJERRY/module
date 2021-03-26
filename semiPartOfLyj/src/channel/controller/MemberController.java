@@ -32,13 +32,12 @@ public class MemberController extends HttpServlet {
 		System.out.println("["+command+"]");
 		
 		if (command.equals("memberlogin")) {
-			
 			String member_id = request.getParameter("member_id");
-			String member_pw = request.getParameter("member_pw");
+			String member_pw = request.getParameter("member_pw");	
 			
 			MemberDto dto = biz.login(member_id, member_pw);
 			HttpSession session = request.getSession();
-			
+
 			if (dto != null) {
 				session.setAttribute("loginDto", dto);
 				

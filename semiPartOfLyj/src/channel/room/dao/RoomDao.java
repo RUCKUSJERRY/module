@@ -173,8 +173,39 @@ public class RoomDao extends SqlMapConfig{
 	}
 	
 	// 9. 해당 채널에 없는 회원 조회
-	public List<String> otherMemeberList(String channel_name) {
+	public List<RoomMemberDto> otherMemeberList(String channel_name) {
+		SqlSession session = null;
+		List<RoomMemberDto> list = new ArrayList<RoomMemberDto>();
 		
-		return null;
+		try {
+			session = getSqlSessionFactory().openSession(false);
+			list = session.selectList("channelmapper.otherMemeberList", channel_name);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+			
+		return list;
 	}
-}
+	
+	// 10. 해당 채널의 참여 회원 삭제
+	public int delChannelMember(RoomMemberDto dto) {
+		SqlSession session = null;
+		int res = 0;
+		
+		try {
+			session = getSqlSessionFactory().openSession(false);
+			res = session.delete("channelmapper.delChannelMember", dto);
+			if (res > 0) {
+				session.commit();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		
+		return res;
+	}
+} 

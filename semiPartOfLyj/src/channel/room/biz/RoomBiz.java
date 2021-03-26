@@ -42,4 +42,12 @@ public class RoomBiz {
 	public List<MemberDto> channelMemeberList(String channel_name) {
 		return dao.channelMemeberList(channel_name);
 	}
+	
+	public List<RoomMemberDto> otherMemeberList(String channel_name) {
+		return dao.otherMemeberList(channel_name);
+	}
+	
+	public int delChannelMember(RoomMemberDto dto) {
+		return dao.delChannelMember(dto);
+	}
 }

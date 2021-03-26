@@ -106,7 +106,6 @@ $(function(){
 	console.log(id);
 	callChatList(1, id);
 	
-	
 });
 
 //채널추가 시
@@ -121,8 +120,7 @@ function addCancel() {
 	document.body.style.background = "white";
 }
 //채널삭제 확인
-function channeldelcon(chnum) {
-	
+function channeldelcon(chnum) {	
 	var con = confirm("해당 채널을 삭제하시겠습니까?");
 	if (con) {
 		location.href="ChatController?command=channeldelete&chnum="+chnum;
