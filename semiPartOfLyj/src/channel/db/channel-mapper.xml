@@ -26,6 +26,15 @@
 		<result property="channel_enabled" column="CHANNEL_ENABLED" />
 		<result property="channel_regdate" column="CHANNEL_REGDATE" />
 	</resultMap>
+	
+	<resultMap type="chatDto" id="chatMap">
+		<result property="chat_seq" column="CHAT_SEQ"/>
+		<result property="channel_num" column="CHANNEL_NUM"/>
+		<result property="member_id" column="MEMBER_ID"/>
+		<result property="member_name" column="MEMBER_NAME"/>
+		<result property="chat_content" column="CHAT_CONTENT"/>
+		<result property="chat_regdate" column="CHAT_REGDATE"/>	
+	</resultMap>
 
 	<insert id="roomMemberAdd" parameterType="roomMemberDto">
 		INSERT INTO ROOMMEMBER
@@ -76,7 +85,29 @@
 		'Y',
 		SYSDATE)
 	</insert>
-
+	
+	<select id="callChatList" parameterType="int" resultMap="chatMap">
+		SELECT CHAT_SEQ, MEMBER_ID, MEMBER_NAME, CHAT_CONTENT, CHAT_REGDATE
+		FROM CHAT
+		WHERE CHANNEL_NUM = #{channel_num}
+		ORDER BY CHAT_REGDATE
+	</select>
+	
+	<insert id="insertChat" parameterType="chatDto">
+		INSERT INTO CHAT
+		VALUES (CHATSEQ.NEXTVAL,
+		#{channel_num},
+		#{member_id},
+		#{member_name},
+		#{chat_content}, 
+		SYSDATE)
+	</insert>
+	
+	<select id="channelMemeberList" resultMap="memberMap">
+		SELECT MEMBER_ID, MEMBER_NAME
+		FROM ROOMMEMBER
+		WHERE CHANNEL_NAME = #{channel_name}
+	</select>
 
 
 

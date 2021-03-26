@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.ibatis.session.SqlSession;
 import channel.db.SqlMapConfig;
+import channel.member.dto.MemberDto;
 import channel.room.dto.RoomDto;
 import channel.room.dto.RoomMemberDto;
 
@@ -147,5 +148,33 @@ public class RoomDao extends SqlMapConfig{
 	// 7. 채널 삭제
 	public int channelDelete() {
 		return 0;
+	}
+	
+	// 8. 해당 채널의 참여자 출력
+	public List<MemberDto> channelMemeberList(String channel_name) {
+		SqlSession session = null;
+		List<MemberDto> list = new ArrayList<MemberDto>();
+		
+		try {
+			session = getSqlSessionFactory().openSession(false);
+			list = session.selectList("channelmapper.channelMemeberList", channel_name);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+			
+		return list;
+	}
+	// 9. 전체 회원 조회
+	public List<String> allMemeberList() {
+		
+		return null;
+	}
+	
+	// 9. 해당 채널에 없는 회원 조회
+	public List<String> otherMemeberList(String channel_name) {
+		
+		return null;
 	}
 }

@@ -11,7 +11,7 @@ import javax.servlet.http.HttpSession;
 import channel.member.biz.MemberBiz;
 import channel.member.dto.MemberDto;
 
-@WebServlet("/MemberController")
+@WebServlet("/MemberControllertest")
 public class MemberController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	

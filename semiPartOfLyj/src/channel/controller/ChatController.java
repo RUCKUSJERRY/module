@@ -10,6 +10,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import channel.chat.biz.ChatBiz;
+import channel.chat.dto.ChatDto;
+import channel.common.Util;
+import channel.member.dto.MemberDto;
 import channel.room.biz.RoomBiz;
 import channel.room.dto.RoomDto;
 import channel.room.dto.RoomMemberDto;
@@ -31,6 +41,7 @@ public class ChatController extends HttpServlet {
 		
 		String command = request.getParameter("command");
 		RoomBiz biz = new RoomBiz();
+		ChatBiz chatBiz = new ChatBiz();
 		if (command.equals("channeladd")) {
 			
 			String channelname = request.getParameter("channelname");
@@ -75,15 +86,17 @@ public class ChatController extends HttpServlet {
 				request.setAttribute("channellist", list);
 				dispatch("main.jsp", request, response);
 			}
-		} else if (command.equals("channelupdateform")) {
+		} else if (command.equals("channelAdminform")) {
 			
 			int channel_num = Integer.parseInt(request.getParameter("channel_num"));
 			
 				RoomDto dto = biz.channelSelect(channel_num);
 				
+				List<MemberDto> list = biz.channelMemeberList(dto.getChannel_name());
+				request.setAttribute("channelMemberList", list);
 				request.setAttribute("roomDto", dto);
 				
-				dispatch("channel_update.jsp", request, response);
+				dispatch("channel_admin.jsp", request, response);
 			
 		} else if (command.equals("channelUpdate")) {
 			
@@ -104,11 +117,93 @@ public class ChatController extends HttpServlet {
 				} else {
 					System.out.println("채널 수정 실패");
 					dispatch("ChatController?command=channelupdateform&channel_num="+channel_num, request, response);
-				}
+				}	
+			
+		} else if (command.equals("callChatList")) {
+			
+			int channel_num = Integer.parseInt(request.getParameter("channel_num"));
+			
+			List<ChatDto> list = chatBiz.callChatList(channel_num);
+			JsonArray resultArray = new JsonArray();
+			
+			Gson gson = new Gson();
+			
+			String jsonString = gson.toJson(list);
+			resultArray.add(JsonParser.parseString(jsonString));
+			
+			JsonObject result = new JsonObject();
+			result.add("result", resultArray);
+			
+			response.getWriter().append(result+"");
+			System.out.println(resultArray);
+			
+		} else if (command.equals("channelInfo")) {
+			
+			int channel_num = Integer.parseInt(request.getParameter("channel_num"));
+			
+			RoomDto dto = biz.channelSelect(channel_num);
+			
+			Util util = new Util();
+			
+			String result = "";
+			result += dto.getChannel_num() + "|\\|";
+			result += dto.getChannel_name() + "|\\|";
+			result += dto.getChannel_information() + "|\\|";
+			result += dto.getChannel_enabled() + "|\\|";
+			result += util.getTostrings(dto.getChannel_regdate());
+
+			System.out.println(result);
+			
+			response.getWriter().append(result);
+			
+		} else if (command.equals("chatinsert")) {
+			
+			int channel_num = Integer.parseInt(request.getParameter("channel_num"));
+			String member_name = request.getParameter("member_name");
+			String member_id = request.getParameter("member_id");
+			String chat_content = request.getParameter("chat_content");
+			
+			ChatDto dto = new ChatDto();
+			dto.setChannel_num(channel_num);
+			dto.setMember_name(member_name);
+			dto.setMember_id(member_id);
+			dto.setChat_content(chat_content);
+			
+			int res = chatBiz.insertChat(dto);
+			
+			if (res > 0) {
+				System.out.println("메세지 저장 성공");
+			} else {
+				System.out.println("메세지 저장 실패");
+			}
+			
+			
+		} else if (command.equals("channeladmin")) {
+			
+			List<RoomDto> list = biz.channelAdminList();
+			
+			request.setAttribute("channelAdminlist", list);
+			if (list != null) {
+				request.setAttribute("channelAdminlist", list);
+				dispatch("channel_admin.jsp", request, response);
+			}
+			
+		} else if (command.equals("error")) {
+			
+			response.sendRedirect("err.jsp?err=잘못된 접근입니다.");
+			
+		} else if (command.equals("callMemberList")) {
+			
+			String channel_name = request.getParameter("channel_name");
 			
 			
 			
 		}
+			
+			
+		
+		
+
 		
 	}
 	

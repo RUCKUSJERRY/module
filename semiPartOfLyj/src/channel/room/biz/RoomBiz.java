@@ -2,6 +2,7 @@ package channel.room.biz;
 
 import java.util.List;
 
+import channel.member.dto.MemberDto;
 import channel.room.dao.RoomDao;
 import channel.room.dto.RoomDto;
 import channel.room.dto.RoomMemberDto;
@@ -36,5 +37,9 @@ public class RoomBiz {
 	
 	public int permissionCheck(String member_id) {
 		return dao.permissionCheck(member_id);
+	}
+	
+	public List<MemberDto> channelMemeberList(String channel_name) {
+		return dao.channelMemeberList(channel_name);
 	}
 }
