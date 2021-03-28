@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="channelmapper">
+<mapper namespace="channelmapper-chat">
 
-
+	<resultMap type="memberDto" id="memberMap">
+		<result property="member_num" column="MEMBER_NUM" />
+		<result property="member_id" column="MEMBER_ID" />
+		<result property="member_pw" column="MEMBER_PW" />
+		<result property="member_name" column="MEMBER_NAME" />
+		<result property="member_email" column="MEMBER_EMAIL" />
+		<result property="member_phone" column="MEMBER_PHONE" />
+		<result property="member_pscode" column="MEMBER_PSCODE" />
+		<result property="member_addr" column="MEMBER_ADDR" />
+		<result property="member_addrdt" column="MEMBER_ADDRDT" />
+		<result property="member_type" column="MEMBER_TYPE" />
+		<result property="member_auth" column="MEMBER_AUTH" />
+		<result property="member_date" column="MEMBER_DATE" />
+		<result property="member_enabled" column="MEMBER_ENABLED" />
+		<result property="member_statement" column="MEMBER_STATEMENT" />
+	</resultMap>
 
 	<resultMap type="roomDto" id="roomMap">
 		<result property="channel_num" column="CHANNEL_NUM" />

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="channelmapper-room">
+
+	<resultMap type="roomDto" id="roomMap">
+		<result property="channel_num" column="CHANNEL_NUM" />
+		<result property="channel_name" column="CHANNEL_NAME" />
+		<result property="channel_information" column="CHANNEL_INFORMATION" />
+		<result property="channel_enabled" column="CHANNEL_ENABLED" />
+		<result property="channel_regdate" column="CHANNEL_REGDATE" />
+	</resultMap>
+	
+	<resultMap type="roomMemberDto" id="roomMemberMap">
+		<result property="roommember_seq" column="ROOMMEMBER_SEQ"/>
+		<result property="channel_name" column="CHANNEL_NAME"/>
+		<result property="member_id" column="MEMBER_ID"/>
+		<result property="member_name" column="MEMBER_NAME"/>
+		<result property="regdate" column="REGDATE"/>	
+	</resultMap>
+	
+	<select id="channelAdminList" resultMap="roomMap">
+		SELECT CHANNEL_NUM, CHANNEL_NAME, CHANNEL_INFORMATION, CHANNEL_ENABLED, CHANNEL_REGDATE
+		FROM CHANNELROOM
+		ORDER BY CHANNEL_NUM
+	</select>
+	
+	<select id="channelList" parameterType="String" resultMap="roomMap">
+		SELECT CHANNEL_NUM, CHANNEL_NAME, CHANNEL_INFORMATION, CHANNEL_ENABLED, CHANNEL_REGDATE
+		FROM CHANNELROOM
+		WHERE CHANNEL_NAME IN (SELECT CHANNEL_NAME FROM ROOMMEMBER WHERE MEMBER_ID = #{member_id})
+	</select>
+	
+	
+
+</mapper>

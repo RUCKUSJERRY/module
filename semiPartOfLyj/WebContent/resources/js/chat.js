@@ -1,144 +1,6 @@
-<%@page import="channel.room.dto.RoomDto"%>
-<%@page import="java.util.List"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-    
-<% request.setCharacterEncoding("UTF-8"); %>
-<% response.setContentType("text/html; charset=UTF-8"); %>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-<!-- 부트스트랩 -->
-<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<!-- include summernote css/js -->
-<link href="resources/summernote/summernote.css" rel="stylesheet">
-<script src="resources/summernote/summernote.js"></script>
-<style type="text/css">
-	
-	.chat_container {
-		
-		border: 1px solid black;
-		position:absolute;
-		left: 30%;
-		width: 60%;
-		height: 80%;
-		
-		
-	}
-	
-	#chatinfo {
-		position: relative;
-		border-bottom: 1px solid black;
-		display: block;
-		height: 15%;
-	}
-	
-	#chatarea {
-		position: relative;
-		background: skyblue;
-		height: 80%;
-		overflow: auto;
-		
-	}
-	
-	
-
-</style>
-</head>
-<body>
-
-	<h1>Admin Page</h1>
-
-	<input type="text" id="member_num" value="${loginDto.member_num }">
-	<input type="text" id="member_id" value="${loginDto.member_id }">
-	<input type="text" id="member_pw" value="${loginDto.member_pw }">
-	<input type="text" id="member_name" value="${loginDto.member_name }">
-	<div class="channel_container">
-		
-		<div class="channel_list">
-			<table border="1">
-				<tr>
-					<td colspan="2"><a href="javascript:void(0)" onclick="callChatList(1);">전체채팅방</a></td>
-				</tr>
-	
-	<% 
-		List<RoomDto> list = (List<RoomDto>) request.getAttribute("channelAdminlist");
-		
-		if (list.size() == 0) {
-	%>	
-		<tr>
-			<td colspan="2">채널이 없습니다. 채널을 추가해주세요.</td>
-		</tr>
-	<% 	
-		} else {
-			for (int i = 1; i < list.size(); i++) {
-	%>	
-			<tr>
-				<td><a href="javascript:void(0)" onclick="callChatList(<%=list.get(i).getChannel_num()%>);"><%=list.get(i).getChannel_name() %></a></td>
-				<td>
-				<input type="button" value="관리" onclick="channeladmin(<%=list.get(i).getChannel_num() %>);" />
-				<input type="button" value="삭제" onclick="channeldelcon(<%=list.get(i).getChannel_num() %>);" />
-				</td>
-			</tr>
-	<% 		
-			}
-		}	
-	%>	
-				<tr>
-					<td colspan="2" align="center">
-					<input type="button" value="채널추가" onclick="addChannel();">
-					</td>
-				</tr>		
-	
-			</table>
-			
-		</div>
-	</div>
-	<div class="chat_container">
-		<div id="chatinfo">
-			
-		</div>
-		<div id="chatarea">
-			
-		</div>
-			<textarea id="summernote" name="editordata" ></textarea>			
-		</div>
-		
-		
-	<div id="channel_add_insert" class="channel_add_insert">
-		<form action="ChatController" method="get">
-			<input type="hidden" name="command" value="channeladd">
-			<input type="hidden" name="channelmaster" value="${loginDto.member_id }">
-			<table border="1">
-				<tr>
-					<th colspan="2">채널추가</th>
-				</tr>
-				<tr>
-					<th>채널명</th>
-					<td><input type="text" name="channelname"/></td>
-				</tr>
-				<tr>
-					<th>채널정보</th>
-					<td><input type="text" name="channelinfo"/></td>
-				</tr>
-				<tr>
-				</tr>
-				<tr>
-					<td colspan="2" align="right">
-						<input type="submit" value="채널생성"/>
-						<input type="button" value="취소" onclick="addCancel();"/>
-					</td>
-				</tr>
-			</table>			
-		</form>
-	</div>	
-<script type="text/javascript">
-
+	var channel_num = $("#channel_num").val();
+	var member_id = $("#member_id").val();
+	var member_name = $("#member_name").val();
 
 $(document).ready(function() {
 	
@@ -178,15 +40,9 @@ $(document).ready(function() {
 					var outmsg = inputmsg.replace(/<(\/?)p>/gi,'');
 					inputmsg.replace('<br>','');
 					$('#summernote').summernote('reset');
-					send(outmsg);
-				
+					send(outmsg);				
 				})
-			
-			
-			
-	});
-			
-
+		});
 });
 
 /**
@@ -210,7 +66,6 @@ $(document).ready(function() {
  	        }
  	    });
  	}
-
 
 $(function(){
 	var id = $("#member_id").val();
@@ -392,23 +247,21 @@ function channelInfo(chnum) {
 
 var webSocket = new WebSocket('ws://localhost:8787/semiPartOfLyj/websocket');
 
-// var inputMessage = document.getElementById('summernote');
-
 var re_send = "";
 
 webSocket.onerror = function(event) {
 	onError(event)
 };
 
-webSocket.opopen = function(event) {
-	onOpen(event)
+webSocket.opopen = function() {
+	onOpen()
 };
 
 webSocket.onmessage = function(event) {
 	onMessage(event)
 };
 
-webSocket.onclose = function(event) {
+webSocket.onclose = function() {
 	var div = document.createElement('div');
 	div.innerHTML = "${loginDto.member_name } 님이 나가셨습니다.\n";
 };
@@ -449,19 +302,19 @@ function onMessage(event) {
 	
 }
 
-function onOpen(event) {
+function onOpen() {
 	
 	var div = document.createElement('div');
 	div.style["float"]="left";
 	
-	div.innerHTML = " ${loginDto.member_name } 님 이 채팅방에 입장하였습니다.";
+	div.innerHTML = member_name + "님 이 채팅방에 입장하였습니다.";
 	document.getElementById('chatarea').appendChild(div);
 	
 	var clear=document.createElement('div');
 	clear.style["clear"]="both";
 	document.getElementById('chatarea').appendChild(clear);
 	
-	webSocket.send("${loginDto.member_name }님이 접속하였습니다.|\|메세지를 보내주세요.");
+	webSocket.send(member_name+"님이 채팅방에 입장하였습니다.|\|메세지를 보내주세요.");
 	
 }
 
@@ -471,14 +324,10 @@ function onError(event) {
 
 function send(msg) {
 	
-	var inputMessage = msg;
-	console.log(inputMessage);
-	var channel_num = $("#channel_num").val();
-	var member_id = $("#member_id").val();
-	var member_name = $("#member_name").val();	
-	var chat_content = inputMessage;
+	var chat_content = msg;
+	console.log(chat_content);
 	
-	if (inputMessage.value != "") {
+	if (chat_content.value != "") {
 		
 		function  getParameterValues() {
 			
@@ -489,7 +338,7 @@ function send(msg) {
 			url:"ChatController"+getParameterValues(),
 			dataType: "text",
 			method: "get",
-			success:function(msg){
+			success:function(){
 				console.log("메세지 저장 완료")
 			},
 			error: function(){
@@ -500,13 +349,13 @@ function send(msg) {
 		})	
 	
 		
-		webSocket.send(member_id+"|\|" + inputMessage);
+		webSocket.send(member_id+"|\|" + chat_content);
 		
 		if (member_id != re_send) {
 			var who = document.createElement('div');
 			who.style["float"]="left";
 			who.style["display"]="inline-block";
-			who.innerHTML = "${loginDto.member_id }";
+			who.innerHTML = member_id;
 			
 			document.getElementById('chatarea').appendChild(who);
 			var clear = document.createElement('div');
@@ -522,14 +371,14 @@ function send(msg) {
 		div.style["background"]="yellow";
 		div.style["display"]="inline-block";
 		
-		div.innerHTML = inputMessage;
+		div.innerHTML = chat_content;
 		document.getElementById('chatarea').appendChild(div);
 		
 		var clear = document.createElement('div');
 		clear.style["clear"] = "both";
 		document.getElementById('chatarea').appendChild(clear);
 		
-		inputMessage.value = '';
+		chat_content.value = '';
 		
 		chatarea.scrollTop = chatarea.scrollHeight;
 		
@@ -538,8 +387,3 @@ function send(msg) {
 	}
 	
 }
-
-
-</script>
-</body>
-</html>
