@@ -10,11 +10,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import channel.lyj_member.MemberBiz;
-import channel.lyj_member.MemberBizImpl;
-import channel.lyj_room.RoomBiz;
-import channel.lyj_room.RoomBizImpl;
-import channel.lyj_room.RoomDto;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import channel.lyj_chat.ChatBiz;
+import channel.lyj_chat.ChatBizImpl;
+import channel.lyj_chat.ChatDto;
 
 @WebServlet("/ChatControllerlyj")
 public class ChatController_lyj extends HttpServlet {
@@ -32,35 +35,53 @@ public class ChatController_lyj extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=UTF-8");
 
-		// 채팅 메세지 관련 컨트롤러
-		MemberBiz memberBiz = new MemberBizImpl();
-		RoomBiz roomBiz = new RoomBizImpl();
+		// 채팅 & 메세지 관련 컨트롤러
+		ChatBiz chatBiz = new ChatBizImpl();
 		
 		String command = request.getParameter("command");
 		System.out.println("["+command+"]");
 		
-		// 로그인시 어드민으로 로그인 할 경우
-		if (command.equals("channelAdminList")) {
-
-			List<RoomDto> list = roomBiz.channelAdminList();
-
-			if (list != null) {
-				request.setAttribute("channelAdminlist", list);
-				dispatch("./jsp_lyj/admin_lyj.jsp", request, response);
-			}
+		// 채팅 DB에서 불러오기
+		if (command.equals("callChatList")) {
 			
+			int channel_num = Integer.parseInt(request.getParameter("channel_num"));
+
+			List<ChatDto> list = chatBiz.callChatList(channel_num);
+			JsonArray resultArray = new JsonArray();
+
+			Gson gson = new Gson();
+
+			String jsonString = gson.toJson(list);
+			resultArray.add(JsonParser.parseString(jsonString));
+
+			JsonObject result = new JsonObject();
+			result.add("result", resultArray);
+
+			response.getWriter().append(result + "");
+			System.out.println(resultArray);
 		
-		// 로그인시 일반 유저로 로그인 할 경우
-		} else if (command.equals("channelList")) {
+		// 채팅 DB로 저장
+		} else if (command.equals("chatInsert")) {
 			
+			int channel_num = Integer.parseInt(request.getParameter("channel_num"));
+			String member_name = request.getParameter("member_name");
 			String member_id = request.getParameter("member_id");
+			String chat_content = request.getParameter("chat_content");
 
-			List<RoomDto> list = roomBiz.channelList(member_id);
+			ChatDto dto = new ChatDto();
+			dto.setChannel_num(channel_num);
+			dto.setMember_name(member_name);
+			dto.setMember_id(member_id);
+			dto.setChat_content(chat_content);
 
-			if (list != null) {
-				request.setAttribute("channellist", list);
-				dispatch("./jsp_lyj/main_lyj.jsp", request, response);
+			int res = chatBiz.chatInsert(dto);
+
+			if (res > 0) {
+				System.out.println("메세지 저장 성공");
+			} else {
+				System.out.println("메세지 저장 실패");
 			}
+
 			
 		}
 		

@@ -1,7 +1,6 @@
 package channel.lyj_room;
 
 import java.util.List;
-
 import channel.lyj_member.MemberDto;
 
 public class RoomBizImpl implements RoomBiz {
@@ -10,20 +9,17 @@ public class RoomBizImpl implements RoomBiz {
 	
 	@Override
 	public int createRoom(RoomDto dto) {
-		// TODO Auto-generated method stub
-		return 0;
+		return dao.createRoom(dto);
 	}
 
 	@Override
 	public int channelUpdate(RoomDto dto) {
-		// TODO Auto-generated method stub
-		return 0;
+		return dao.channelUpdate(dto);
 	}
 
 	@Override
-	public int channelDelete() {
-		// TODO Auto-generated method stub
-		return 0;
+	public int channelDelete(int channel_num) {
+		return dao.channelDelete(channel_num);
 	}
 
 	@Override
@@ -35,17 +31,15 @@ public class RoomBizImpl implements RoomBiz {
 	public List<RoomDto> channelList(String member_id) {
 		return dao.channelList(member_id);
 	}
-
+	
 	@Override
 	public RoomDto channelSelect(int channel_num) {
-		// TODO Auto-generated method stub
-		return null;
+		return dao.channelSelect(channel_num);
 	}
 
 	@Override
 	public int roomMemberAdd(RoomMemberDto roomDto) {
-		// TODO Auto-generated method stub
-		return 0;
+		return dao.roomMemberAdd(roomDto);
 	}
 
 	@Override
@@ -70,6 +64,11 @@ public class RoomBizImpl implements RoomBiz {
 	public int delChannelMember(RoomMemberDto dto) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+	
+	@Override
+	public String adminCheck(int channel_num) {
+		return dao.adminCheck(channel_num);
 	}
 
 }

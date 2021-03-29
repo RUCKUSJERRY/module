@@ -36,7 +36,7 @@ public class MemberController_lyj extends HttpServlet {
 		System.out.println("["+command+"]");
 		
 		if (command.equals("memberlogin")) {
-			response.sendRedirect("./jsp_lyj/login/member_login.jsp");
+			response.sendRedirect("login/member_login.jsp");
 		} else if (command.equals("checklogin")){
 			String member_id = request.getParameter("member_id");
 			String member_pw = request.getParameter("member_pw");
@@ -48,14 +48,14 @@ public class MemberController_lyj extends HttpServlet {
 				session.setAttribute("loginDto", dto);
 				
 				if (dto.getMember_type().equals("ADMIN")) {
-					response.sendRedirect("ChatControllerlyj?command=channelAdminList");	
+					response.sendRedirect("RoomControllerlyj?command=channelAdminList");	
 				} else {
-					response.sendRedirect("ChatControllerlyj?command=channelList&member_id="+member_id);
+					response.sendRedirect("RoomControllerlyj?command=channelList&member_id="+member_id);
 				}
 				
 				
 			} else {
-				response.sendRedirect("login.html");
+				response.sendRedirect("home.jsp");
 			}
 		} else if (command.equals("insertmemberform")) {
 			

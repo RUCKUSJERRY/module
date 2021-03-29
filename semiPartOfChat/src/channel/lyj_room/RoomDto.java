@@ -10,6 +10,7 @@ public class RoomDto {
 	private String channel_name;
 	private String channel_information;
 	private String member_id;
+	private String channel_access;
 	private String channel_enabled;
 	private Date channel_regdate;
 	
@@ -17,11 +18,12 @@ public class RoomDto {
 		
 	}
 	
-	public RoomDto(int channel_num, String channel_name, String channel_information, String member_id, String channel_enabled, Date channel_regdate) {
+	public RoomDto(int channel_num, String channel_name, String channel_information, String member_id, String channel_access, String channel_enabled, Date channel_regdate) {
 		this.channel_num = channel_num;
 		this.channel_name = channel_name;
 		this.channel_information = channel_information;
 		this.member_id = member_id;
+		this.channel_access = channel_access;
 		this.channel_enabled = channel_enabled;
 		this.channel_regdate = channel_regdate;
 	}
@@ -56,6 +58,14 @@ public class RoomDto {
 
 	public void setMember_id(String member_id) {
 		this.member_id = member_id;
+	}
+
+	public String getChannel_access() {
+		return channel_access;
+	}
+
+	public void setChannel_access(String channel_access) {
+		this.channel_access = channel_access;
 	}
 
 	public String getChannel_enabled() {

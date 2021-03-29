@@ -93,7 +93,7 @@
 <body>
 
 	<div class="container">
-		<form class="form-signin" action="../../MemberControllerlyj" method="post">
+		<form class="form-signin" action="../MemberControllerlyj" method="post">
 			<input type="hidden" name="command" value="checklogin">
 			<h3 class="form-signin-heading">환영합니다!</h3>
 			<br>
@@ -106,7 +106,7 @@
 			
 		</form>
 		
-		<form class="form-signin" action="../../MemberControllerlyj" method="post">
+		<form class="form-signin" action="../MemberControllerlyj" method="post">
 			<input type="hidden" name="command" value="insertmemberform">
 			<hr>
 			<span>아직 가입하지 않으셨나요?</span> 

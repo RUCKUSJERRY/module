@@ -10,17 +10,64 @@ public class RoomDaoImpl extends SqlMapConfig implements RoomDao {
 
 	@Override
 	public int createRoom(RoomDto dto) {
-		return 0;
+		SqlSession session = null;
+		int res = 0;
+		
+		try {
+			session = getSqlSessionFactory().openSession(false);
+			res = session.insert("channelmapper-room.createRoom", dto);
+		
+		if (res > 0) {
+			session.commit();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		
+		return res;
 	}
 
 	@Override
 	public int channelUpdate(RoomDto dto) {
-		return 0;
+		SqlSession session = null;
+		int res = 0;
+		
+		try {
+			session = getSqlSessionFactory().openSession(false);
+			res = session.update("channelmapper-room.channelUpdate", dto);
+			if (res > 0) {
+				session.commit();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		
+		return res;
 	}
 
 	@Override
-	public int channelDelete() {
-		return 0;
+	public int channelDelete(int channel_num) {
+		SqlSession session = null;
+		int res = 0;
+		
+		try {
+			session = getSqlSessionFactory().openSession(false);
+			res = session.delete("channelmapper-room.channelDelete", channel_num);
+		
+		if (res > 0) {
+			session.commit();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		
+		return res;
 	}
 
 	@Override
@@ -47,7 +94,7 @@ public class RoomDaoImpl extends SqlMapConfig implements RoomDao {
 		
 		try {
 			session = getSqlSessionFactory().openSession(false);
-			list = session.selectList("channelmapper.channelList", member_id);
+			list = session.selectList("channelmapper-room.channelList", member_id);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -59,12 +106,39 @@ public class RoomDaoImpl extends SqlMapConfig implements RoomDao {
 
 	@Override
 	public RoomDto channelSelect(int channel_num) {
-		return null;
+		SqlSession session = null;
+		RoomDto dto = new RoomDto();
+		
+		try {
+			session = getSqlSessionFactory().openSession(false);
+			dto = session.selectOne("channelmapper-room.channelSelect", channel_num);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		
+		return dto;
 	}
 
 	@Override
 	public int roomMemberAdd(RoomMemberDto roomDto) {
-		return 0;
+		SqlSession session = null;
+		int res = 0;
+		try {
+			session = getSqlSessionFactory().openSession(false);
+			res = session.insert("channelmapper-room.roomMemberAdd", roomDto);
+		
+		if (res > 0) {
+			session.commit();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		
+		return res;
 	}
 
 	@Override
@@ -85,6 +159,24 @@ public class RoomDaoImpl extends SqlMapConfig implements RoomDao {
 	@Override
 	public int delChannelMember(RoomMemberDto dto) {
 		return 0;
+	}
+	
+	@Override
+	// 11. 채널 수정or삭제 권한 유효성 검사
+	public String adminCheck(int channel_num) {
+		SqlSession session = null;
+		String res = "";
+		try {
+			session = getSqlSessionFactory().openSession(false);
+			res = session.selectOne("channelmapper-room.adminCheck", channel_num);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		
+		return res;
 	}
 
 }

@@ -74,11 +74,10 @@ $(function(){
 	callChatList(1, id);
 	
 });
-
 //채널추가 시
 function addChannel() {	
 	document.getElementById("channel_add_insert").style.display = "block";
-	document.body.style.background = "gray";
+	document.style.background = "gray";
 	document.getElementById("channel_add_insert").style.background = "white";	
 }
 //채널추가 취소
@@ -194,6 +193,7 @@ function callChatList(chnum) {
 	
 } 
 
+// 채널정보 불러오는 ajax
 function channelInfo(chnum) {
 	
 	$('#chatinfo').children().remove();
@@ -227,7 +227,6 @@ function channelInfo(chnum) {
 			span.style["font-size"]="10px";
 			span.style["display"]="inline-block";
 
-			
 			span.innerHTML = 
 				" 채널이름 : "+ channel_name + "<br>" +
 				" 채널정보 : "+ channel_info + "<br>" +
@@ -245,7 +244,6 @@ function channelInfo(chnum) {
 }
 
 // 채팅영역
-
 var webSocket = new WebSocket('ws://localhost:8787/semiPartOfLyj/websocket');
 
 var re_send = "";
