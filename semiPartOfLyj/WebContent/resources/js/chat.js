@@ -1,6 +1,7 @@
 	var channel_num = $("#channel_num").val();
 	var member_id = $("#member_id").val();
 	var member_name = $("#member_name").val();
+	var contextPath = $("#contextPath").val();
 
 $(document).ready(function() {
 	
@@ -61,7 +62,7 @@ $(document).ready(function() {
  	        processData : false,
  	        success : function(data) { // 처리가 성공할 경우
                 // 에디터에 이미지 출력
-                console.log(data);
+
  	        	$(editor).summernote('editor.insertImage', data.url);
  	        }
  	    });
@@ -105,7 +106,7 @@ function callChatList(chnum) {
 	$.ajax ({
 		url:"ChatController?command=callChatList&channel_num="+chnum,
 		dataType: "json",
-		method: "get",
+		method: "post",
 		success:function(data){
 			var list = data.result;
 			var firstname = "";

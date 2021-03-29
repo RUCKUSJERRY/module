@@ -48,11 +48,12 @@ public class FileController extends HttpServlet {
 		}
 		
 	    // 업로드된 경로와 파일명을 통해 이미지의 경로를 생성
-		uploadPath = "resources/image/upload/" + fileName;
+		uploadPath = "http://localhost:8787/semiPartOfLyj/resources/image/upload/";
 		
 	    // 생성된 경로를 JSON 형식으로 보내주기 위한 설정
 		JSONObject jobj = new JSONObject();
 		jobj.put("url", uploadPath);
+		jobj.put("fileName", fileName);
 		
 		response.setContentType("application/json"); // 데이터 타입을 json으로 설정하기 위한 세팅
 		PrintWriter out = response.getWriter();

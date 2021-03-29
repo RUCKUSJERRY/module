@@ -20,7 +20,7 @@
 </head>
 <body>
 <nav>
-	<div class="container" id="header_container">
+	<div class="container-fluid" id="header_container">
 		<div id="nav_channel_info">
 			<input type="text" id="member_num" value="${loginDto.member_num }">
 			<input type="text" id="member_id" value="${loginDto.member_id }">
@@ -29,23 +29,37 @@
 		</div>	
 	</div>
 </nav>
-<div id="main_container" class="container">
-	<div id="nav_container">
+<div id="main_container" class="container-fluid">
+	<div class="col-md-4" id="nav_container" >
+		메뉴 영역
 		<div id="nav_menu_list">
 		<div id="nav_channel_list">채널</div>
 		<div id="nav_massage_list">메세지</div>
 		</div>
 	</div>
-	<div id="content_container">
-		<div></div>
+	<div class="col-md-8" id="content_container" >
+		컨텐츠 영역
+		<div>채팅창</div>
+		<div>텍스트에디터</div>
 	</div>
 
 </div>
 <footer>
 	<div class="container">
+	<div id="map" style="width:500px; height:400px;"></div>
 	</div>
 </footer>
-
-
 </body>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=8b23fbdf7184ddeccfecb57797fda53f"></script>
+<script type="text/javascript">
+	
+	var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
+	var options = { //지도를 생성할 때 필요한 기본 옵션
+		center: new kakao.maps.LatLng(33.450701, 126.570667), //지도의 중심좌표.
+		level: 3 //지도의 레벨(확대, 축소 정도)
+	};
+
+	var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
+
+</script>
 </html>

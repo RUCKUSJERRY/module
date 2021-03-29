@@ -23,6 +23,7 @@
 		
 		border: 1px solid black;
 		position:absolute;
+		top: 5%;
 		left: 30%;
 		width: 60%;
 		height: 80%;
@@ -58,6 +59,7 @@
 	<input type="text" id="member_id" value="${loginDto.member_id }"> <br/>
 	<input type="text" id="member_pw" value="${loginDto.member_pw }">
 	<input type="text" id="member_name" value="${loginDto.member_name }">
+	<input type="text" id="contextPath" value="${pageContext.request.contextPath}">
 	<div class="channel_container">
 		
 		<div class="channel_list">

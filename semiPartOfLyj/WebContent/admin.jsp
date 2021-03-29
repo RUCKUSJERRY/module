@@ -11,9 +11,10 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <!-- 부트스트랩 -->
-<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
 
 <!-- include summernote css/js -->
 <link href="resources/summernote/summernote.css" rel="stylesheet">
@@ -138,6 +139,9 @@
 		</form>
 	</div>	
 <script type="text/javascript">
+var channel_num = $("#channel_num").val();
+var member_id = $("#member_id").val();
+var member_name = $("#member_name").val();	
 
 
 $(document).ready(function() {
@@ -205,12 +209,12 @@ $(document).ready(function() {
  	        processData : false,
  	        success : function(data) { // 처리가 성공할 경우
                 // 에디터에 이미지 출력
-                console.log(data);
- 	        	$(editor).summernote('editor.insertImage', data.url);
+                console.log(data.url);
+                console.log(data.fileName);
+ 	        	$(editor).summernote('editor.insertImage', data.url+data.fileName);
  	        }
  	    });
  	}
-
 
 $(function(){
 	var id = $("#member_id").val();
@@ -471,14 +475,10 @@ function onError(event) {
 
 function send(msg) {
 	
-	var inputMessage = msg;
-	console.log(inputMessage);
-	var channel_num = $("#channel_num").val();
-	var member_id = $("#member_id").val();
-	var member_name = $("#member_name").val();	
-	var chat_content = inputMessage;
-	
-	if (inputMessage.value != "") {
+	var chat_content = msg;
+	console.log(chat_content);
+		
+	if (chat_content.value != "") {
 		
 		function  getParameterValues() {
 			
@@ -500,7 +500,7 @@ function send(msg) {
 		})	
 	
 		
-		webSocket.send(member_id+"|\|" + inputMessage);
+		webSocket.send(member_id+"|\|" + chat_content);
 		
 		if (member_id != re_send) {
 			var who = document.createElement('div');
@@ -522,14 +522,14 @@ function send(msg) {
 		div.style["background"]="yellow";
 		div.style["display"]="inline-block";
 		
-		div.innerHTML = inputMessage;
+		div.innerHTML = chat_content;
 		document.getElementById('chatarea').appendChild(div);
 		
 		var clear = document.createElement('div');
 		clear.style["clear"] = "both";
 		document.getElementById('chatarea').appendChild(clear);
 		
-		inputMessage.value = '';
+		chat_content.value = '';
 		
 		chatarea.scrollTop = chatarea.scrollHeight;
 		
