@@ -6,10 +6,113 @@ import org.apache.ibatis.session.SqlSession;
 import channel.db_lyj.SqlMapConfig;
 import channel.lyj_member.MemberDto;
 
-public class RoomDaoImpl extends SqlMapConfig implements RoomDao {
+public class ChannelDaoImpl extends SqlMapConfig implements ChannelDao {
 
+	// WorkSpace CRUD
+	
+	// 1. 워크스페이스 생성
 	@Override
-	public int createRoom(RoomDto dto) {
+	public int createWorkSpace(WorkSpaceDto wsDto) {
+		SqlSession session = null;
+		int res = 0;
+		
+		try {
+			session = getSqlSessionFactory().openSession(false);
+			res = session.insert("channelmapper-channel.createWorkSpace", wsDto);
+		
+		if (res > 0) {
+			session.commit();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		
+		return res;
+	}
+
+	// 2. 워크스페이스 맴버 추가
+	@Override
+	public int insertWorkSpaceMember(WorkSpaceMemberDto wsmemDto) {
+		SqlSession session = null;
+		int res = 0;
+		
+		try {
+			session = getSqlSessionFactory().openSession(false);
+			res = session.insert("channelmapper-channel.insertWorkSpaceMember", wsmemDto);
+		
+		if (res > 0) {
+			session.commit();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		
+		return res;
+	}
+
+	// 3. 워크스페이스 맴버 제거
+	@Override
+	public int deleteWorkSpaceMember(WorkSpaceMemberDto wsmemDto) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
+	// 4. 워크스페이스 정보 수정
+	@Override
+	public int updateWorkSpace(WorkSpaceDto wsDto) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
+	// 5. 워크스페이스 삭제
+	@Override
+	public int deleteWorkSpace(WorkSpaceDto wsDto) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	// 6. 전체 워크스페이스 리스트 출력
+	@Override
+	public List<WorkSpaceDto> selectAllWorkSpace() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	// 7. 해당 회원이 등록되어있는 워크스페이스 리스트 출력
+	@Override
+	public List<WorkSpaceDto> selectMemberWorkSpace(String member_id) {
+		SqlSession session = null;
+		List<WorkSpaceDto> list = new ArrayList<WorkSpaceDto>();
+		
+		try {
+			session = getSqlSessionFactory().openSession(false);
+			list = session.selectList("channelmapper-channel.selectMemberWorkSpace", member_id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		
+		return list;
+	}
+
+	// 8. 1개 워크스페이스 출력
+	@Override
+	public WorkSpaceDto selectOneWorkSpace(WorkSpaceDto wsDto) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
+	
+	
+	
+	@Override
+	public int createRoom(ChannelDto dto) {
 		SqlSession session = null;
 		int res = 0;
 		
@@ -30,7 +133,7 @@ public class RoomDaoImpl extends SqlMapConfig implements RoomDao {
 	}
 
 	@Override
-	public int channelUpdate(RoomDto dto) {
+	public int channelUpdate(ChannelDto dto) {
 		SqlSession session = null;
 		int res = 0;
 		
@@ -71,9 +174,9 @@ public class RoomDaoImpl extends SqlMapConfig implements RoomDao {
 	}
 
 	@Override
-	public List<RoomDto> channelAdminList() {
+	public List<ChannelDto> channelAdminList() {
 		SqlSession session = null;
-		List<RoomDto> list = new ArrayList<RoomDto>();
+		List<ChannelDto> list = new ArrayList<ChannelDto>();
 		
 		try {
 			session = getSqlSessionFactory().openSession(false);
@@ -88,9 +191,9 @@ public class RoomDaoImpl extends SqlMapConfig implements RoomDao {
 	}
 
 	@Override
-	public List<RoomDto> channelList(String member_id) {
+	public List<ChannelDto> channelList(String member_id) {
 		SqlSession session = null;
-		List<RoomDto> list = new ArrayList<RoomDto>();
+		List<ChannelDto> list = new ArrayList<ChannelDto>();
 		
 		try {
 			session = getSqlSessionFactory().openSession(false);
@@ -105,9 +208,9 @@ public class RoomDaoImpl extends SqlMapConfig implements RoomDao {
 	}
 
 	@Override
-	public RoomDto channelSelect(int channel_num) {
+	public ChannelDto channelSelect(int channel_num) {
 		SqlSession session = null;
-		RoomDto dto = new RoomDto();
+		ChannelDto dto = new ChannelDto();
 		
 		try {
 			session = getSqlSessionFactory().openSession(false);
@@ -122,7 +225,7 @@ public class RoomDaoImpl extends SqlMapConfig implements RoomDao {
 	}
 
 	@Override
-	public int roomMemberAdd(RoomMemberDto roomDto) {
+	public int roomMemberAdd(ChannelMemberDto roomDto) {
 		SqlSession session = null;
 		int res = 0;
 		try {
@@ -152,12 +255,12 @@ public class RoomDaoImpl extends SqlMapConfig implements RoomDao {
 	}
 
 	@Override
-	public List<RoomMemberDto> otherMemeberList(String channel_name) {
+	public List<ChannelMemberDto> otherMemeberList(String channel_name) {
 		return null;
 	}
 
 	@Override
-	public int delChannelMember(RoomMemberDto dto) {
+	public int delChannelMember(ChannelMemberDto dto) {
 		return 0;
 	}
 	
@@ -178,5 +281,7 @@ public class RoomDaoImpl extends SqlMapConfig implements RoomDao {
 		
 		return res;
 	}
+
+
 
 }

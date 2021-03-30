@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="channelmapper-channel">
+
+	<resultMap type="memberDto" id="memberMap">
+		<result property="member_num" column="MEMBER_NUM" />
+		<result property="member_id" column="MEMBER_ID" />
+		<result property="member_pw" column="MEMBER_PW" />
+		<result property="member_name" column="MEMBER_NAME" />
+		<result property="member_email" column="MEMBER_EMAIL" />
+		<result property="member_phone" column="MEMBER_PHONE" />
+		<result property="member_pscode" column="MEMBER_PSCODE" />
+		<result property="member_addr" column="MEMBER_ADDR" />
+		<result property="member_addrdt" column="MEMBER_ADDRDT" />
+		<result property="member_type" column="MEMBER_TYPE" />
+		<result property="member_auth" column="MEMBER_AUTH" />
+		<result property="member_date" column="MEMBER_DATE" />
+		<result property="member_enabled" column="MEMBER_ENABLED" />
+		<result property="member_statement" column="MEMBER_STATEMENT" />
+	</resultMap>
+
+	<resultMap type="workSpaceDto" id="workSpaceMap">
+		<result property="workspace_seq" column="WORKSPACE_SEQ"/>
+		<result property="workspace_name" column="WORKSPACE_NAME"/>
+		<result property="workspace_information" column="WORKSPACE_INFORMATION"/>
+		<result property="member_id" column="MEMBER_ID"/>
+		<result property="workspace_regdate" column="WORKSPACE_REGDATE"/>
+	</resultMap>
+	
+	<resultMap type="workSpaceMemberDto" id="workSpaceMemberMap">
+		<result property="workspacemember_seq" column="WORKSPACEMEMBER_SEQ"/>
+		<result property="workspace_seq" column="WORKSPACE_SEQ"/>
+		<result property="workspace_name" column="WORKSPACE_NAME"/>
+		<result property="member_id" column="MEMBER_ID"/>
+		<result property="member_name" column="MEMBER_NAME"/>
+		<result property="workspacemember_regdate" column="WORKSPACEMEMBER_REGDATE"/>	
+	</resultMap>
+
+	<resultMap type="channelDto" id="channelMap">
+		<result property="channel_seq" column="CHANNEL_SEQ" />
+		<result property="workspace_seq" column="WORKSPACE_SEQ" />
+		<result property="channel_name" column="CHANNEL_NAME" />
+		<result property="channel_information" column="CHANNEL_INFORMATION" />
+		<result property="member_id" column="MEMBER_ID" />
+		<result property="channel_access" column="CHANNEL_ACCESS" />
+		<result property="channel_enabled" column="CHANNEL_ENABLED" />
+		<result property="channel_regdate" column="CHANNEL_REGDATE" />
+	</resultMap>
+	
+	<resultMap type="channelMemberDto" id="channelMemberMap">
+		<result property="channelmember_seq" column="CHANNELMEMBER_SEQ"/>
+		<result property="channel_seq" column="CHANNEL_SEQ" />
+		<result property="channel_name" column="CHANNEL_NAME"/>
+		<result property="member_id" column="MEMBER_ID"/>
+		<result property="member_name" column="MEMBER_NAME"/>
+		<result property="regdate" column="REGDATE"/>	
+	</resultMap>
+	
+	<select id="selectMemberWorkSpace" parameterType="string" resultMap="workSpaceMap">
+		SELECT WORKSPACEMEMBER_SEQ, WORKSPACE_SEQ, WORKSPACE_NAME, MEMBER_ID, MEMBER_NAME, WORKSPACE_REGDATE
+		FROM WORKSPACEMEMBER
+		WHERE MEMBER_ID = #{member_id}
+		ORDER BY WORKSPACEMEMBER_SEQ
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<select id="channelAdminList" resultMap="channelMap">
+		SELECT CHANNEL_NUM, CHANNEL_NAME, CHANNEL_INFORMATION, MEMBER_ID, CHANNEL_ACCESS, CHANNEL_ENABLED, CHANNEL_REGDATE
+		FROM CHANNELROOM
+		ORDER BY CHANNEL_NUM
+	</select>
+	
+	<select id="channelList" parameterType="String" resultMap="channelMap">
+		SELECT CHANNEL_NUM, CHANNEL_NAME, CHANNEL_INFORMATION, MEMBER_ID, CHANNEL_ACCESS, CHANNEL_ENABLED, CHANNEL_REGDATE
+		FROM CHANNELROOM
+		WHERE CHANNEL_NAME IN (SELECT CHANNEL_NAME FROM ROOMMEMBER WHERE MEMBER_ID = #{member_id})
+		ORDER BY CHANNEL_NUM
+	</select>
+	
+	<select id="channelSelect" parameterType="int" resultMap="channelMap">
+		SELECT CHANNEL_NUM, CHANNEL_NAME, CHANNEL_INFORMATION, MEMBER_ID, CHANNEL_ACCESS, CHANNEL_ENABLED, CHANNEL_REGDATE
+		FROM CHANNELROOM
+		WHERE CHANNEL_NUM = #{channel_num}
+	</select>
+	
+	<insert id="createRoom" parameterType="channelDto">
+		INSERT INTO CHANNELROOM
+		VALUES
+		(CHANNELROOMSEQ.NEXTVAL, #{channel_name}, #{channel_information}, #{member_id}, #{channel_access}, 'Y',	SYSDATE)	
+	</insert>
+	
+	<insert id="roomMemberAdd" parameterType="channelMemberDto">
+		INSERT INTO ROOMMEMBER
+		VALUES
+		(ROOMMEMBERSEQ.NEXTVAL,
+		#{channel_name},
+		#{member_id},
+		#{member_name},
+		SYSDATE)
+	</insert>
+	
+	<select id="adminCheck" parameterType="int" resultType="String">
+		SELECT MEMBER_ID
+		FROM CHANNELROOM
+		WHERE CHANNEL_NUM = #{channel_num}
+	</select>
+	
+	<delete id="channelDelete" parameterType="int">
+		DELETE FROM CHANNELROOM
+		WHERE CHANNEL_NUM = #{channel_num}
+	</delete>
+	
+	<update id="channelUpdate" parameterType="channelDto">
+		UPDATE CHANNELROOM
+		SET CHANNEL_NAME = #{channel_name}, CHANNEL_INFORMATION = #{channel_information}, CHANNEL_ACCESS = #{channel_access}
+		WHERE CHANNEL_NUM = #{channel_num}
+	</update>
+	
+
+</mapper>

@@ -19,7 +19,7 @@ import channel.lyj_chat.ChatBiz;
 import channel.lyj_chat.ChatBizImpl;
 import channel.lyj_chat.ChatDto;
 
-@WebServlet("/ChatControllerlyj")
+@WebServlet("/ChatController")
 public class ChatController_lyj extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
@@ -48,7 +48,6 @@ public class ChatController_lyj extends HttpServlet {
 
 			List<ChatDto> list = chatBiz.callChatList(channel_num);
 			JsonArray resultArray = new JsonArray();
-
 			Gson gson = new Gson();
 
 			String jsonString = gson.toJson(list);
@@ -69,7 +68,7 @@ public class ChatController_lyj extends HttpServlet {
 			String chat_content = request.getParameter("chat_content");
 
 			ChatDto dto = new ChatDto();
-			dto.setChannel_num(channel_num);
+			dto.setChannel_seq(channel_num);
 			dto.setMember_name(member_name);
 			dto.setMember_id(member_id);
 			dto.setChat_content(chat_content);

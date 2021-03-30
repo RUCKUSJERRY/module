@@ -4,9 +4,10 @@ import java.util.Date;
 
 // 채널의 정보를 전달해주는 DTO
 
-public class RoomDto {
+public class ChannelDto {
 
-	private int channel_num;
+	private int channel_seq;
+	private int workspace_seq;
 	private String channel_name;
 	private String channel_information;
 	private String member_id;
@@ -14,12 +15,14 @@ public class RoomDto {
 	private String channel_enabled;
 	private Date channel_regdate;
 	
-	public RoomDto() {
+	public ChannelDto() {
 		
 	}
-	
-	public RoomDto(int channel_num, String channel_name, String channel_information, String member_id, String channel_access, String channel_enabled, Date channel_regdate) {
-		this.channel_num = channel_num;
+
+	public ChannelDto(int channel_seq, int workspace_seq, String channel_name, String channel_information,
+			String member_id, String channel_access, String channel_enabled, Date channel_regdate) {
+		this.channel_seq = channel_seq;
+		this.workspace_seq = workspace_seq;
 		this.channel_name = channel_name;
 		this.channel_information = channel_information;
 		this.member_id = member_id;
@@ -28,12 +31,20 @@ public class RoomDto {
 		this.channel_regdate = channel_regdate;
 	}
 
-	public int getChannel_num() {
-		return channel_num;
+	public int getChannel_seq() {
+		return channel_seq;
 	}
 
-	public void setChannel_num(int channel_num) {
-		this.channel_num = channel_num;
+	public void setChannel_seq(int channel_seq) {
+		this.channel_seq = channel_seq;
+	}
+
+	public int getWorkspace_seq() {
+		return workspace_seq;
+	}
+
+	public void setWorkspace_seq(int workspace_seq) {
+		this.workspace_seq = workspace_seq;
 	}
 
 	public String getChannel_name() {
@@ -83,6 +94,9 @@ public class RoomDto {
 	public void setChannel_regdate(Date channel_regdate) {
 		this.channel_regdate = channel_regdate;
 	}
+	
+	
+	
 	
 	
 }

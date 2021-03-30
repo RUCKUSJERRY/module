@@ -6,8 +6,10 @@
 	
 	<typeAliases>
 		<typeAlias type="channel.lyj_member.MemberDto" alias="memberDto"/>
-		<typeAlias type="channel.lyj_room.RoomDto" alias="roomDto"/>
-		<typeAlias type="channel.lyj_room.RoomMemberDto" alias="roomMemberDto"/>
+		<typeAlias type="channel.lyj_room.ChannelDto" alias="channelDto"/>
+		<typeAlias type="channel.lyj_room.ChannelMemberDto" alias="channelMemberDto"/>
+		<typeAlias type="channel.lyj_room.WorkSpaceDto" alias="workSpaceDto"/>
+		<typeAlias type="channel.lyj_room.WorkSpaceMemberDto" alias="workSpaceMemberDto"/>
 		<typeAlias type="channel.lyj_chat.ChatDto" alias="chatDto"/>
 	</typeAliases>
 		
@@ -25,7 +27,7 @@
 
 	<mappers>	
 		<mapper resource="channel/db_lyj/channel-mapper-member.xml"/>
-		<mapper resource="channel/db_lyj/channel-mapper-room.xml"/>
+		<mapper resource="channel/db_lyj/channel-mapper-channel.xml"/>
 		<mapper resource="channel/db_lyj/channel-mapper-chat.xml"/>
 	</mappers>
 

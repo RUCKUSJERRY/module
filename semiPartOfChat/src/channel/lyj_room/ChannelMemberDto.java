@@ -4,34 +4,45 @@ import java.util.Date;
 
 // 해당 채널의 맴버들의 정보를 전달해주는 DTO
 
-public class RoomMemberDto {
+public class ChannelMemberDto {
 
-	private int roommember_seq;
+	private int channelmember_seq;
+	private int channel_seq;
 	private String channel_name;
 	private String member_id;
 	private String member_name;
 	private Date regdate;
 	
-	public RoomMemberDto() {
+	public ChannelMemberDto() {
 		
 	}
 
-	public RoomMemberDto(int roommemberseq, String channel_name, String member_id, String member_name, Date regdate) {
-		this.roommember_seq = roommemberseq;
+	public ChannelMemberDto(int channelmember_seq, int channel_seq, String channel_name, String member_id,
+			String member_name, Date regdate) {
+		this.channelmember_seq = channelmember_seq;
+		this.channel_seq = channel_seq;
 		this.channel_name = channel_name;
 		this.member_id = member_id;
 		this.member_name = member_name;
 		this.regdate = regdate;
 	}
 
-	public int getRoommember_Seq() {
-		return roommember_seq;
+	public int getChannelmember_seq() {
+		return channelmember_seq;
 	}
 
-	public void setRoommember_Seq(int roommemberseq) {
-		this.roommember_seq = roommemberseq;
+	public void setChannelmember_seq(int channelmember_seq) {
+		this.channelmember_seq = channelmember_seq;
 	}
-	
+
+	public int getChannel_seq() {
+		return channel_seq;
+	}
+
+	public void setChannel_seq(int channel_seq) {
+		this.channel_seq = channel_seq;
+	}
+
 	public String getChannel_name() {
 		return channel_name;
 	}
@@ -47,7 +58,6 @@ public class RoomMemberDto {
 	public void setMember_id(String member_id) {
 		this.member_id = member_id;
 	}
-	
 
 	public String getMember_name() {
 		return member_name;

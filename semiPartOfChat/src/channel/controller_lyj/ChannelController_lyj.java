@@ -10,17 +10,24 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import channel.lyj_common.Util;
-import channel.lyj_room.RoomBiz;
-import channel.lyj_room.RoomBizImpl;
-import channel.lyj_room.RoomDto;
-import channel.lyj_room.RoomMemberDto;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
-@WebServlet("/RoomControllerlyj")
-public class RoomController_lyj extends HttpServlet {
+import channel.lyj_common.Util;
+import channel.lyj_room.ChannelBiz;
+import channel.lyj_room.ChannelBizImpl;
+import channel.lyj_room.ChannelDto;
+import channel.lyj_room.ChannelMemberDto;
+import channel.lyj_room.WorkSpaceDto;
+import channel.lyj_room.WorkSpaceMemberDto;
+
+@WebServlet("/ChannelController")
+public class ChannelController_lyj extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	public RoomController_lyj() {
+	public ChannelController_lyj() {
 
 	}
 
@@ -31,34 +38,84 @@ public class RoomController_lyj extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// 채널 룸 출력,생성,수정,삭제 관련 서블릿
+		// 워크스페이스, 채널채팅방, 메세지창 출력,생성,수정,삭제 관련 서블릿
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=UTF-8");
-
-		RoomBiz roomBiz = new RoomBizImpl();
-
+		
+		ChannelBiz chBiz = new ChannelBizImpl();
+		
 		String command = request.getParameter("command");
 		System.out.println("[" + command + "]");
+		
+		// 워크스페이스로 이동
+		if (command.equals("WorkSpace")) {
+			response.sendRedirect("workspace.jsp");
+		
+		
+		} else if (command.equals("WorkSpaceAdd")) {
+		// 워크스페이스 추가시	
+			String member_id = request.getParameter("member_id");
+			String member_name = request.getParameter("member_name");
+			String workspace_name = request.getParameter("workspace_name");
+			String workspace_information = request.getParameter("workspace_information");
+			
+			WorkSpaceDto wsDto = new WorkSpaceDto();
+			wsDto.setMember_id(member_id);
+			wsDto.setWorkspace_name(workspace_name);
+			wsDto.setWorkspace_information(workspace_information);
+			
+			WorkSpaceMemberDto wsmemDto = new WorkSpaceMemberDto();
+			wsmemDto.setMember_id(member_id);
+			wsmemDto.setMember_name(member_name);
+			wsmemDto.setWorkspace_name(workspace_name);
+			
+			int wsRes = chBiz.createWorkSpace(wsDto);
+			
+			int wsmemRes = chBiz.insertWorkSpaceMember(wsmemDto);
+			
+			if (wsRes > 0 && wsmemRes > 0) {
+				
+				response.sendRedirect("RoomController?command=channelList&member_id="+member_id);
+				
+			}
+		
+			
+		} else if (command.equals("selectMemberWorkSpace")) {
+		  // 로그인 한 회원의 워크스페이스 리스트 불러오기
+			String member_id = request.getParameter("member_id");
+			System.out.println(member_id);
+			List<WorkSpaceDto> list = chBiz.selectMemberWorkSpace(member_id);
+			JsonArray resultArray = new JsonArray();
+			Gson gson = new Gson();
 
+			String jsonString = gson.toJson(list);
+			resultArray.add(JsonParser.parseString(jsonString));
+
+			JsonObject result = new JsonObject();
+			result.add("result", resultArray);
+
+			response.getWriter().append(result + "");
+			System.out.println(resultArray);
+			
+		} else if (command.equals("channelAdminList")) {
 		// 로그인시 어드민으로 로그인 할 경우
-		if (command.equals("channelAdminList")) {
 
-			List<RoomDto> list = roomBiz.channelAdminList();
+			List<ChannelDto> list = chBiz.channelAdminList();
 
 			if (list != null) {
 				request.setAttribute("channelAdminlist", list);
-				dispatch("admin_lyj.jsp", request, response);
+				dispatch("admin.jsp", request, response);
 			}
 
 		// 로그인시 일반 유저로 로그인 할 경우
 		} else if (command.equals("channelList")) {
 
 			String member_id = request.getParameter("member_id");
-			List<RoomDto> list = roomBiz.channelList(member_id);
+			List<ChannelDto> list = chBiz.channelList(member_id);
 
 			if (list != null) {
 				request.setAttribute("channelList", list);
-				dispatch("main_lyj.jsp", request, response);
+				dispatch("main.jsp", request, response);
 			}
 		
 		// 1개 채널 SELECT
@@ -66,12 +123,12 @@ public class RoomController_lyj extends HttpServlet {
 			
 			int channel_num = Integer.parseInt(request.getParameter("channel_num"));
 
-			RoomDto dto = roomBiz.channelSelect(channel_num);
+			ChannelDto dto = chBiz.channelSelect(channel_num);
 			
 			Util util = new Util();
 			
 			String result = "";
-			result += dto.getChannel_num() + "|\\|";
+			result += dto.getChannel_seq() + "|\\|";
 			result += dto.getChannel_name() + "|\\|";
 			result += dto.getChannel_information() + "|\\|";
 			result += dto.getChannel_enabled() + "|\\|";
@@ -90,27 +147,27 @@ public class RoomController_lyj extends HttpServlet {
 			String member_name = request.getParameter("member_name");
 			String channel_access = request.getParameter("channel_access");
 			
-			RoomDto dto = new RoomDto();
+			ChannelDto dto = new ChannelDto();
 			dto.setChannel_name(channel_name);
 			dto.setChannel_information(channel_information);
 			dto.setMember_id(member_id);
 			dto.setChannel_access(channel_access);
 			System.out.println(channel_access);
 			
-			RoomMemberDto roomDto = new RoomMemberDto();
+			ChannelMemberDto roomDto = new ChannelMemberDto();
 			roomDto.setChannel_name(channel_name);
 			roomDto.setMember_id(member_id);
 			roomDto.setMember_name(member_name);
 			
-			int res = roomBiz.createRoom(dto);
-			int resAdd = roomBiz.roomMemberAdd(roomDto);
+			int res = chBiz.createRoom(dto);
+			int resAdd = chBiz.roomMemberAdd(roomDto);
 			
 			if (res > 0 && resAdd > 0) {
 				System.out.println("채널 생성 완료");
-				dispatch("RoomControllerlyj?command=channelList&member_id"+member_id, request, response);
+				dispatch("RoomController?command=channelList&member_id"+member_id, request, response);
 			} else {
 				System.out.println("채널 생성 실패");
-				dispatch("RoomControllerlyj?command=channelList&member_id"+member_id, request, response);
+				dispatch("RoomController?command=channelList&member_id"+member_id, request, response);
 			}
 			
 			
@@ -121,10 +178,10 @@ public class RoomController_lyj extends HttpServlet {
 			int channel_num = Integer.parseInt(request.getParameter("channel_num"));
 			String msg = "";
 			// 유효성 체크
-			String adminCheck = roomBiz.adminCheck(channel_num);
+			String adminCheck = chBiz.adminCheck(channel_num);
 			System.out.println(adminCheck);
 			if (adminCheck.equals(member_id)) {
-				int res = roomBiz.channelDelete(channel_num);
+				int res = chBiz.channelDelete(channel_num);
 				 
 				if (res > 0) {
 					msg = "채널을 삭제하였습니다.";
@@ -145,17 +202,17 @@ public class RoomController_lyj extends HttpServlet {
 			String channel_access = request.getParameter("channel_access");
 			String member_id = request.getParameter("member_id");
 			
-			String adminCheck = roomBiz.adminCheck(channel_num);
+			String adminCheck = chBiz.adminCheck(channel_num);
 			
 			if (adminCheck.equals(member_id)) {
 				
-				RoomDto dto = new RoomDto();
-				dto.setChannel_num(channel_num);
+				ChannelDto dto = new ChannelDto();
+				dto.setChannel_seq(channel_num);
 				dto.setChannel_name(channel_name);
 				dto.setChannel_information(channel_information);
 				dto.setChannel_access(channel_access);
 				
-				int res = roomBiz.channelUpdate(dto);
+				int res = chBiz.channelUpdate(dto);
 				 
 				if (res > 0) {
 					System.out.println("채널 정보 수정 성공");

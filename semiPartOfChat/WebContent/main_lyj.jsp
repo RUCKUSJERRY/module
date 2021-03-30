@@ -1,4 +1,4 @@
-<%@page import="channel.lyj_room.RoomDto"%>
+<%@page import="channel.lyj_room.ChannelDto"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
@@ -148,9 +148,9 @@ body {
 					<div id="nav_channel_list">
 
 						<%
-						List<RoomDto> list = (List<RoomDto>) request.getAttribute("channelList");
-					
-						if (list.size() == 0) {
+						List<ChannelDto> list = (List<ChannelDto>) request.getAttribute("channelList");
+									
+										if (list.size() == 0) {
 						%>
 						<div>
 							<span>채널이 없습니다. 채널을 추가해보세요.</span>
@@ -161,7 +161,7 @@ body {
 						<div>
 							<div class="col-md-12">
 								<a href="javascript:void(0)"
-									onclick="callChatList(<%=list.get(0).getChannel_num()%>);"><%=list.get(0).getChannel_name()%></a>
+									onclick="callChatList(<%=list.get(0).getChannel_seq()%>);"><%=list.get(0).getChannel_name()%></a>
 							</div>
 						</div>
 						
@@ -171,15 +171,15 @@ body {
 						<div>
 							<div class="col-md-6">
 								<a href="javascript:void(0)"
-									onclick="callChatList(<%=list.get(i).getChannel_num()%>);"><%=list.get(i).getChannel_name()%></a>
+									onclick="callChatList(<%=list.get(i).getChannel_seq()%>);"><%=list.get(i).getChannel_name()%></a>
 							</div>
 							<div class="col-md-3">
 								<a href="javascript:void(0)"
-									onclick="channelAdmin(<%=list.get(i).getChannel_num()%>, '<%=list.get(i).getChannel_name()%>', '<%=list.get(i).getChannel_information()%>', '<%=list.get(i).getChannel_access()%>');">관리</a>
+									onclick="channelAdmin(<%=list.get(i).getChannel_seq()%>, '<%=list.get(i).getChannel_name()%>', '<%=list.get(i).getChannel_information()%>', '<%=list.get(i).getChannel_access()%>');">관리</a>
 							</div>
 							<div class="col-md-3">
 								<a href="javascript:void(0)"
-									onclick="channeldelcon(<%=list.get(i).getChannel_num()%>);">삭제</a>
+									onclick="channeldelcon(<%=list.get(i).getChannel_seq()%>);">삭제</a>
 							</div>
 						</div>
 
