@@ -24,7 +24,7 @@ function addChannel() {
 //채널추가 취소
 function addCancel() {
 	$("#backLayer").fadeOut(1000);
-	$('#channel_info_update').fadeOut(300);	
+	$('#channel_add_insert').fadeOut(300);	
 }
 //채널삭제 확인
 function channeldelcon(chnum) {	

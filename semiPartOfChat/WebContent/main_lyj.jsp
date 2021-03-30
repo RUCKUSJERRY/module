@@ -298,16 +298,13 @@ body {
 		</form>
 	</div>
 	<div id="backLayer"></div>
-</body>
-<!-- 
 <footer>
 	<div class="container">
 	<div id="map" style="width:500px; height:400px;"></div>
 	</div>
-</footer>
-
-<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=8b23fbdf7184ddeccfecb57797fda53f"></script> -->
-<!-- <script type="text/javascript">
+</footer>	
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=8b23fbdf7184ddeccfecb57797fda53f"></script>
+<script type="text/javascript">
 	
 	var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
 	var options = { //지도를 생성할 때 필요한 기본 옵션
@@ -317,6 +314,11 @@ body {
 
 	var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
 
-</script> -->
+</script>
+</body>
+
+
+
+
 
 </html>
