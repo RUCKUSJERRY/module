@@ -53,7 +53,7 @@ public class ChannelController_lyj extends HttpServlet {
 		
 		
 		} else if (command.equals("WorkSpaceAdd")) {
-		// 워크스페이스 추가시	
+			// 워크스페이스 추가시	
 			String member_id = request.getParameter("member_id");
 			String member_name = request.getParameter("member_name");
 			String workspace_name = request.getParameter("workspace_name");
@@ -64,24 +64,55 @@ public class ChannelController_lyj extends HttpServlet {
 			wsDto.setWorkspace_name(workspace_name);
 			wsDto.setWorkspace_information(workspace_information);
 			
+			int wsRes = chBiz.createWorkSpace(wsDto);
+			
+			//방금 생성한 워크스페이스의 번호 가져오기?..
+			int workspace_seq = chBiz.getLastWorkSpaceSeq();
+			
+			// 워크스페이스의 맴버로 추가하기
 			WorkSpaceMemberDto wsmemDto = new WorkSpaceMemberDto();
 			wsmemDto.setMember_id(member_id);
 			wsmemDto.setMember_name(member_name);
 			wsmemDto.setWorkspace_name(workspace_name);
-			
-			int wsRes = chBiz.createWorkSpace(wsDto);
+			wsmemDto.setWorkspace_seq(workspace_seq);
 			
 			int wsmemRes = chBiz.insertWorkSpaceMember(wsmemDto);
 			
+			// 워크스페이스의 전체채팅방 만들기
+			int roomRes = chBiz.createChannel(null);
+			// 워크스페이스의 전체채팅방 맴버로 넣기
+			int roommemRes = chBiz.roomMemberAdd(null);
 			if (wsRes > 0 && wsmemRes > 0) {
+				dispatch("workspace.jsp", request, response);
+				System.out.println("워크스페이스 추가 성공");
 				
-				response.sendRedirect("RoomController?command=channelList&member_id="+member_id);
+				
+			} else {
+				response.sendRedirect("workspace.jsp");
+				System.out.println("워크스페이스 추가 실패");
 				
 			}
 		
 			
+		} else if (command.equals("WorkSpaceDel")) {
+		// 워크스페이스 삭제 요청
+			
+			int workspace_seq = Integer.parseInt(request.getParameter("workspace_seq"));
+			System.out.println(workspace_seq);
+			int res = chBiz.deleteWorkSpace(workspace_seq);
+	
+			if (res > 0) {
+				System.out.println("워크스페이스 삭제 성공");
+				dispatch("workspace.jsp", request, response);
+				
+			} else {
+				System.out.println("워크스페이스 삭제 실패");
+				response.sendRedirect("workspace.jsp");
+				
+			}
+			
 		} else if (command.equals("selectMemberWorkSpace")) {
-		  // 로그인 한 회원의 워크스페이스 리스트 불러오기
+		 // 로그인 한 회원의 워크스페이스 리스트 불러오기
 			String member_id = request.getParameter("member_id");
 			System.out.println(member_id);
 			List<WorkSpaceDto> list = chBiz.selectMemberWorkSpace(member_id);

@@ -17,20 +17,24 @@ public interface ChannelDao {
 	// 4. 워크스페이스 정보 수정
 	public int updateWorkSpace(WorkSpaceDto wsDto);
 	// 5. 워크스페이스 삭제
-	public int deleteWorkSpace(WorkSpaceDto wsDto);
+	public int deleteWorkSpace(int workspace_seq);
+	// 5-1. 삭제하는 워크스페이스의 맴버 전원 삭제
+	public int deleteWorkSpaceAllMember(int workspace_seq);
 	// 6. 전체 워크스페이스 리스트 출력
 	public List<WorkSpaceDto> selectAllWorkSpace();
 	// 7. 해당 회원이 등록되어있는 워크스페이스 리스트 출력
 	public List<WorkSpaceDto> selectMemberWorkSpace(String member_id);
 	// 8. 1개 워크스페이스 출력
 	public WorkSpaceDto selectOneWorkSpace(WorkSpaceDto wsDto);
+	// 9. 가장 최근에 생성된 워크스페이스의 번호
+	public int getLastWorkSpaceSeq();
 
 	// Channel CRUD
 
-	// Message CRUD
+	
 
 	// 1. 채널 추가
-	public int createRoom(ChannelDto dto);
+	public int createChannel(ChannelDto dto);
 
 	// 2. 채널 정보 수정
 	public int channelUpdate(ChannelDto dto);
@@ -64,4 +68,8 @@ public interface ChannelDao {
 
 	// 11. 채널 수정or삭제 권한 유효성 검사
 	public String adminCheck(int channel_num);
+	
+	
+	// Message CRUD
+	
 }

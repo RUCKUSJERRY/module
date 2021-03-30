@@ -162,7 +162,9 @@
 					<h2 class="panel-title" id="workspacebtn">
 						<a class="collapsed" data-toggle="collapse" href="#workspaceList"
 							aria-expanded="false" aria-controls="workspaceList">
-							워크스페이스 List </a>
+							워크스페이스 List
+							<span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+							</a> 
 					</h2>
 				</div>
 				<div id="workspaceList" class="panel-collapse collapse"
@@ -181,7 +183,7 @@
 			</div>
 		</div>
 		
-		<div class="modal fade" id="addWorkSpaceForm" tabindex="-1" role="dialog"	aria-labelledby="addChannelLable" aria-hidden="true">
+		<div class="modal fade" id="addWorkSpaceForm" tabindex="-1" role="dialog" aria-labelledby="addChannelLable" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">

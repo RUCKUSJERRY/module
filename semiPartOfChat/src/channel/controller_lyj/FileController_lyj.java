@@ -20,9 +20,9 @@ public class FileController_lyj extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     public FileController_lyj() {
-
+    	
     }
-
+    	
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doPost(request, response);
 	}
@@ -41,8 +41,8 @@ public class FileController_lyj extends HttpServlet {
 	        // 파일업로드 및 업로드 후 파일명 가져옴
 			MultipartRequest multi = new MultipartRequest(request, uploadPath, size, "utf-8", new DefaultFileRenamePolicy());
 			Enumeration files = multi.getFileNames();
-			String file = (String)files.nextElement(); 
-			fileName = multi.getFilesystemName(file); 
+			String file = (String)files.nextElement();
+			fileName = multi.getFilesystemName(file);
 			
 		}catch(Exception e){
 			e.printStackTrace();

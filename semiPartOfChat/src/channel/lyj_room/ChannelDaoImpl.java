@@ -70,9 +70,44 @@ public class ChannelDaoImpl extends SqlMapConfig implements ChannelDao {
 	
 	// 5. 워크스페이스 삭제
 	@Override
-	public int deleteWorkSpace(WorkSpaceDto wsDto) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int deleteWorkSpace(int workspace_seq) {
+		SqlSession session = null;
+		int res = 0;
+		
+		try {
+			session = getSqlSessionFactory().openSession(false);
+			res = session.delete("channelmapper-channel.deleteWorkSpace", workspace_seq);
+		
+		if (res > 0) {
+			session.commit();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		
+		return res;
+	}
+	// 5-1. 삭제하는 워크스페이스의 맴버 전원 삭제
+	public int deleteWorkSpaceAllMember(int workspace_seq) {
+		SqlSession session = null;
+		int res = 0;
+		
+		try {
+			session = getSqlSessionFactory().openSession(false);
+			res = session.delete("channelmapper-channel.deleteWorkSpaceAllMember", workspace_seq);
+		
+		if (res > 0) {
+			session.commit();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		
+		return res;
 	}
 
 	// 6. 전체 워크스페이스 리스트 출력
@@ -107,12 +142,35 @@ public class ChannelDaoImpl extends SqlMapConfig implements ChannelDao {
 		return null;
 	}
 	
+	// 9. 가장 최근에 생성된 워크스페이스의 번호
+	@Override
+	public int getLastWorkSpaceSeq() {
+		SqlSession session = null;
+		int res = 0;
+		
+		try {
+			session = getSqlSessionFactory().openSession(false);
+			res = session.selectOne("channelmapper-channel.getLastWorkSpaceSeq");
+		
+		if (res > 0) {
+			session.commit();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		
+		return res;
+
+	}
+	
 	
 	
 	
 	
 	@Override
-	public int createRoom(ChannelDto dto) {
+	public int createChannel(ChannelDto dto) {
 		SqlSession session = null;
 		int res = 0;
 		

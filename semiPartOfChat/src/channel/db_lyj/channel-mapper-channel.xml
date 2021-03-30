@@ -63,7 +63,29 @@
 		ORDER BY WORKSPACEMEMBER_SEQ
 	</select>
 	
+	<insert id="createWorkSpace" parameterType="workSpaceDto">
+		INSERT INTO WORKSPACE
+		VALUES (WORKSPACESEQ.NEXTVAL, #{workspace_name}, #{workspace_information}, #{member_id}, SYSDATE)
+	</insert>
 	
+	<insert id="insertWorkSpaceMember" parameterType="workSpaceMemberDto">
+		INSERT INTO WORKSPACEMEMBER
+		VALUES (WORKSPACEMEMBERSEQ.NEXTVAL, #{workspace_seq}, #{workspace_name}, #{member_id}, #{member_name}, SYSDATE)
+	</insert>
+	
+	<delete id="deleteWorkSpace" parameterType="int">
+		DELETE FROM WORKSPACE WHERE WORKSPACE_SEQ = #{workspace_seq}		
+	</delete>
+	
+	<delete id="deleteWorkSpaceAllMember" parameterType="int">
+		DELETE FROM WORKSPACEMEMBER WHERE WORKSPACE_SEQ = #{workspace_seq}
+	</delete>
+	
+	<select id="getLastWorkSpaceSeq" resultType="int">
+		SELECT WORKSPACE_SEQ
+		FROM (SELECT WORKSPACE_SEQ, ROWNUM FROM WORKSPACE ORDER BY WORKSPACE_SEQ DESC)
+		WHERE ROWNUM = 1
+	</select>
 	
 	
 	

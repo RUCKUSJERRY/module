@@ -11,7 +11,6 @@ $(function(){
 	}
 	
 })
-
 // 워크스페이스 리스트 추가하기
 
 $(function(){
@@ -21,7 +20,6 @@ $(function(){
 	console.log(member_id);
 	if (member_id != null) {
 		function  getParameterValues() {
-			
 			return "?command=selectMemberWorkSpace&member_id=" + member_id;
 		}
 		
@@ -30,32 +28,44 @@ $(function(){
 			dataType: "json",
 			method: "post",
 			success:function(data){
-				// id = selectWorkSpaceList
-				// <li class="list-group-item"></li>
 				
 				var list = data.result;
 
 					for (var i = 0; i < list[0].length; i++) {
 						
-						var $li = 
-						$("<li class='list-group-item'>"
-						+"<a href='location.href=ChannelController?command=channelList&member_id="+list[0][i].member_id+"'>"
-						+list[0][i].workspace_name +"</a></li>")
+						var li = document.createElement('li');
+						li.setAttribute("class","list-group-item");
 						
-						$("#selectWorkSpaceList").append($li);
+						var a = document.createElement('a');
+						a.setAttribute("href","ChannelController?command=channelList&member_id="+list[0][i].member_id+"&workspace_seq="+list[0][i].workspace_seq);
+						a.innerHTML = list[0][i].workspace_name;
 						
-						
+						var button = document.createElement('button');
+						button.setAttribute("class","btn btn-default btn-xs");
+						button.setAttribute("onclick","workspaceDelcon("+list[0][i].workspace_seq+")");
+						button.innerHTML = "삭제";
+						li.appendChild(a);
+						li.appendChild(button);
+
+						$("#selectWorkSpaceList").append(li);				
 					}
-			
 			},
 			error: function(){
 				alert("워크스페이스 불러오기 실패")
-			}
-			
-			
-		})
-		
-		
-	}
-	
+			}		
+		})		
+	}	
 })
+
+//워크스페이스 삭제 확인 함수
+function workspaceDelcon(wsnum) {
+	
+	var con = confirm("정말로 채널을 삭제하시겠습니까?");
+	var workspace_num = wsnum;
+	
+	if (con) {
+		location.href='ChannelController?command=WorkSpaceDel&workspace_seq='+workspace_num;
+	}
+}
+
+

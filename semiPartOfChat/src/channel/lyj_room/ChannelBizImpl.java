@@ -36,9 +36,11 @@ public class ChannelBizImpl implements ChannelBiz {
 
 	// 5. 워크스페이스 삭제
 	@Override
-	public int deleteWorkSpace(WorkSpaceDto wsDto) {
+	public int deleteWorkSpace(int workspace_seq) {
+		int res1 = dao.deleteWorkSpace(workspace_seq);
+		int res2 = dao.deleteWorkSpaceAllMember(workspace_seq);
 		
-		return 0;
+		return res1 + res2;
 	}
 
 	// 6. 전체 워크스페이스 리스트 출력
@@ -62,13 +64,18 @@ public class ChannelBizImpl implements ChannelBiz {
 		return null;
 	}
 	
+	@Override
+	public int getLastWorkSpaceSeq() {
+		return dao.getLastWorkSpaceSeq();
+	}
+	
 	
 	// Channel CRUD
 
-	// Message CRUD
+	
 
 	@Override
-	public int createRoom(ChannelDto dto) {
+	public int createChannel(ChannelDto dto) {
 		return dao.createRoom(dto);
 	}
 
@@ -131,4 +138,6 @@ public class ChannelBizImpl implements ChannelBiz {
 		return dao.adminCheck(channel_num);
 	}
 
+	// Message CRUD
+	
 }
