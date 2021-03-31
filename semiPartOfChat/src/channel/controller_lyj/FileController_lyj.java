@@ -32,7 +32,7 @@ public class FileController_lyj extends HttpServlet {
 		response.setContentType("text/html; charset=UTF-8");
 		System.out.println("들어왔니??");
 		 // 이미지 업로드할 경로
-		String uploadPath = "C:/Workspaces/Workspace_Project/semiPartOfLyj/WebContent/resources/image/upload";
+		String uploadPath = "C:/Workspaces/Workspace_Project/semiPartOfChat/WebContent/resources/image/upload/";
 	    int size = 10 * 1024 * 1024;  // 업로드 사이즈 제한 10M 이하
 		
 		String fileName = ""; // 파일명
@@ -49,12 +49,11 @@ public class FileController_lyj extends HttpServlet {
 		}
 		
 	    // 업로드된 경로와 파일명을 통해 이미지의 경로를 생성
-		uploadPath = "http://localhost:8787/semiPartOfLyj/resources/image/upload/";
+		uploadPath = "resources/image/upload/"+ fileName;
 		
 	    // 생성된 경로를 JSON 형식으로 보내주기 위한 설정
 		JSONObject jobj = new JSONObject();
 		jobj.put("url", uploadPath);
-		jobj.put("fileName", fileName);
 		
 		response.setContentType("application/json"); // 데이터 타입을 json으로 설정하기 위한 세팅
 		PrintWriter out = response.getWriter();

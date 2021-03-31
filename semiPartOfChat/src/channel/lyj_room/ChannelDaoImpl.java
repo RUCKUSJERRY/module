@@ -176,7 +176,7 @@ public class ChannelDaoImpl extends SqlMapConfig implements ChannelDao {
 		
 		try {
 			session = getSqlSessionFactory().openSession(false);
-			res = session.insert("channelmapper-room.createRoom", dto);
+			res = session.insert("channelmapper-channel.createChannel", dto);
 		
 		if (res > 0) {
 			session.commit();
@@ -197,7 +197,7 @@ public class ChannelDaoImpl extends SqlMapConfig implements ChannelDao {
 		
 		try {
 			session = getSqlSessionFactory().openSession(false);
-			res = session.update("channelmapper-room.channelUpdate", dto);
+			res = session.update("channelmapper-channel.channelUpdate", dto);
 			if (res > 0) {
 				session.commit();
 			}
@@ -217,7 +217,7 @@ public class ChannelDaoImpl extends SqlMapConfig implements ChannelDao {
 		
 		try {
 			session = getSqlSessionFactory().openSession(false);
-			res = session.delete("channelmapper-room.channelDelete", channel_num);
+			res = session.delete("channelmapper-channel.channelDelete", channel_num);
 		
 		if (res > 0) {
 			session.commit();
@@ -238,7 +238,7 @@ public class ChannelDaoImpl extends SqlMapConfig implements ChannelDao {
 		
 		try {
 			session = getSqlSessionFactory().openSession(false);
-			list = session.selectList("channelmapper-room.channelAdminList");
+			list = session.selectList("channelmapper-channel.channelAdminList");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -249,13 +249,13 @@ public class ChannelDaoImpl extends SqlMapConfig implements ChannelDao {
 	}
 
 	@Override
-	public List<ChannelDto> channelList(String member_id) {
+	public List<ChannelDto> channelList(ChannelDto chDto) {
 		SqlSession session = null;
 		List<ChannelDto> list = new ArrayList<ChannelDto>();
 		
 		try {
 			session = getSqlSessionFactory().openSession(false);
-			list = session.selectList("channelmapper-room.channelList", member_id);
+			list = session.selectList("channelmapper-channel.channelList", chDto);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -272,7 +272,7 @@ public class ChannelDaoImpl extends SqlMapConfig implements ChannelDao {
 		
 		try {
 			session = getSqlSessionFactory().openSession(false);
-			dto = session.selectOne("channelmapper-room.channelSelect", channel_num);
+			dto = session.selectOne("channelmapper-channel.channelSelect", channel_num);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -281,14 +281,14 @@ public class ChannelDaoImpl extends SqlMapConfig implements ChannelDao {
 		
 		return dto;
 	}
-
+	// 6. 채널참여자 리스트에 인서트
 	@Override
-	public int roomMemberAdd(ChannelMemberDto roomDto) {
+	public int channelMemberAdd(ChannelMemberDto chmemDto) {
 		SqlSession session = null;
 		int res = 0;
 		try {
 			session = getSqlSessionFactory().openSession(false);
-			res = session.insert("channelmapper-room.roomMemberAdd", roomDto);
+			res = session.insert("channelmapper-channel.channelMemberAdd", chmemDto);
 		
 		if (res > 0) {
 			session.commit();
@@ -324,12 +324,12 @@ public class ChannelDaoImpl extends SqlMapConfig implements ChannelDao {
 	
 	@Override
 	// 11. 채널 수정or삭제 권한 유효성 검사
-	public String adminCheck(int channel_num) {
+	public String delIdCheck(int channel_num) {
 		SqlSession session = null;
 		String res = "";
 		try {
 			session = getSqlSessionFactory().openSession(false);
-			res = session.selectOne("channelmapper-room.adminCheck", channel_num);
+			res = session.selectOne("channelmapper-channel.delIdCheck", channel_num);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -338,6 +338,28 @@ public class ChannelDaoImpl extends SqlMapConfig implements ChannelDao {
 		}
 		
 		return res;
+	}
+	
+	// 12. 가장 최근에 생성된 채널의 번호
+	@Override
+	public int getLastChannelSeq() {
+		SqlSession session = null;
+		int res = 0;
+		try {
+			session = getSqlSessionFactory().openSession(false);
+			res = session.selectOne("channelmapper-channel.getLastChannelSeq");
+		
+		if (res > 0) {
+			session.commit();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		
+		return res;
+		
 	}
 
 

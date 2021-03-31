@@ -50,7 +50,6 @@
 	<resultMap type="channelMemberDto" id="channelMemberMap">
 		<result property="channelmember_seq" column="CHANNELMEMBER_SEQ"/>
 		<result property="channel_seq" column="CHANNEL_SEQ" />
-		<result property="channel_name" column="CHANNEL_NAME"/>
 		<result property="member_id" column="MEMBER_ID"/>
 		<result property="member_name" column="MEMBER_NAME"/>
 		<result property="regdate" column="REGDATE"/>	
@@ -87,11 +86,55 @@
 		WHERE ROWNUM = 1
 	</select>
 	
+	<insert id="createChannel" parameterType="channelDto">
+		INSERT INTO CHANNEL
+		VALUES
+		(CHANNELSEQ.NEXTVAL, #{workspace_seq}, #{channel_name}, #{channel_information}, #{member_id}, #{channel_access}, #{channel_enabled}, SYSDATE)	
+	</insert>
 	
+	<select id="getLastChannelSeq" resultType="int">
+		SELECT CHANNEL_SEQ
+		FROM (SELECT CHANNEL_SEQ, ROWNUM FROM CHANNEL ORDER BY CHANNEL_SEQ DESC)
+		WHERE ROWNUM = 1
+	</select>
 	
+	<insert id="channelMemberAdd" parameterType="channelMemberDto">
+		INSERT INTO CHANNELMEMBER
+		VALUES
+		(CHANNELMEMBERSEQ.NEXTVAL, #{channel_seq}, #{member_id}, #{member_name}, SYSDATE)
+	</insert>
 	
+	<select id="channelList" parameterType="channelDto" resultMap="channelMap">
+		SELECT CHANNEL_SEQ, WORKSPACE_SEQ, CHANNEL_NAME, CHANNEL_INFORMATION, MEMBER_ID, CHANNEL_ACCESS, CHANNEL_ENABLED, CHANNEL_REGDATE
+		FROM CHANNEL
+		WHERE CHANNEL_SEQ IN (SELECT CHANNEL_SEQ FROM CHANNELMEMBER WHERE MEMBER_ID = #{member_id})
+		AND WORKSPACE_SEQ = #{workspace_seq}
+		ORDER BY CHANNEL_SEQ
+	</select>
 	
+	<update id="channelUpdate" parameterType="channelDto">
+		UPDATE CHANNEL
+		SET CHANNEL_NAME = #{channel_name}, CHANNEL_INFORMATION = #{channel_information}, CHANNEL_ACCESS = #{channel_access}
+		WHERE CHANNEL_SEQ = #{channel_seq}
+		AND MEMBER_ID = #{member_id}
+	</update>
 	
+	<select id="delIdCheck" parameterType="int" resultType="String">
+		SELECT MEMBER_ID
+		FROM CHANNEL
+		WHERE CHANNEL_SEQ = #{channel_seq}
+	</select>
+	
+	<delete id="channelDelete" parameterType="int">
+		DELETE FROM CHANNEL
+		WHERE CHANNEL_SEQ = #{channel_seq}
+	</delete>
+	
+	<select id="channelSelect" parameterType="int" resultMap="channelMap">
+		SELECT CHANNEL_SEQ, WORKSPACE_SEQ, CHANNEL_NAME, CHANNEL_INFORMATION, MEMBER_ID, CHANNEL_ACCESS, CHANNEL_ENABLED, CHANNEL_REGDATE
+		FROM CHANNEL
+		WHERE CHANNEL_SEQ = #{channel_seq}
+	</select>
 	
 	
 	
@@ -104,51 +147,13 @@
 		ORDER BY CHANNEL_NUM
 	</select>
 	
-	<select id="channelList" parameterType="String" resultMap="channelMap">
-		SELECT CHANNEL_NUM, CHANNEL_NAME, CHANNEL_INFORMATION, MEMBER_ID, CHANNEL_ACCESS, CHANNEL_ENABLED, CHANNEL_REGDATE
-		FROM CHANNELROOM
-		WHERE CHANNEL_NAME IN (SELECT CHANNEL_NAME FROM ROOMMEMBER WHERE MEMBER_ID = #{member_id})
-		ORDER BY CHANNEL_NUM
-	</select>
 	
-	<select id="channelSelect" parameterType="int" resultMap="channelMap">
-		SELECT CHANNEL_NUM, CHANNEL_NAME, CHANNEL_INFORMATION, MEMBER_ID, CHANNEL_ACCESS, CHANNEL_ENABLED, CHANNEL_REGDATE
-		FROM CHANNELROOM
-		WHERE CHANNEL_NUM = #{channel_num}
-	</select>
 	
-	<insert id="createRoom" parameterType="channelDto">
-		INSERT INTO CHANNELROOM
-		VALUES
-		(CHANNELROOMSEQ.NEXTVAL, #{channel_name}, #{channel_information}, #{member_id}, #{channel_access}, 'Y',	SYSDATE)	
-	</insert>
 	
-	<insert id="roomMemberAdd" parameterType="channelMemberDto">
-		INSERT INTO ROOMMEMBER
-		VALUES
-		(ROOMMEMBERSEQ.NEXTVAL,
-		#{channel_name},
-		#{member_id},
-		#{member_name},
-		SYSDATE)
-	</insert>
+
 	
-	<select id="adminCheck" parameterType="int" resultType="String">
-		SELECT MEMBER_ID
-		FROM CHANNELROOM
-		WHERE CHANNEL_NUM = #{channel_num}
-	</select>
 	
-	<delete id="channelDelete" parameterType="int">
-		DELETE FROM CHANNELROOM
-		WHERE CHANNEL_NUM = #{channel_num}
-	</delete>
-	
-	<update id="channelUpdate" parameterType="channelDto">
-		UPDATE CHANNELROOM
-		SET CHANNEL_NAME = #{channel_name}, CHANNEL_INFORMATION = #{channel_information}, CHANNEL_ACCESS = #{channel_access}
-		WHERE CHANNEL_NUM = #{channel_num}
-	</update>
+
 	
 
 </mapper>

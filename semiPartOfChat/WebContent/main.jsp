@@ -28,7 +28,7 @@ response.setContentType("text/html; charset=UTF-8");
 <script src="./resources/summernote/summernote.js"></script>
 
 <!-- 채팅관련 js -->
-<script src="./resources/js/chat.js"></script>
+<script src="./resources/js/main.js"></script>
 <style>
 body {
 	padding-top: 50px;
@@ -123,13 +123,13 @@ body {
 	border-right: 1px solid gray;
 	border-left: 1px solid gray;
 	border-bottom: 1px solid gray;
-	height: 3em;
+	height: 5em;
 }
 
 #chatarea {
 	background-color: white;
 	color: black;
-	height: 27em;
+	height: 45em;
 	border-left: 1px solid gray;
 	border-right: 1px solid gray;
 	overflow: auto;
@@ -142,7 +142,7 @@ body {
 	color: black;
 	border-right: 1px solid gray;
 	color: black;
-	height: 7em;
+	height: 10em;
 }
 
 #chatarea::-webkit-scrollbar {
@@ -162,14 +162,29 @@ body {
 </head>
 
 <body>
+<%
+	
+	int workspace_seq = Integer.parseInt(request.getParameter("workspace_seq"));
+	
+	List<ChannelDto> list = (List<ChannelDto>) request.getAttribute("channelList");
+%>
 	<input type="hidden" id="member_num" value="${loginDto.member_num }">
 	<input type="hidden" id="member_id" value="${loginDto.member_id }">
 	<input type="hidden" id="member_pw" value="${loginDto.member_pw }">
 	<input type="hidden" id="member_name" value="${loginDto.member_name }">
-
-	<%
-	List<ChannelDto> list = (List<ChannelDto>) request.getAttribute("channelList");
-	%>
+	<input type="hidden" id="member_email" value="${loginDto.member_email }">
+	<input type="hidden" id="member_phone" value="${loginDto.member_phone }">
+	<input type="hidden" id="member_pscode" value="${loginDto.member_pscode }">
+	<input type="hidden" id="member_addr" value="${loginDto.member_addr }">
+	<input type="hidden" id="member_addrdt" value="${loginDto.member_addrdt }">
+	<input type="hidden" id="member_type" value="${loginDto.member_type }">
+	<input type="hidden" id="member_auth" value="${loginDto.member_auth }">
+	<input type="hidden" id="member_date" value="${loginDto.member_date }">
+	<input type="hidden" id="member_enabled" value="${loginDto.member_enabled }">
+	<input type="hidden" id="member_statement" value="${loginDto.member_statement }">
+	<input type="hidden" id="workspace_seq" value="<%=workspace_seq %>">
+	<input type="hidden" id="channel_seq_onload" value="<%=list.get(0).getChannel_seq()%>">
+	
 
 	<nav class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container-fluid">
@@ -229,7 +244,7 @@ body {
 								<%
 								} else {
 								%>
-								<li class="list-group-item"><a href="javascript:void(0)"
+								<li class="list-group-item"><a href="javascript:void(0)" 
 									onclick="callChatList(<%=list.get(0).getChannel_seq()%>);"><%=list.get(0).getChannel_name()%>
 								</a></li>
 								<%
@@ -318,10 +333,11 @@ body {
 					<h3 class="modal-title" id="addChannelLable">채널 추가</h3>
 				</div>
 				<div class="modal-body">
-					<form action="RoomController" method="post" id="channelAddSubmit">
+					<form action="ChannelController" method="post" id="channelAddSubmit">
 						<input type="hidden" name="command" value="channelAdd"> 
 						<input type="hidden" name="member_id" value="${loginDto.member_id }">
 						<input type="hidden" name="member_name" value="${loginDto.member_name }">
+						<input type="hidden" name="workspace_seq" value="<%=workspace_seq %>">
 						<div class="form-group">
 							<label for="recipient-name" class="control-label">채널명</label>
 							<input type="text" class="form-control" name="channel_name">
@@ -359,11 +375,12 @@ body {
 					<h3 class="modal-title" id="adminChannelLable">채널 수정</h3>
 				</div>
 				<div class="modal-body">
-					<form action="RoomController" method="post" id="channelUpdateSubmit">
+					<form action="ChannelController" method="post" id="channelUpdateSubmit">
 						<input type="hidden" name="command" value="channelUpdate"> 
 						<input type="hidden" name="member_id" value="${loginDto.member_id }">
 						<input type="hidden" name="member_name" value="${loginDto.member_name }">
-						<input type="hidden" name="channel_num" id="update_channel_num">
+						<input type="hidden" name="workspace_seq" value="<%=workspace_seq %>">
+						<input type="hidden" name="channel_seq" id="update_channel_seq">
 						<div class="form-group">
 							<label for="recipient-name" class="control-label">채널명</label>
 							<input type="text" class="form-control" name="channel_name" id="update_channel_name">
@@ -407,11 +424,11 @@ body {
 					<h3 class="modal-title" id="addMessageLable">새 메세지 생성</h3>
 				</div>
 				<div class="modal-body">
-					<form action="RoomController" method="post" id="channelUpdateSubmit">
-						<input type="hidden" name="command" value="channelUpdate">
+					<form action="ChannelController" method="post" id="channelUpdateSubmit">
+						<input type="hidden" name="command" value="messageAdd">
 						<input type="hidden" name="member_id" value="${loginDto.member_id }">
 						<input type="hidden" name="member_name" value="${loginDto.member_name }">
-						<input type="hidden" name="channel_num" id="update_channel_num">
+						<input type="hidden" name="channel_seq" id="update_message_num">
 						<div class="form-group">
 							<label for="recipient-name" class="control-label">맴버 목록</label>
 							<div class="form-control" id="memberlist">

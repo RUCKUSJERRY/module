@@ -44,9 +44,9 @@ public class ChatController_lyj extends HttpServlet {
 		// 채팅 DB에서 불러오기
 		if (command.equals("callChatList")) {
 			
-			int channel_num = Integer.parseInt(request.getParameter("channel_num"));
+			int channel_seq = Integer.parseInt(request.getParameter("channel_seq"));
 
-			List<ChatDto> list = chatBiz.callChatList(channel_num);
+			List<ChatDto> list = chatBiz.callChatList(channel_seq);
 			JsonArray resultArray = new JsonArray();
 			Gson gson = new Gson();
 
@@ -62,13 +62,13 @@ public class ChatController_lyj extends HttpServlet {
 		// 채팅 DB로 저장
 		} else if (command.equals("chatInsert")) {
 			
-			int channel_num = Integer.parseInt(request.getParameter("channel_num"));
+			int channel_seq = Integer.parseInt(request.getParameter("channel_seq"));
 			String member_name = request.getParameter("member_name");
 			String member_id = request.getParameter("member_id");
 			String chat_content = request.getParameter("chat_content");
 
 			ChatDto dto = new ChatDto();
-			dto.setChannel_seq(channel_num);
+			dto.setChannel_seq(channel_seq);
 			dto.setMember_name(member_name);
 			dto.setMember_id(member_id);
 			dto.setChat_content(chat_content);

@@ -1,5 +1,5 @@
 // 함수 실행을 위한 정보 변수 선언
-var channel_num = $("#channel_num").val();
+var channel_seq = $("#channel_seq").val();
 var member_id = $("#member_id").val();
 var member_name = $("#member_name").val();
 
@@ -29,16 +29,16 @@ function channeldelcon(chnum) {
 	var con = confirm("해당 채널을 삭제하시겠습니까?");
 	
 	var member_id = $("#member_id").val();
-	var channel_num = chnum;
+	var channel_seq = chnum;
 	function  getParameterValues() {
 		
-		return "?command=channelDelete&channel_num=" + channel_num + "&member_id=" + member_id;
+		return "?command=channelDelete&channel_seq=" + channel_seq + "&member_id=" + member_id;
 	}
 	
 	if (con) {
 		
 		$.ajax({
-			url:"RoomController"+getParameterValues(),
+			url:"ChannelController"+getParameterValues(),
 			dataType: "text",
 			method: "post",
 			success:function(msg){
@@ -54,12 +54,12 @@ function channeldelcon(chnum) {
 	
 }
 //채널 수정 시
-function channelAdmin(chnum, chname, chinfo, chac) {
-	var channel_num = chnum;
+function channelAdmin(chseq, chname, chinfo, chac) {
+	var channel_seq = chseq;
 	var channel_name = chname;
 	var channel_information = chinfo;
 	var channel_access = chac;	
-	$("#update_channel_num").val(channel_num);
+	$("#update_channel_seq").val(channel_seq);
 	$("#update_channel_name").val(channel_name);
 	$("#update_channel_information").val(channel_information);
 	$("#update_channel_access").val(channel_access).prop("selected",true);
@@ -74,9 +74,10 @@ function addMessage() {
 
 //페이지 최초 로딩시 전체채팅방 DB호출
 $(function(){
-	var id = $("#member_id").val();
-	console.log(id);
-	callChatList(1, id);
+	
+	var chnum = $("#channel_seq_onload").val();
+	
+	callChatList(chnum);
 });
 
 //채팅방 입장
@@ -84,7 +85,7 @@ function callChatList(chnum) {
 	$('#chatarea').children().remove();
 	var user = $("#member_id").val();
 	$.ajax ({
-		url:"ChatController?command=callChatList&channel_num="+chnum,
+		url:"ChatController?command=callChatList&channel_seq="+chnum,
 		dataType: "json",
 		method: "post",
 		success:function(data){
@@ -110,9 +111,7 @@ function callChatList(chnum) {
 						icon.style["color"]="gold";
 						icon.style["width"]="15px;";
 						icon.style["height"]="15px;";
-						
-						
-						
+
 						document.getElementById('chatarea').appendChild(icon);
 						document.getElementById('chatarea').appendChild(who);
 						
@@ -214,22 +213,21 @@ function callChatList(chnum) {
 function channelInfo(chnum) {
 	
 	$.ajax ({
-		url:"RoomController?command=channelSelect&channel_num="+chnum,
+		url:"ChannelController?command=channelSelect&channel_seq="+chnum,
 		dataType: "text",
 		method: "post",
 		success:function(data){
 			var res = data.split("|\\|");
 			
-			var channel_num = res[0];
-			var channel_name = res[1];
-			var channel_info = res[2];
-			var channel_enabled = res[3];
-			var channel_regdate = res[4];
+			var channel_seq = res[0];
+			var channel_info = res[1];
+			var channel_enabled = res[2];
+			var channel_regdate = res[3];
 			
 			var input = document.createElement('input');
-			input.id = "channel_num";
+			input.id = "channel_seq";
 			input.type = "hidden";
-			input.value = channel_num;
+			input.value = channel_seq;
 			document.getElementById('roominfo').appendChild(input);
 			
 			var input = document.createElement('input');
@@ -243,9 +241,9 @@ function channelInfo(chnum) {
 			span.style["display"]="inline-block";
 
 			span.innerHTML = 
-				" 채널이름 : "+ channel_name + "<br>" +
-				" 채널정보 : "+ channel_info + "<br>" +
-				" 채널생성일 : "+ channel_regdate;
+				" 채널번호 : " + channel_seq + "<br>" +
+				" 채널정보 : " + channel_info + "<br>" +
+				" 채널생성일 : " + channel_regdate;
 			
 			document.getElementById('roominfo').appendChild(span);		
 		},
@@ -353,7 +351,7 @@ function onError(event) {
 
 function send(msg) {
 	
-	var channel_num = $("#channel_num").val();
+	var channel_seq = $("#channel_seq").val();
 	var member_id = $("#member_id").val();
 	var member_name = $("#member_name").val();
 	
@@ -364,7 +362,7 @@ function send(msg) {
 		
 		function  getParameterValues() {
 			
-			return "?command=chatInsert&channel_num=" + channel_num + "&member_id=" + member_id + "&member_name=" + member_name + "&chat_content=" + chat_content;
+			return "?command=chatInsert&channel_seq=" + channel_seq + "&member_id=" + member_id + "&member_name=" + member_name + "&chat_content=" + chat_content;
 		}
 		
 		$.ajax({
@@ -435,19 +433,11 @@ function send(msg) {
 	
 }
 
-//윈도우가 resize될때마다 backLayer를 조정 
-$(window).resize(function() { 
-	var width = $(window).width(); 
-	var height = $(window).height(); 
-	$("#backLayer").width(width).height(height); 
-
-});
-
 // 썸머노트 실행
 $(document).ready(function() {
 	
 	  $('#summernote').summernote({
-		  height: 50,                 // set editor height
+		  height: 100,                 // set editor height
 		  minHeight: 30,             // set minimum height of editor
 		  maxHeight: 100,             // set maximum height of editor
 		  focus: true,                 // set focus to editable area after initializing summernote
@@ -461,7 +451,7 @@ $(document).ready(function() {
 			    ['insert', ['link', 'picture', 'video']]
 			  ],
 		  	callbacks: {	//여기 부분이 이미지를 첨부하는 부분
-		  		onImageUpload: function(files, editor, welEditable) {
+		  		onImageUpload: function(files) {
 				    sendFile(files[0], this);
 				},
 					onPaste: function (e) {
@@ -485,7 +475,7 @@ $(document).ready(function() {
 					var outmsg = inputmsg.replace(/<(\/?)p>/gi,'');
 					inputmsg.replace('<br>','');
 					$('#summernote').summernote('reset');
-					send(outmsg);				
+					send(outmsg);			
 				})
 		});
 });
@@ -495,13 +485,14 @@ $(document).ready(function() {
     */
     function sendFile(file, editor) {
         // 파일 전송을 위한 폼생성
- 		data = new FormData();
+ 		var data = new FormData();
  	    data.append("uploadFile", file);
  	    $.ajax({ // ajax를 통해 파일 업로드 처리
  	        data : data,
  	        type : "POST",
  	        url : "FileController",
  	        cache : false,
+ 	        async : false,
  	        contentType : false,
  	        processData : false,
  	        success : function(data) { // 처리가 성공할 경우

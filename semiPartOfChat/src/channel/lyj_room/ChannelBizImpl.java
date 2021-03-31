@@ -64,6 +64,7 @@ public class ChannelBizImpl implements ChannelBiz {
 		return null;
 	}
 	
+	// 9. 가장 최근에 생성된 워크스페이스 번호
 	@Override
 	public int getLastWorkSpaceSeq() {
 		return dao.getLastWorkSpaceSeq();
@@ -76,7 +77,7 @@ public class ChannelBizImpl implements ChannelBiz {
 
 	@Override
 	public int createChannel(ChannelDto dto) {
-		return dao.createRoom(dto);
+		return dao.createChannel(dto);
 	}
 
 	@Override
@@ -95,18 +96,18 @@ public class ChannelBizImpl implements ChannelBiz {
 	}
 
 	@Override
-	public List<ChannelDto> channelList(String member_id) {
-		return dao.channelList(member_id);
+	public List<ChannelDto> channelList(ChannelDto chDto) {
+		return dao.channelList(chDto);
 	}
 
 	@Override
 	public ChannelDto channelSelect(int channel_num) {
 		return dao.channelSelect(channel_num);
 	}
-
+	// 6. 채널참여자 리스트에 인서트
 	@Override
-	public int roomMemberAdd(ChannelMemberDto roomDto) {
-		return dao.roomMemberAdd(roomDto);
+	public int channelMemberAdd(ChannelMemberDto chmemDto) {
+		return dao.channelMemberAdd(chmemDto);
 	}
 
 	@Override
@@ -134,10 +135,15 @@ public class ChannelBizImpl implements ChannelBiz {
 	}
 
 	@Override
-	public String adminCheck(int channel_num) {
-		return dao.adminCheck(channel_num);
+	public String delIdCheck(int channel_num) {
+		return dao.delIdCheck(channel_num);
 	}
-
+	
+	@Override
+	public int getLastChannelSeq() {
+		return dao.getLastChannelSeq();
+	}
+	
 	// Message CRUD
 	
 }

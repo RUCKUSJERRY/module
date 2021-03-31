@@ -4,7 +4,7 @@
 	
 	<resultMap type="chatDto" id="chatMap">
 		<result property="chat_seq" column="CHAT_SEQ"/>
-		<result property="channel_num" column="CHANNEL_NUM"/>
+		<result property="channel_seq" column="CHANNEL_SEQ"/>
 		<result property="member_id" column="MEMBER_ID"/>
 		<result property="member_name" column="MEMBER_NAME"/>
 		<result property="chat_content" column="CHAT_CONTENT"/>
@@ -12,16 +12,16 @@
 	</resultMap>
 
 	<select id="callChatList" parameterType="int" resultMap="chatMap">
-		SELECT CHAT_SEQ, MEMBER_ID, MEMBER_NAME, CHAT_CONTENT, CHAT_REGDATE
+		SELECT CHAT_SEQ, CHANNEL_SEQ, MEMBER_ID, MEMBER_NAME, CHAT_CONTENT, CHAT_REGDATE
 		FROM CHAT
-		WHERE CHANNEL_NUM = #{channel_num}
+		WHERE CHANNEL_SEQ = #{channel_seq}
 		ORDER BY CHAT_REGDATE
 	</select>
 	
 	<insert id="chatInsert" parameterType="chatDto">
 		INSERT INTO CHAT
 		VALUES (CHATSEQ.NEXTVAL,
-		#{channel_num},
+		#{channel_seq},
 		#{member_id},
 		#{member_name},
 		#{chat_content}, 
