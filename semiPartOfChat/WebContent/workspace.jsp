@@ -128,6 +128,16 @@
 	<input type="hidden" id="member_id" value="${loginDto.member_id }">
 	<input type="hidden" id="member_pw" value="${loginDto.member_pw }">
 	<input type="hidden" id="member_name" value="${loginDto.member_name }">
+	<input type="hidden" id="member_email" value="${loginDto.member_email }">
+	<input type="hidden" id="member_phone" value="${loginDto.member_phone }">
+	<input type="hidden" id="member_pscode" value="${loginDto.member_pscode }">
+	<input type="hidden" id="member_addr" value="${loginDto.member_addr }">
+	<input type="hidden" id="member_addrdt" value="${loginDto.member_addrdt }">
+	<input type="hidden" id="member_type" value="${loginDto.member_type }">
+	<input type="hidden" id="member_auth" value="${loginDto.member_auth }">
+	<input type="hidden" id="member_date" value="${loginDto.member_date }">
+	<input type="hidden" id="member_enabled" value="${loginDto.member_enabled }">
+	<input type="hidden" id="member_statement" value="${loginDto.member_statement }">
 	
 	<nav class="navbar navbar-default navbar-fixed-top" id="navbox">
         <div class="container">

@@ -202,6 +202,50 @@ public class ChannelDaoImpl extends SqlMapConfig implements ChannelDao {
 		
 	}
 	
+	// 12. 체크한 맴버들 워크스페이스로 초대
+	@Override
+	public int inviteWorkspace(WorkSpaceMemberDto dto) {
+		SqlSession session = null;
+		int res = 0;
+		
+		try {
+			session = getSqlSessionFactory().openSession(false);
+			res = session.insert("channelmapper-channel.inviteWorkspace", dto);
+		
+		if (res > 0) {
+			session.commit();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		
+		return res;
+	}
+	
+	// 13. 체크한 맴버들 워크프세이스에서 추방
+	@Override
+	public int banishWorkspace(WorkSpaceMemberDto dto) {
+		SqlSession session = null;
+		int res = 0;
+		
+		try {
+			session = getSqlSessionFactory().openSession(false);
+			res = session.delete("channelmapper-channel.banishWorkspace", dto);
+		
+		if (res > 0) {
+			session.commit();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		
+		return res;
+	}
+	
 	
 	
 	
@@ -399,6 +443,53 @@ public class ChannelDaoImpl extends SqlMapConfig implements ChannelDao {
 		
 	}
 
+	// Message CRUD
+	// 1. 메세지 초대 리스트 불러오기
+	@Override
+	public List<WorkSpaceMemberDto> callInviteMessageMemberList(WorkSpaceMemberDto wsmemDto) {
+			List<WorkSpaceMemberDto> list = new ArrayList<WorkSpaceMemberDto>();
+		
+		SqlSession session = null;
+		int res = 0;
+
+		try {
+			session = getSqlSessionFactory().openSession(false);
+			list = session.selectList("channelmapper-channel.callInviteMessageMemberList", wsmemDto);
+			
+			if (res > 0) {
+				session.commit();
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+
+		return list; 
+
+	}
+	// 2. 메세지 룸 생성
+	@Override
+	public int createMessageRoom(MessageRoomDto dto) {
+		SqlSession session = null;
+		int res = 0;
+		try {
+			session = getSqlSessionFactory().openSession(false);
+			res = session.insert("channelmapper-channel.createMessageRoom", dto);
+		
+		if (res > 0) {
+			session.commit();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		
+		return res;
+	}
+	
 
 
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.ibatis.session.SqlSession;
 import channel.db_lyj.SqlMapConfig;
+import channel.lyj_room.MessageRoomDto;
+import channel.lyj_room.WorkSpaceMemberDto;
 import channel.member.dto.MemberDto;
 
 public class ChatDaoImpl extends SqlMapConfig implements ChatDao {
@@ -136,6 +138,5 @@ public class ChatDaoImpl extends SqlMapConfig implements ChatDao {
 
 		return res;
 	}
-
 	
 }

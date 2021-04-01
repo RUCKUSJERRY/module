@@ -20,7 +20,6 @@
 		<h1>CHANNEL</h1>
 		<a href="">about us</a>
 		<a href="">payment</a>
-		<a href="MemberControllerlyj?command=memberlogin">login</a>
-		
+		<a href="MemberControllerlyj?command=memberlogin">login</a>		
   </body>
 </html>

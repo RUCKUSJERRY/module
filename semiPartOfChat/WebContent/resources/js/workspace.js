@@ -36,7 +36,7 @@ $(function(){
 						li.setAttribute("class","list-group-item");
 						
 						var a = document.createElement('a');
-						a.setAttribute("href","ChannelController?command=channelList&member_id="+list[0][i].member_id+"&workspace_seq="+list[0][i].workspace_seq);
+						a.setAttribute("href","ChannelController?command=channelList&member_id="+list[0][i].member_id+"&workspace_seq="+list[0][i].workspace_seq+"&workspace_name="+list[0][i].workspace_name);
 						a.innerHTML = list[0][i].workspace_name;
 						
 						var button = document.createElement('button');

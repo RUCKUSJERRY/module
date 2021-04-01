@@ -1,6 +1,7 @@
 package channel.controller_lyj;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -17,12 +18,12 @@ import com.google.gson.JsonParser;
 
 import channel.lyj_chat.ChatBiz;
 import channel.lyj_chat.ChatBizImpl;
-import channel.lyj_chat.MessageRoomDto;
 import channel.lyj_common.Util;
 import channel.lyj_room.ChannelBiz;
 import channel.lyj_room.ChannelBizImpl;
 import channel.lyj_room.ChannelDto;
 import channel.lyj_room.ChannelMemberDto;
+import channel.lyj_room.MessageRoomDto;
 import channel.lyj_room.WorkSpaceDto;
 import channel.lyj_room.WorkSpaceMemberDto;
 import channel.member.dto.MemberDto;
@@ -361,8 +362,116 @@ public class ChannelController_lyj extends HttpServlet {
 				} else {
 					response.getWriter().append("초대할 맴버가 없습니다.");
 				}
+			} else if (command.equals("inviteWorkspace")) {
+				int count = Integer.parseInt(request.getParameter("count"));
+				String [] inviteMember = request.getParameterValues("inviteMember");
+
+				List<WorkSpaceMemberDto> list = new ArrayList<WorkSpaceMemberDto>();
+				 
+				for (int i = 0; i < count; i++) {
+					String [] member = inviteMember[i].split(",");
+					WorkSpaceMemberDto dto = new WorkSpaceMemberDto();
+					dto.setWorkspace_seq(Integer.parseInt(member[0]));
+					dto.setWorkspace_name(member[1]);
+					dto.setMember_id(member[2]);
+					dto.setMember_name(member[3]);
+					
+					list.add(dto);
+				}
 				
+				int res = 0;
 				
+				for (WorkSpaceMemberDto dto : list) {
+					res = chBiz.inviteWorkspace(dto);
+				}
+
+				if (res > 0) {
+					System.out.println("워크스페이스 맴버 추가 성공");
+					response.getWriter().append("워크스페이스 맴버 추가 성공");
+				} else {
+					System.out.println("워크스페이스 맴버 추가 실패");
+					response.getWriter().append("워크스페이스 맴버 추가 실패");
+				}
+				
+			} else if (command.equals("banishWorkspace")){
+				int count = Integer.parseInt(request.getParameter("count"));
+				String [] banishMember = request.getParameterValues("banishMember");
+				
+				List<WorkSpaceMemberDto> list = new ArrayList<WorkSpaceMemberDto>();
+				 
+				for (int i = 0; i < count; i++) {
+					String [] member = banishMember[i].split(",");
+					WorkSpaceMemberDto dto = new WorkSpaceMemberDto();
+					dto.setWorkspace_seq(Integer.parseInt(member[0]));
+					dto.setWorkspace_name(member[1]);
+					dto.setMember_id(member[2]);
+					dto.setMember_name(member[3]);
+					
+					list.add(dto);
+				}
+				
+				int res = 0;
+				
+				for (WorkSpaceMemberDto dto : list) {
+					res = chBiz.banishWorkspace(dto);
+				}
+
+				if (res > 0) {
+					System.out.println("워크스페이스 맴버 삭제 성공");
+					response.getWriter().append("워크스페이스 맴버 삭제 성공");
+				} else {
+					System.out.println("워크스페이스 맴버 삭제 실패");
+					response.getWriter().append("워크스페이스 맴버 삭제 실패");
+				}
+				
+			} else if (command.equals("callInviteMessageMemberList")) {
+				int workspace_seq = Integer.parseInt(request.getParameter("workspace_seq"));
+				String member_id = request.getParameter("member_id");
+				String member_name = request.getParameter("member_name");
+				
+				WorkSpaceMemberDto wsmemDto = new WorkSpaceMemberDto();
+				wsmemDto.setWorkspace_seq(workspace_seq);
+				wsmemDto.setMember_id(member_id);
+				
+				List<WorkSpaceMemberDto> list = chBiz.callInviteMessageMemberList(wsmemDto);
+				
+				if (list != null) {
+					JsonArray resultArray = new JsonArray();
+					Gson gson = new Gson();
+					String jsonString = gson.toJson(list);
+					resultArray.add(JsonParser.parseString(jsonString));
+					JsonObject result = new JsonObject();
+					result.add("result", resultArray);
+					
+					response.getWriter().append(result + "");
+					System.out.println(resultArray);
+				} else {
+					response.getWriter().append("초대할 맴버가 없습니다.");
+				}
+
+			} else if (command.equals("createMessageRoom")) {
+				int workspace_seq = Integer.parseInt(request.getParameter("workspace_seq"));
+				String member_id = request.getParameter("member_id");
+				String member_name = request.getParameter("member_name");
+				String member2_id = request.getParameter("member2_id");
+				String member2_name = request.getParameter("member2_name");
+				
+				MessageRoomDto dto = new MessageRoomDto();
+				dto.setWorkspace_seq(workspace_seq);
+				dto.setMember_id(member_id);
+				dto.setMember_name(member_name);
+				dto.setMember2_id(member2_id);
+				dto.setMember2_name(member2_name);
+				
+				int res = chBiz.createMessageRoom(dto);
+				
+				if (res > 0) {
+					System.out.println("메세지룸 생성 성공");
+					response.getWriter().append("메세지룸 생성 성공");
+				} else {
+					System.out.println("메세지룸 생성 실패");
+					response.getWriter().append("메세지룸 생성 실패");
+				}
 				
 			}
 			

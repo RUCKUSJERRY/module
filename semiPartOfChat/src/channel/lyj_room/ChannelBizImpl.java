@@ -83,6 +83,18 @@ public class ChannelBizImpl implements ChannelBiz {
 		return dao.callWorkspaceInviteList(workspace_seq);
 	}
 	
+	// 12. 체크한 맴버들 워크스페이스로 초대
+	@Override
+	public int inviteWorkspace(WorkSpaceMemberDto dto) {
+		return dao.inviteWorkspace(dto);
+	}
+	
+	// 13. 체크한 맴버들 워크프세이스에서 추방
+	@Override
+	public int banishWorkspace(WorkSpaceMemberDto dto) {
+		return dao.banishWorkspace(dto);
+	}
+	
 	
 	// Channel CRUD
 
@@ -158,5 +170,15 @@ public class ChannelBizImpl implements ChannelBiz {
 	}
 	
 	// Message CRUD
+	// 1. 메세지 초대 리스트 불러오기
+	@Override
+	public List<WorkSpaceMemberDto> callInviteMessageMemberList(WorkSpaceMemberDto wsmemDto) {
+		return dao.callInviteMessageMemberList(wsmemDto);
+	}
+	// 2. 메세지 룸 생성
+	@Override
+	public int createMessageRoom(MessageRoomDto dto) {
+		return dao.createMessageRoom(dto);
+	}
 	
 }

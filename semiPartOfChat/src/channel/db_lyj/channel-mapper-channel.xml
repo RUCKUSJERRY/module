@@ -149,6 +149,28 @@
 		WHERE MEMBER_ID NOT IN (SELECT MEMBER_ID FROM WORKSPACEMEMBER WHERE WORKSPACE_SEQ = #{workspace_seq})
 	</select>
 	
+	<insert id="inviteWorkspace" parameterType="workSpaceMemberDto">
+		INSERT INTO WORKSPACEMEMBER VALUES	
+		(WORKSPACEMEMBERSEQ.NEXTVAL, #{workspace_seq}, #{workspace_name}, #{member_id}, #{member_name},	SYSDATE)
+	</insert>
+	
+	<delete id="banishWorkspace" parameterType="workSpaceMemberDto">
+		DELETE FROM WORKSPACEMEMBER
+		WHERE WORKSPACE_SEQ = #{workspace_seq}
+		AND WORKSPACE_NAME = #{workspace_name}
+		AND MEMBER_ID = #{member_id}
+		AND MEMBER_NAME = #{member_name}
+	</delete>
+	
+	<select id="callInviteMessageMemberList" parameterType="workSpaceMemberDto" resultMap="workSpaceMemberMap">
+		SELECT WORKSPACEMEMBER_SEQ, WORKSPACE_SEQ, WORKSPACE_NAME, MEMBER_ID, MEMBER_NAME, WORKSPACE_REGDATE FROM WORKSPACEMEMBER 
+		WHERE WORKSPACE_SEQ = #{workspace_seq}
+		AND MEMBER_ID NOT IN (SELECT MEMBER_ID FROM MESSAGEROOM WHERE MEMBER_ID = #{member_id} OR MEMBER2_ID = #{member_id} AND MEMBER_ID IS NOT NULL)
+		AND MEMBER_ID NOT IN (SELECT MEMBER2_ID FROM MESSAGEROOM WHERE MEMBER_ID = #{member_id} OR MEMBER2_ID = #{member_id} AND MEMBER_ID IS NOT NULL)
+	</select>
+	
+	
+	
 	
 	
 	

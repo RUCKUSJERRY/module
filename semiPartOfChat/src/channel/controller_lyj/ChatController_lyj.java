@@ -19,9 +19,10 @@ import channel.lyj_chat.ChatBiz;
 import channel.lyj_chat.ChatBizImpl;
 import channel.lyj_chat.ChatDto;
 import channel.lyj_chat.MessageDto;
-import channel.lyj_chat.MessageRoomDto;
 import channel.lyj_common.Util;
 import channel.lyj_room.ChannelDto;
+import channel.lyj_room.MessageRoomDto;
+import channel.lyj_room.WorkSpaceMemberDto;
 
 @WebServlet("/ChatController")
 public class ChatController_lyj extends HttpServlet {
@@ -109,8 +110,7 @@ public class ChatController_lyj extends HttpServlet {
 			} else {
 				response.getWriter().append("메세지가 없습니다.");
 			}
-			
-			
+	
 		} else if (command.equals("msgRoomSelect")) {
 			
 			int messageroom_seq = Integer.parseInt(request.getParameter("messageroom_seq"));

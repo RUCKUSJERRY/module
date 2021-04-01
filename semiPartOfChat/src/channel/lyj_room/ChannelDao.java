@@ -32,6 +32,10 @@ public interface ChannelDao {
 	public List<WorkSpaceMemberDto> callWorkspaceMemberList(WorkSpaceMemberDto wsmemDto);
 	// 11. 워크스페이스 초대 맴버 리스트
 	public List<MemberDto> callWorkspaceInviteList(int workspace_seq);
+	// 12. 체크한 맴버들 워크스페이스로 초대
+	public int inviteWorkspace(WorkSpaceMemberDto dto);
+	// 13. 체크한 맴버들 워크프세이스에서 추방
+	public int banishWorkspace(WorkSpaceMemberDto dto);
 
 	// Channel CRUD
 	// 1. 채널 추가
@@ -63,5 +67,9 @@ public interface ChannelDao {
 	
 	
 	// Message CRUD
+	// 1. 메세지 초대 리스트 불러오기
+	public List<WorkSpaceMemberDto> callInviteMessageMemberList(WorkSpaceMemberDto wsmemDto);
+	// 2. 메세지 룸 생성
+	public int createMessageRoom(MessageRoomDto dto);
 	
 }

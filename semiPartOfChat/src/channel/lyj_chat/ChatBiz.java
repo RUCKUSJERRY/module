@@ -2,7 +2,7 @@ package channel.lyj_chat;
 
 import java.util.List;
 
-import channel.member.dto.MemberDto;
+import channel.lyj_room.MessageRoomDto;
 
 public interface ChatBiz {
 

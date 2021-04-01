@@ -6,24 +6,24 @@ public class MessageRoomDto {
 
 	private int messageroom_seq;
 	private int workspace_seq;
-	private String member_id_one;
-	private String member_name_one;
-	private String member_id_two;
-	private String member_name_two;
+	private String member_id;
+	private String member_name;
+	private String member2_id;
+	private String member2_name;
 	private Date messageroom_regdate;	
 	
 	public MessageRoomDto() {
 		
 	}
 
-	public MessageRoomDto(int messageroom_seq, int workspace_seq, String member_id_one, String member_name_one,
-			String member_id_two, String member_name_two, Date messageroom_regdate) {
+	public MessageRoomDto(int messageroom_seq, int workspace_seq, String member_id, String member_name,
+			String member2_id, String member2_name, Date messageroom_regdate) {
 		this.messageroom_seq = messageroom_seq;
 		this.workspace_seq = workspace_seq;
-		this.member_id_one = member_id_one;
-		this.member_name_one = member_name_one;
-		this.member_id_two = member_id_two;
-		this.member_name_two = member_name_two;
+		this.member_id = member_id;
+		this.member_name = member_name;
+		this.member2_id = member2_id;
+		this.member2_name = member2_name;
 		this.messageroom_regdate = messageroom_regdate;
 	}
 
@@ -43,36 +43,36 @@ public class MessageRoomDto {
 		this.workspace_seq = workspace_seq;
 	}
 
-	public String getMember_id_one() {
-		return member_id_one;
+	public String getMember_id() {
+		return member_id;
 	}
 
-	public void setMember_id_one(String member_id_one) {
-		this.member_id_one = member_id_one;
+	public void setMember_id(String member_id) {
+		this.member_id = member_id;
 	}
 
-	public String getMember_name_one() {
-		return member_name_one;
+	public String getMember_name() {
+		return member_name;
 	}
 
-	public void setMember_name_one(String member_name_one) {
-		this.member_name_one = member_name_one;
+	public void setMember_name(String member_name) {
+		this.member_name = member_name;
 	}
 
-	public String getMember_id_two() {
-		return member_id_two;
+	public String getMember2_id() {
+		return member2_id;
 	}
 
-	public void setMember_id_two(String member_id_two) {
-		this.member_id_two = member_id_two;
+	public void setMember2_id(String member2_id) {
+		this.member2_id = member2_id;
 	}
 
-	public String getMember_name_two() {
-		return member_name_two;
+	public String getMember2_name() {
+		return member2_name;
 	}
 
-	public void setMember_name_two(String member_name_two) {
-		this.member_name_two = member_name_two;
+	public void setMember2_name(String member2_name) {
+		this.member2_name = member2_name;
 	}
 
 	public Date getMessageroom_regdate() {
@@ -82,10 +82,6 @@ public class MessageRoomDto {
 	public void setMessageroom_regdate(Date messageroom_regdate) {
 		this.messageroom_regdate = messageroom_regdate;
 	}
-	
-	
-
-	
 	
 }
 
