@@ -1,7 +1,8 @@
 package channel.lyj_room;
 
 import java.util.List;
-import channel.lyj_member.MemberDto;
+
+import channel.member.dto.MemberDto;
 
 public class ChannelBizImpl implements ChannelBiz {
 
@@ -68,6 +69,18 @@ public class ChannelBizImpl implements ChannelBiz {
 	@Override
 	public int getLastWorkSpaceSeq() {
 		return dao.getLastWorkSpaceSeq();
+	}
+	
+	// 10. 해당 워크스페이스의 맴버 리스트 호출 (본인 제외)
+	@Override
+	public List<WorkSpaceMemberDto> callWorkspaceMemberList(WorkSpaceMemberDto wsmemDto) {
+		return dao.callWorkspaceMemberList(wsmemDto);
+	}
+	
+	// 11. 워크스페이스 초대 맴버 리스트
+	@Override
+	public List<MemberDto> callWorkspaceInviteList(int workspace_seq) {
+		return dao.callWorkspaceInviteList(workspace_seq);
 	}
 	
 	

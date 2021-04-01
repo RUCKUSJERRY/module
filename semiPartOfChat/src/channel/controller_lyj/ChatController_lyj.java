@@ -18,6 +18,10 @@ import com.google.gson.JsonParser;
 import channel.lyj_chat.ChatBiz;
 import channel.lyj_chat.ChatBizImpl;
 import channel.lyj_chat.ChatDto;
+import channel.lyj_chat.MessageDto;
+import channel.lyj_chat.MessageRoomDto;
+import channel.lyj_common.Util;
+import channel.lyj_room.ChannelDto;
 
 @WebServlet("/ChatController")
 public class ChatController_lyj extends HttpServlet {
@@ -81,6 +85,77 @@ public class ChatController_lyj extends HttpServlet {
 				System.out.println("메세지 저장 실패");
 			}
 
+			
+		} else if (command.equals("callMessageList")) {
+		  // 메세지 DB 불러오기
+		
+			int messageroom_seq = Integer.parseInt(request.getParameter("messageroom_seq"));
+
+			List<MessageDto> list = chatBiz.callMessageList(messageroom_seq);
+			
+			if (list != null) {
+				JsonArray resultArray = new JsonArray();
+				Gson gson = new Gson();
+
+				String jsonString = gson.toJson(list);
+				resultArray.add(JsonParser.parseString(jsonString));
+
+				JsonObject result = new JsonObject();
+				result.add("result", resultArray);
+
+				response.getWriter().append(result + "");
+				System.out.println(resultArray);
+		
+			} else {
+				response.getWriter().append("메세지가 없습니다.");
+			}
+			
+			
+		} else if (command.equals("msgRoomSelect")) {
+			
+			int messageroom_seq = Integer.parseInt(request.getParameter("messageroom_seq"));
+			System.out.println(messageroom_seq);
+			MessageRoomDto dto = chatBiz.msgRoomSelect(messageroom_seq);
+			
+			Util util = new Util();
+			
+			String result = "";
+			result += dto.getMessageroom_seq() + "|\\|";
+			result += dto.getWorkspace_seq() + "|\\|";
+			result += dto.getMember_id() + "|\\|";
+			result += dto.getMember_name() + "|\\|";
+			result += dto.getMember2_id() + "|\\|";
+			result += dto.getMember2_name() + "|\\|";
+			result += util.getTostrings(dto.getMessageroom_regdate());
+
+			System.out.println(result);
+
+			response.getWriter().append(result);
+			
+		} else if (command.equals("messageInsert")) {
+			
+			int messageroom_seq = Integer.parseInt(request.getParameter("messageroom_seq"));
+			String to_id = request.getParameter("to_id");
+			String to_name = request.getParameter("to_name");
+			String from_id = request.getParameter("from_id");
+			String from_name = request.getParameter("from_name");
+			String message_content = request.getParameter("message_content");	
+			
+			MessageDto dto = new MessageDto();
+			dto.setMessageroom_seq(messageroom_seq);
+			dto.setTo_id(to_id);
+			dto.setTo_name(to_name);
+			dto.setFrom_id(from_id);
+			dto.setFrom_name(from_name);
+			dto.setMessage_content(message_content);
+			
+			int res = chatBiz.messageInsert(dto);
+			
+			if (res > 0) {
+				System.out.println("메세지 저장 성공");
+			} else {
+				System.out.println("메세지 저장 실패");
+			}
 			
 		}
 		

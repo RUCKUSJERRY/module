@@ -5,12 +5,14 @@
 	<properties resource="channel/db_lyj/db.properties"></properties>
 	
 	<typeAliases>
-		<typeAlias type="channel.lyj_member.MemberDto" alias="memberDto"/>
+		<typeAlias type="channel.member.dto.MemberDto" alias="memberDto"/>
 		<typeAlias type="channel.lyj_room.ChannelDto" alias="channelDto"/>
 		<typeAlias type="channel.lyj_room.ChannelMemberDto" alias="channelMemberDto"/>
 		<typeAlias type="channel.lyj_room.WorkSpaceDto" alias="workSpaceDto"/>
 		<typeAlias type="channel.lyj_room.WorkSpaceMemberDto" alias="workSpaceMemberDto"/>
 		<typeAlias type="channel.lyj_chat.ChatDto" alias="chatDto"/>
+		<typeAlias type="channel.lyj_chat.MessageDto" alias="messageDto"/>
+		<typeAlias type="channel.lyj_chat.MessageRoomDto" alias="messageRoomDto"/>
 	</typeAliases>
 		
   	<environments default="development">
@@ -25,8 +27,7 @@
     	</environment>
   	</environments>
 
-	<mappers>	
-		<mapper resource="channel/db_lyj/channel-mapper-member.xml"/>
+	<mappers>
 		<mapper resource="channel/db_lyj/channel-mapper-channel.xml"/>
 		<mapper resource="channel/db_lyj/channel-mapper-chat.xml"/>
 	</mappers>

@@ -2,6 +2,8 @@ package channel.lyj_chat;
 
 import java.util.List;
 
+import channel.member.dto.MemberDto;
+
 public class ChatBizImpl implements ChatBiz {
 	
 	ChatDao dao = new ChatDaoImpl();
@@ -15,5 +17,25 @@ public class ChatBizImpl implements ChatBiz {
 	public int chatInsert(ChatDto dto) {
 		return dao.chatInsert(dto);
 	}
-
+	
+	@Override
+	public List<MessageRoomDto> messageRoomList(MessageRoomDto msgDto) {
+		return dao.messageRoomList(msgDto);
+	}
+	
+	@Override
+	public List<MessageDto> callMessageList(int messageroom_seq) {
+		return dao.callMessageList(messageroom_seq);
+	}
+	
+	@Override
+	public MessageRoomDto msgRoomSelect(int messageroom_seq) {
+		return dao.msgRoomSelect(messageroom_seq);
+	}
+	
+	@Override
+	public int messageInsert(MessageDto dto) {
+		return dao.messageInsert(dto);
+	}
+	
 }

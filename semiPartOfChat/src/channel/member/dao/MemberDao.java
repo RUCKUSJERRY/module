@@ -141,4 +141,5 @@ public class MemberDao extends SqlMapConfig {
 		return res;
 	}
 
+	
 }

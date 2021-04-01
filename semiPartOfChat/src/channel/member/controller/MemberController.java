@@ -45,7 +45,6 @@ public class MemberController extends HttpServlet {
 		response.setContentType("text/html; charset=UTF-8");
 		
 		MemberBiz biz = new MemberBiz();
-		ChannelBiz roomBiz = new ChannelBizImpl();
 		String command = request.getParameter("command");
 		
 		if (command.equals("member_login_page")) {

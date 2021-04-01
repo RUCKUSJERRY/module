@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.ibatis.session.SqlSession;
 import channel.db_lyj.SqlMapConfig;
-import channel.lyj_member.MemberDto;
+import channel.member.dto.MemberDto;
 
 public class ChannelDaoImpl extends SqlMapConfig implements ChannelDao {
 
@@ -163,6 +163,43 @@ public class ChannelDaoImpl extends SqlMapConfig implements ChannelDao {
 		
 		return res;
 
+	}
+	
+	// 10. 해당 워크스페이스의 맴버 리스트 호출 (본인 제외)
+	@Override
+	public List<WorkSpaceMemberDto> callWorkspaceMemberList(WorkSpaceMemberDto wsmemDto) {
+		SqlSession session = null;
+		List<WorkSpaceMemberDto> list = new ArrayList<WorkSpaceMemberDto>();
+		
+		try {
+			session = getSqlSessionFactory().openSession(false);
+			list = session.selectList("channelmapper-channel.callWorkspaceMemberList", wsmemDto);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		
+			return list;
+	}
+	
+	// 11. 워크스페이스 초대 맴버 리스트
+	@Override
+	public List<MemberDto> callWorkspaceInviteList(int workspace_seq) {
+		SqlSession session = null;
+		List<MemberDto> list = new ArrayList<MemberDto>();
+		
+		try {
+			session = getSqlSessionFactory().openSession(false);
+			list = session.selectList("channelmapper-channel.callWorkspaceInviteList", workspace_seq);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		
+			return list;
+		
 	}
 	
 	

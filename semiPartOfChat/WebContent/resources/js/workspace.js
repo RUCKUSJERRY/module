@@ -11,8 +11,7 @@ $(function(){
 	}
 	
 })
-// 워크스페이스 리스트 추가하기
-
+// 워크스페이스 리스트 불러오기
 $(function(){
 
 	var member_id = $("#member_id").val();
@@ -58,13 +57,13 @@ $(function(){
 })
 
 //워크스페이스 삭제 확인 함수
-function workspaceDelcon(wsnum) {
+function workspaceDelcon(wsseq) {
 	
 	var con = confirm("정말로 채널을 삭제하시겠습니까?");
-	var workspace_num = wsnum;
+	var workspace_seq = wsseq;
 	
 	if (con) {
-		location.href='ChannelController?command=WorkSpaceDel&workspace_seq='+workspace_num;
+		location.href='ChannelController?command=WorkSpaceDel&workspace_seq='+workspace_seq;
 	}
 }
 

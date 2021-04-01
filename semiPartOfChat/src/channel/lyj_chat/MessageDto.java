@@ -1,4 +1,4 @@
-package channel.lyj_message;
+package channel.lyj_chat;
 
 import java.util.Date;
 
@@ -6,28 +6,26 @@ public class MessageDto {
 
 	private int message_seq;
 	private int messageroom_seq;
-	private int workspace_seq;
 	private String to_id;
 	private String to_name;
 	private String from_id;
 	private String from_name;
-	private String content;
+	private String message_content;
 	private Date message_regdate;
 	
 	public MessageDto() {
 		
 	}
 
-	public MessageDto(int message_seq, int messageroom_seq, int workspace_seq, String to_id, String to_name,
-			String from_id, String from_name, String content, Date message_regdate) {
+	public MessageDto(int message_seq, int messageroom_seq, String to_id, String to_name,
+			String from_id, String from_name, String message_content, Date message_regdate) {
 		this.message_seq = message_seq;
 		this.messageroom_seq = messageroom_seq;
-		this.workspace_seq = workspace_seq;
 		this.to_id = to_id;
 		this.to_name = to_name;
 		this.from_id = from_id;
 		this.from_name = from_name;
-		this.content = content;
+		this.message_content = message_content;
 		this.message_regdate = message_regdate;
 	}
 
@@ -45,14 +43,6 @@ public class MessageDto {
 
 	public void setMessageroom_seq(int messageroom_seq) {
 		this.messageroom_seq = messageroom_seq;
-	}
-
-	public int getWorkspace_seq() {
-		return workspace_seq;
-	}
-
-	public void setWorkspace_seq(int workspace_seq) {
-		this.workspace_seq = workspace_seq;
 	}
 
 	public String getTo_id() {
@@ -87,12 +77,12 @@ public class MessageDto {
 		this.from_name = from_name;
 	}
 
-	public String getContent() {
-		return content;
+	public String getMessage_content() {
+		return message_content;
 	}
 
-	public void setContent(String content) {
-		this.content = content;
+	public void setMessage_content(String message_content) {
+		this.message_content = message_content;
 	}
 
 	public Date getMessage_regdate() {

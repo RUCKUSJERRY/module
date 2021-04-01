@@ -136,6 +136,19 @@
 		WHERE CHANNEL_SEQ = #{channel_seq}
 	</select>
 	
+	<select id="callWorkspaceMemberList" parameterType="WorkSpaceMemberDto" resultMap="workSpaceMemberMap">
+		SELECT WORKSPACEMEMBER_SEQ, WORKSPACE_SEQ, WORKSPACE_NAME, MEMBER_ID, MEMBER_NAME, WORKSPACE_REGDATE
+		FROM WORKSPACEMEMBER
+		WHERE WORKSPACE_SEQ = #{workspace_seq}
+		AND MEMBER_ID != #{member_id}
+	</select>
+	
+	<select id="callWorkspaceInviteList" parameterType="int" resultMap="memberMap">
+		SELECT MEMBER_NUM, MEMBER_ID, MEMBER_NAME
+		FROM MEMBER
+		WHERE MEMBER_ID NOT IN (SELECT MEMBER_ID FROM WORKSPACEMEMBER WHERE WORKSPACE_SEQ = #{workspace_seq})
+	</select>
+	
 	
 	
 	

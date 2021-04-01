@@ -2,28 +2,6 @@
 var channel_seq = $("#channel_seq").val();
 var member_id = $("#member_id").val();
 var member_name = $("#member_name").val();
-
-//채널추가 시
-function addChannel() {		
-
-	//화면을 가리는 레이어의 사이즈 조정
-	var width = $(window).width();
-	var height = $(window).height();
-	$("#backLayer").width(width);
-	$("#backLayer").height(height);
-	
-	//화면을 가리는 레이어를 보여준다 (0.5초동안 30%의 농도의 투명도) 
-	$("#backLayer").fadeTo(300, 0.3);
-	
-	//채널추가란 보여주기
-	$('#channel_add_insert').fadeIn(300);
-}
-
-//채널추가 취소
-function addCancel() {
-	$("#backLayer").fadeOut(1000);
-	$('#channel_add_insert').fadeOut(300);	
-}
 //채널삭제 확인
 function channeldelcon(chnum) {	
 	var con = confirm("해당 채널을 삭제하시겠습니까?");
@@ -64,23 +42,12 @@ function channelAdmin(chseq, chname, chinfo, chac) {
 	$("#update_channel_information").val(channel_information);
 	$("#update_channel_access").val(channel_access).prop("selected",true);
 }
-
-
-//메세지방 추가 추가시
-function addMessage() {
-	
-}
-//메세지방 삭제시
-
-//페이지 최초 로딩시 전체채팅방 DB호출
+// 페이지 최초 로딩시 전체채팅방 DB호출
 $(function(){
-	
 	var chnum = $("#channel_seq_onload").val();
-	
 	callChatList(chnum);
 });
-
-//채팅방 입장
+// 채팅방 DB 호출 ajax
 function callChatList(chnum) {
 	$('#chatarea').children().remove();
 	var user = $("#member_id").val();
@@ -252,28 +219,243 @@ function channelInfo(chnum) {
 		}
 	})	
 }
+// 메세지방 DB 불러오는 ajax
+function callMessageList(msgRoomNum) {
+	$('#chatarea').children().remove();
+	var user = $("#member_id").val();
+	
+	$.ajax ({
+		url:"ChatController?command=callMessageList&messageroom_seq="+msgRoomNum,
+		dataType: "json",
+		method: "post",
+		success:function(data){
+			var list = data.result;
+			var firstname = "";
+			for (var i = 0; i < list[0].length; i++) {
+				if (list[0][i].to_id == user) {
+					
+					if (list[0][i].to_id != firstname) {
+						var who = document.createElement('div');
+						//who.style["float"]="left";
+						who.style["display"]="inline-block";
+						who.style["font-weight"]="bold";
+						who.style["font-size"]="14px";
+						who.style["padding-top"]="5px;"
+						who.style["padding-bottom"]="2px;"
+						who.style["padding-left"]="10px;"
+						who.append(list[0][i].to_id);
+						
+						var icon = document.createElement('span');
+						icon.setAttribute("class","glyphicon glyphicon-user");
+						icon.setAttribute("aria-hidden","true");
+						icon.style["color"]="gold";
+						icon.style["width"]="15px;";
+						icon.style["height"]="15px;";
 
-//채팅영역 Websocket
+						document.getElementById('chatarea').appendChild(icon);
+						document.getElementById('chatarea').appendChild(who);
+						
+						var clear = document.createElement('div');
+						clear.style["clear"]="both";
+						document.getElementById('chatarea').appendChild(clear);
+						
+						firstname = list[0][i].to_id;
+						
+					}
+					
+					var div = document.createElement('div');
+					//div.style["float"]="left";
+					div.style["display"]="block";
+					//div.style["font-weight"]="bold";
+					div.style["color"]="#1D1C1D";
+					div.style["padding-left"]="10px";
+					div.style["padding-top"]="3px;"
+					div.style["padding-bottom"]="3px;"
+					div.innerHTML = list[0][i].message_content;
+					document.getElementById('chatarea').appendChild(div);
+					
+					var clear = document.createElement('div');
+					clear.style["clear"]="both";
+					document.getElementById('chatarea').appendChild(clear);
+					
+				} else {
+					
+					if (list[0][i].from_id != firstname) {
+						var who = document.createElement('div');
+						//who.style["float"]="right";
+						who.style["display"]="inline-block";
+						who.style["font-weight"]="bold";
+						who.style["font-size"]="14px";
+						who.style["padding-top"]="5px;"
+						who.style["padding-bottom"]="2px;"
+						who.style["padding-left"]="10px;"
+						who.innerHTML = list[0][i].from_id;
+						
+						var icon = document.createElement('span');
+						//icon.style["float"]="right";
+						icon.setAttribute("class","glyphicon glyphicon-user");
+						icon.setAttribute("aria-hidden","true");
+						icon.style["color"]="gray";
+						icon.style["width"]="15px;";
+						icon.style["height"]="15px;";
+						
+						document.getElementById('chatarea').appendChild(icon);
+						document.getElementById('chatarea').appendChild(who);
+						
+						var clear = document.createElement('div');
+						clear.style["clear"]="both";
+						document.getElementById('chatarea').appendChild(clear);
+						
+						firstname = list[0][i].from_id;
+						
+					}
+					
+					var div = document.createElement('div');
+					//div.style["float"]="right";
+					div.style["display"]="block";
+					//div.style["font-weight"]="bold";
+					div.style["color"]="#1D1C1D";
+					div.style["padding-left"]="10px";
+					div.style["padding-top"]="3px;"
+					div.style["padding-bottom"]="3px;"
+					div.innerHTML = list[0][i].message_content;
+					document.getElementById('chatarea').appendChild(div);
+					
+					var clear = document.createElement('div');
+					clear.style["clear"]="both";
+					document.getElementById('chatarea').appendChild(clear);
+					
+				}
+				
+			}
+			
+			var div = document.createElement('div');
+			div.style["clear"]="both";
+			div.style["font-weight"]="bold";
+			div.style["color"]="#1D1C1D";
+			div.style["background"]="lightgray";
+			div.style["display"]="block";
+			div.style["text-align"]="center";
+			div.innerHTML = "------------------------------이전 메세지는 여기까지 입니다.------------------------------";
+			
+			document.getElementById('chatarea').appendChild(div);
+			
+			chatarea.scrollTop = chatarea.scrollHeight;		
+		},
+		error:function(){
+			alert("통신 실패")
+		}		
+	})
+	
+	$("#roominfo").children().remove();
+	
+	messsageInfo(msgRoomNum);
+	
+}
+// 메세지방 정보 불러오는 ajax
+function messsageInfo (msgRoomNum) {
+	console.log(msgRoomNum)
+	$.ajax ({
+		url:"ChatController?command=msgRoomSelect&messageroom_seq="+msgRoomNum,
+		dataType: "text",
+		method: "post",
+		success:function(data){
+			var res = data.split("|\\|");
+			console.log(data);
+			var messageroom_seq = res[0];
+			var workspace_seq = res[1];
+			var member_id = res[2];
+			var member_name = res[3];
+			var member2_id = res[4];
+			var member2_name = res[5];
+			var messsageroom_regdate = res[6];
+			
+			var input = document.createElement('input');
+			input.id = "messageroom_seq";
+			input.type = "hidden";
+			input.value = messageroom_seq;
+			document.getElementById('roominfo').appendChild(input);
+			
+			var input = document.createElement('input');
+			input.id = "messageInfo_member_id";
+			input.type = "hidden";
+			input.value = member_id;
+			document.getElementById('roominfo').appendChild(input);
+			
+			var input = document.createElement('input');
+			input.id = "messageInfo_member_name";
+			input.type = "hidden";
+			input.value = member_name;
+			document.getElementById('roominfo').appendChild(input);
+			
+			var input = document.createElement('input');
+			input.id = "messageInfo_member2_id";
+			input.type = "hidden";
+			input.value = member2_id;
+			document.getElementById('roominfo').appendChild(input);
+			
+			var input = document.createElement('input');
+			input.id = "messageInfo_member2_name";
+			input.type = "hidden";
+			input.value = member2_name;
+			document.getElementById('roominfo').appendChild(input);
+			
+			var span = document.createElement('span');
+			span.style["font-size"]="10px";
+			span.style["display"]="inline-block";
+
+			span.innerHTML = 
+				" 워크스페이스 : " + workspace_seq + "번의 " + 
+				member_name + "(" + member_id + ")와 " + member2_name + "(" + member2_id + ")의 채팅방 <br>" +
+				" 채널생성일 : " + messsageroom_regdate;
+			
+			document.getElementById('roominfo').appendChild(span);		
+		},
+		error:function(){
+			alert("통신 실패")
+		}
+	})	
+	
+	
+}
+
+// 새 메세지 클릭시 맴버 목록 자동 조회 하는 ajax
+function callMemberList() {
+	// 해당 워크스페이스의 번호에 속해 있는 맴버들 - 나랑 대화중인 맴버 - 나
+	var workspace_seq = $("#workspace_seq").val();
+	var member_id = $("#member_id").val();
+	var member_name = $("#member_name").val();
+	
+	function  getParameterValues() {
+		
+		return "?command=callMemberList&workspace_seq=" + workspace_seq + "&member_id=" + member_id + "&member_name=" + member_name;
+	}
+	
+	$.ajax({
+		
+		url: "ChatController"+getParameterValues,
+		dataType: "json",
+		method: "post",
+		
+	})
+	
+}
+// 채팅영역 Websocket
 var webSocket = new WebSocket('ws://localhost:8787/semiPartOfChat/websocket');
 var re_send = "";
-
 webSocket.onerror = function(event) {
 	onError(event)
 };
-
 webSocket.opopen = function() {
 	onOpen()
 };
-
 webSocket.onmessage = function(event) {
 	onMessage(event)
 };
-
 webSocket.onclose = function() {
 	var div = document.createElement('div');
 	div.innerHTML = member_name+"님이 나가셨습니다.";
 };
-
 function onMessage(event) {
 	
 	var message = event.data.split("|\|");
@@ -328,7 +510,6 @@ function onMessage(event) {
 
 	
 }
-
 function onOpen() {
 	
 	var div = document.createElement('div');
@@ -344,95 +525,182 @@ function onOpen() {
 	webSocket.send(member_name+"님이 채팅방에 입장하였습니다.|\|메세지를 보내주세요.");
 	
 }
-
 function onError(event) {
 	console.log("서버 연결 에러" + event.data);
 }
-
 function send(msg) {
-	
-	var channel_seq = $("#channel_seq").val();
-	var member_id = $("#member_id").val();
-	var member_name = $("#member_name").val();
-	
-	var chat_content = msg;
-	console.log(chat_content);
-	
-	if (chat_content.value != "") {
+	// 채팅 메세지가 널이 아니면~
+	var content = msg;
+	if (content.value != "") {
+		// 맴버 2아이디가 널이 아니면~ 메세지인서트
+		var member2_id = $("#messageInfo_member2_id").val();
+		console.log(member2_id);
 		
-		function  getParameterValues() {
+		if (member2_id != null) {
 			
-			return "?command=chatInsert&channel_seq=" + channel_seq + "&member_id=" + member_id + "&member_name=" + member_name + "&chat_content=" + chat_content;
-		}
-		
-		$.ajax({
-			url:"ChatController"+getParameterValues(),
-			dataType: "text",
-			method: "post",
-			success:function(){
-				console.log("메세지 저장 완료")
-			},
-			error: function(){
-				alert("통신 실패")
-			}	
-		})	
-	
-		webSocket.send(member_id+"|\|" + chat_content);
-		
-		if (member_id != re_send) {
-			var who = document.createElement('div');
-			//who.style["float"]="left";
-			who.style["display"]="inline-block";
-			who.style["font-weight"]="bold";
-			who.style["font-size"]="14px";
-			who.style["padding-top"]="5px;"
-			who.style["padding-bottom"]="2px;"
-			who.style["padding-left"]="10px;"	
-			who.innerHTML = member_id;
+			var messageroom_seq = $("#messageroom_seq").val();
+			var to_id = $("#messageInfo_member_id").val();
+			var to_name = $("#messageInfo_member_name").val();
+			var from_id = $("#messageInfo_member2_id").val();
+			var from_name = $("#messageInfo_member2_name").val();
+			var message_content = msg;
 			
-			var icon = document.createElement('span');
-			icon.style["color"]="gold";
-			icon.style["width"]="15px;";
-			icon.style["height"]="15px;";
-			icon.setAttribute("class","glyphicon glyphicon-user");
-			icon.setAttribute("aria-hidden","true");
+			function  getParameterValues() {
+				
+				return "?command=messageInsert&messageroom_seq=" + messageroom_seq
+				+ "&to_id=" + to_id
+				+ "&to_name=" + to_name
+				+ "&from_id=" + from_id
+				+ "&from_name=" + from_name
+				+ "&message_content="+ message_content;
+			}
+						
+			$.ajax({
+				url:"ChatController"+getParameterValues(),
+				dataType: "text",
+				method: "post",
+				success:function(){
+					console.log("메세지 저장 완료")
+				},
+				error: function(){
+					alert("통신 실패")
+				}	
+			})
+
+			webSocket.send(to_id+"|\|" + message_content);
 			
-			document.getElementById('chatarea').appendChild(icon);
-			document.getElementById('chatarea').appendChild(who);
+			if (to_id != re_send) {
+				var who = document.createElement('div');
+				//who.style["float"]="left";
+				who.style["display"]="inline-block";
+				who.style["font-weight"]="bold";
+				who.style["font-size"]="14px";
+				who.style["padding-top"]="5px;"
+				who.style["padding-bottom"]="2px;"
+				who.style["padding-left"]="10px;"	
+				who.innerHTML = to_id;
+				
+				var icon = document.createElement('span');
+				icon.style["color"]="gold";
+				icon.style["width"]="15px;";
+				icon.style["height"]="15px;";
+				icon.setAttribute("class","glyphicon glyphicon-user");
+				icon.setAttribute("aria-hidden","true");
+				
+				document.getElementById('chatarea').appendChild(icon);
+				document.getElementById('chatarea').appendChild(who);
+				var clear = document.createElement('div');
+				clear.style["clear"]="both";
+				document.getElementById('chatarea').appendChild(clear);
+				
+				re_send = to_id;
+				
+			}
+			
+			var div=document.createElement('div');
+			//div.style["float"]="left";
+			div.style["display"]="block";
+			//div.style["font-weight"]="bold";
+			div.style["color"]="#1D1C1D";
+			div.style["padding-left"]="10px";
+			div.style["padding-top"]="3px;"
+			div.style["padding-bottom"]="3px;"
+			
+			div.innerHTML = message_content;
+			document.getElementById('chatarea').appendChild(div);
+			
 			var clear = document.createElement('div');
-			clear.style["clear"]="both";
+			clear.style["clear"] = "both";
 			document.getElementById('chatarea').appendChild(clear);
 			
-			re_send = member_id;
+			message_content.value = '';
 			
+			chatarea.scrollTop = chatarea.scrollHeight;
+			
+			re_send = to_id;
+			
+		  // 그게 아니면 채팅 인서트
+		} else {
+			
+			var channel_seq = $("#channel_seq").val();
+			var member_id = $("#member_id").val();
+			var member_name = $("#member_name").val();
+			var chat_content = msg;
+			console.log(chat_content);
+			
+			function  getParameterValues() {
+				
+				return "?command=chatInsert&channel_seq=" + channel_seq + "&member_id=" + member_id + "&member_name=" + member_name + "&chat_content=" + chat_content;
+			}
+			
+			$.ajax({
+				url:"ChatController"+getParameterValues(),
+				dataType: "text",
+				method: "post",
+				success:function(){
+					console.log("채팅 저장 완료")
+				},
+				error: function(){
+					alert("통신 실패")
+				}	
+			})
+			
+			webSocket.send(member_id+"|\|" + chat_content);
+			
+			if (member_id != re_send) {
+				var who = document.createElement('div');
+				//who.style["float"]="left";
+				who.style["display"]="inline-block";
+				who.style["font-weight"]="bold";
+				who.style["font-size"]="14px";
+				who.style["padding-top"]="5px;"
+				who.style["padding-bottom"]="2px;"
+				who.style["padding-left"]="10px;"	
+				who.innerHTML = member_id;
+				
+				var icon = document.createElement('span');
+				icon.style["color"]="gold";
+				icon.style["width"]="15px;";
+				icon.style["height"]="15px;";
+				icon.setAttribute("class","glyphicon glyphicon-user");
+				icon.setAttribute("aria-hidden","true");
+				
+				document.getElementById('chatarea').appendChild(icon);
+				document.getElementById('chatarea').appendChild(who);
+				var clear = document.createElement('div');
+				clear.style["clear"]="both";
+				document.getElementById('chatarea').appendChild(clear);
+				
+				re_send = member_id;
+				
+			}
+			
+			var div=document.createElement('div');
+			//div.style["float"]="left";
+			div.style["display"]="block";
+			//div.style["font-weight"]="bold";
+			div.style["color"]="#1D1C1D";
+			div.style["padding-left"]="10px";
+			div.style["padding-top"]="3px;"
+			div.style["padding-bottom"]="3px;"
+			
+			div.innerHTML = chat_content;
+			document.getElementById('chatarea').appendChild(div);
+			
+			var clear = document.createElement('div');
+			clear.style["clear"] = "both";
+			document.getElementById('chatarea').appendChild(clear);
+			
+			chat_content.value = '';
+			
+			chatarea.scrollTop = chatarea.scrollHeight;
+			
+			re_send = member_id;
 		}
-		
-		var div=document.createElement('div');
-		//div.style["float"]="left";
-		div.style["display"]="block";
-		//div.style["font-weight"]="bold";
-		div.style["color"]="#1D1C1D";
-		div.style["padding-left"]="10px";
-		div.style["padding-top"]="3px;"
-		div.style["padding-bottom"]="3px;"
-		
-		div.innerHTML = chat_content;
-		document.getElementById('chatarea').appendChild(div);
-		
-		var clear = document.createElement('div');
-		clear.style["clear"] = "both";
-		document.getElementById('chatarea').appendChild(clear);
-		
-		chat_content.value = '';
-		
-		chatarea.scrollTop = chatarea.scrollHeight;
-		
-		re_send = member_id;
 		
 	}
 	
 }
-
 // 썸머노트 실행
 $(document).ready(function() {
 	
@@ -475,6 +743,9 @@ $(document).ready(function() {
 					var outmsg = inputmsg.replace(/<(\/?)p>/gi,'');
 					inputmsg.replace('<br>','');
 					$('#summernote').summernote('reset');
+					
+					
+					
 					send(outmsg);			
 				})
 		});
@@ -502,4 +773,81 @@ $(document).ready(function() {
  	        }
  	    });
  	}
-    
+//워크스페이스 삭제 확인 함수    
+function workspaceDelcon(wsseq) {
+    	
+    	var con = confirm("정말로 채널을 삭제하시겠습니까?");
+    	var workspace_seq = wsseq;
+    	
+    	if (con) {
+    		location.href='ChannelController?command=WorkSpaceDel&workspace_seq='+workspace_seq;
+    	}
+}
+
+// 워크스페이스 관리 클릭시 해당 워크스페이스의 맴버 목록 호출
+function callWorkspaceMemberList() {
+	
+	var workspace_seq = $("#workspace_seq").val();
+	var member_id = $("#member_id").val();
+	
+	function  getParameterValues() {
+		
+		return "?command=callWorkspaceMemberList&workspace_seq=" + workspace_seq + "&member_id=" + member_id;
+	}
+	
+	$.ajax({
+		url:"ChannelController"+getParameterValues(),
+		dateType:"json",
+		method:"post",
+		success:function(data){
+			var list = data.result;
+
+			for (var i = 0; i < list[0].length; i++) {
+				
+			}
+		},
+		error: function(){
+			alert("통신 실패")
+		}	
+		
+	})
+	
+	
+}
+
+// 워크스페이스 관리에서 초대하기 누르면 밑에 초대맴버 목록 노출
+function callWorkspaceInviteList() {
+
+	var member_id = $("#member_id").val();
+	var workspace_seq = $("#workspace_seq").val();
+	
+	function  getParameterValues() {
+		
+		return "?command=callWorkspaceInviteList&member_id=" + member_id + "&workspace_seq=" + workspace_seq;
+	}
+	
+	$.ajax({
+		url:"ChannelController"+getParameterValues(),
+		dateType:"json",
+		method:"post",
+		success:function(data){
+			var list = data.result;
+			console.log(data);
+			for (var i = 0; i < list[0].length; i++) {
+				var member_num = list[0].member_num;
+				var member_id = list[0].member_id;
+				var member_name = list[0].member_name;
+				
+				
+				
+				
+				
+			}
+		},
+		error: function(){
+			alert("통신 실패")
+		}	
+		
+	})
+	
+}

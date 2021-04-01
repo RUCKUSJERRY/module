@@ -15,6 +15,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import channel.lyj_chat.ChatBiz;
+import channel.lyj_chat.ChatBizImpl;
+import channel.lyj_chat.MessageRoomDto;
 import channel.lyj_common.Util;
 import channel.lyj_room.ChannelBiz;
 import channel.lyj_room.ChannelBizImpl;
@@ -22,6 +25,7 @@ import channel.lyj_room.ChannelDto;
 import channel.lyj_room.ChannelMemberDto;
 import channel.lyj_room.WorkSpaceDto;
 import channel.lyj_room.WorkSpaceMemberDto;
+import channel.member.dto.MemberDto;
 
 @WebServlet("/ChannelController")
 public class ChannelController_lyj extends HttpServlet {
@@ -43,6 +47,7 @@ public class ChannelController_lyj extends HttpServlet {
 		response.setContentType("text/html; charset=UTF-8");
 		
 		ChannelBiz chBiz = new ChannelBizImpl();
+		ChatBiz msgBiz = new ChatBizImpl();
 		
 		String command = request.getParameter("command");
 		System.out.println("[" + command + "]");
@@ -188,13 +193,17 @@ public class ChannelController_lyj extends HttpServlet {
 			chDto.setWorkspace_seq(workspace_seq);
 			chDto.setMember_id(member_id);
 			
-			List<ChannelDto> list = chBiz.channelList(chDto);
-
-			if (list != null) {
-				request.setAttribute("channelList", list);
+			MessageRoomDto msgDto = new MessageRoomDto();
+			msgDto.setMember_id(member_id);
+			msgDto.setWorkspace_seq(workspace_seq);
+			
+			List<ChannelDto> chList = chBiz.channelList(chDto);
+			List<MessageRoomDto> msgRoomList = msgBiz.messageRoomList(msgDto);
+			
+				request.setAttribute("channelList", chList);
+				request.setAttribute("messageRoomList", msgRoomList);
 				dispatch("main.jsp", request, response);
-			}
-		
+			
 		// 1개 채널 SELECT
 		} else if (command.equals("channelSelect")) {
 			
@@ -306,10 +315,58 @@ public class ChannelController_lyj extends HttpServlet {
 					dispatch("ChannelController?command=channelList&member_id="+member_id+"&workspace_seq="+workspace_seq, request, response);
 				}
 					
+			} else if (command.equals("callWorkspaceMemberList")) {
+				int workspace_seq = Integer.parseInt(request.getParameter("workspace_seq"));
+				String member_id = request.getParameter("member_id");
+				
+				System.out.println(workspace_seq + " : " + member_id);
+				
+				WorkSpaceMemberDto wsmemDto = new WorkSpaceMemberDto();
+				wsmemDto.setWorkspace_seq(workspace_seq);
+				wsmemDto.setMember_id(member_id);
+				
+				List<WorkSpaceMemberDto> wsmemList = chBiz.callWorkspaceMemberList(wsmemDto);
+				
+				if (wsmemList != null) {
+					JsonArray resultArray = new JsonArray();
+					Gson gson = new Gson();
+					String jsonString = gson.toJson(wsmemList);
+					resultArray.add(JsonParser.parseString(jsonString));
+					JsonObject result = new JsonObject();
+					result.add("result", resultArray);
+					
+					response.getWriter().append(result + "");
+					System.out.println(resultArray);
+				} else {
+					response.getWriter().append("맴버가 없습니다.");
+				}
+				
+			// 워크스페이스 초대 맴버 리스트	
+			} else if (command.equals("callWorkspaceInviteList")) {
+				
+				int workspace_seq = Integer.parseInt(request.getParameter("workspace_seq"));
+
+				List<MemberDto> list = chBiz.callWorkspaceInviteList(workspace_seq);
+				
+				if (list != null) {
+					JsonArray resultArray = new JsonArray();
+					Gson gson = new Gson();
+					String jsonString = gson.toJson(list);
+					resultArray.add(JsonParser.parseString(jsonString));
+					JsonObject result = new JsonObject();
+					result.add("result", resultArray);
+					
+					response.getWriter().append(result + "");
+					System.out.println(resultArray);
+				} else {
+					response.getWriter().append("초대할 맴버가 없습니다.");
+				}
+				
+				
+				
 			}
 			
 		}
-
 
 	protected void dispatch(String path, HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
