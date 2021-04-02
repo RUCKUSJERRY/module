@@ -73,6 +73,10 @@
 		VALUES (MESSAGESEQ.NEXTVAL, #{messageroom_seq}, #{to_id}, #{to_name}, #{from_id}, #{from_name}, #{message_content}, SYSDATE)
 	</insert>
 	
+	<insert id="createMessageRoom" parameterType="messageRoomDto">
+		INSERT INTO MESSAGEROOM
+		VALUES (MESSAGEROOMSEQ.NEXTVAL, #{workspace_seq}, #{member_id}, #{member_name}, #{member2_id}, #{member2_name}, SYSDATE)
+	</insert>
 	
 
 </mapper>

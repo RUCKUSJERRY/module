@@ -64,12 +64,14 @@ public interface ChannelDao {
 	public String delIdCheck(int channel_num);	
 	// 12. 가장 최근에 생성된 채널의 번호
 	public int getLastChannelSeq();
-	
+	// 13. 해당 채널의 맴버 리스트 호출
+	public List<ChannelMemberDto> callChannelMemberList(ChannelMemberDto dto); 
+	// 14. 해당 채널의 초대 가능한 맴버 리스트 호출
+	public List<WorkSpaceMemberDto> callChannelInviteList(ChannelDto dto);
 	
 	// Message CRUD
 	// 1. 메세지 초대 리스트 불러오기
 	public List<WorkSpaceMemberDto> callInviteMessageMemberList(WorkSpaceMemberDto wsmemDto);
-	// 2. 메세지 룸 생성
-	public int createMessageRoom(MessageRoomDto dto);
+	
 	
 }

@@ -18,5 +18,7 @@ public interface ChatBiz {
 		public MessageRoomDto msgRoomSelect(int messageroom_seq);
 		// 메세지 DB에 저장하기
 		public int messageInsert(MessageDto dto);
+		// 메세지 룸 생성
+		public int createMessageRoom(MessageRoomDto dto);
 		
 }

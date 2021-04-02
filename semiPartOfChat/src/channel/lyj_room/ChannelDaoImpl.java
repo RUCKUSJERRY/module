@@ -442,6 +442,54 @@ public class ChannelDaoImpl extends SqlMapConfig implements ChannelDao {
 		return res;
 		
 	}
+	// 13. 해당 채널의 맴버 리스트 호출
+	@Override
+	public List<ChannelMemberDto> callChannelMemberList(ChannelMemberDto dto) {
+		List<ChannelMemberDto> list = new ArrayList<ChannelMemberDto>();
+		
+		SqlSession session = null;
+		int res = 0;
+
+		try {
+			session = getSqlSessionFactory().openSession(false);
+			list = session.selectList("channelmapper-channel.callChannelMemberList", dto);
+			
+			if (res > 0) {
+				session.commit();
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+
+		return list; 
+	}
+	// 14. 해당 채널의 초대 가능한 맴버 리스트 호출
+	@Override
+	public List<WorkSpaceMemberDto> callChannelInviteList(ChannelDto dto) {
+		List<WorkSpaceMemberDto> list = new ArrayList<WorkSpaceMemberDto>();
+		
+		SqlSession session = null;
+		int res = 0;
+
+		try {
+			session = getSqlSessionFactory().openSession(false);
+			list = session.selectList("channelmapper-channel.callChannelInviteList", dto);
+			
+			if (res > 0) {
+				session.commit();
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+
+		return list; 
+	}
 
 	// Message CRUD
 	// 1. 메세지 초대 리스트 불러오기
@@ -469,26 +517,7 @@ public class ChannelDaoImpl extends SqlMapConfig implements ChannelDao {
 		return list; 
 
 	}
-	// 2. 메세지 룸 생성
-	@Override
-	public int createMessageRoom(MessageRoomDto dto) {
-		SqlSession session = null;
-		int res = 0;
-		try {
-			session = getSqlSessionFactory().openSession(false);
-			res = session.insert("channelmapper-channel.createMessageRoom", dto);
-		
-		if (res > 0) {
-			session.commit();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			session.close();
-		}
-		
-		return res;
-	}
+	
 	
 
 

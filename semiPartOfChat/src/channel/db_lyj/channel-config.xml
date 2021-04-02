@@ -12,7 +12,7 @@
 		<typeAlias type="channel.lyj_room.WorkSpaceMemberDto" alias="workSpaceMemberDto"/>
 		<typeAlias type="channel.lyj_chat.ChatDto" alias="chatDto"/>
 		<typeAlias type="channel.lyj_chat.MessageDto" alias="messageDto"/>
-		<typeAlias type="channel.lyj_chat.MessageRoomDto" alias="messageRoomDto"/>
+		<typeAlias type="channel.lyj_room.MessageRoomDto" alias="messageRoomDto"/>
 	</typeAliases>
 		
   	<environments default="development">

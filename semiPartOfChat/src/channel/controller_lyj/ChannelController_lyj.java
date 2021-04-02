@@ -449,29 +449,56 @@ public class ChannelController_lyj extends HttpServlet {
 					response.getWriter().append("초대할 맴버가 없습니다.");
 				}
 
-			} else if (command.equals("createMessageRoom")) {
-				int workspace_seq = Integer.parseInt(request.getParameter("workspace_seq"));
+			} else if (command.equals("callChannelMemberList")) {
+				
+				int channel_seq = Integer.parseInt(request.getParameter("channel_seq"));
 				String member_id = request.getParameter("member_id");
-				String member_name = request.getParameter("member_name");
-				String member2_id = request.getParameter("member2_id");
-				String member2_name = request.getParameter("member2_name");
 				
-				MessageRoomDto dto = new MessageRoomDto();
-				dto.setWorkspace_seq(workspace_seq);
+				ChannelMemberDto dto = new ChannelMemberDto();
+				dto.setChannel_seq(channel_seq);
 				dto.setMember_id(member_id);
-				dto.setMember_name(member_name);
-				dto.setMember2_id(member2_id);
-				dto.setMember2_name(member2_name);
 				
-				int res = chBiz.createMessageRoom(dto);
+				List<ChannelMemberDto> list = chBiz.callChannelMemberList(dto); 
 				
-				if (res > 0) {
-					System.out.println("메세지룸 생성 성공");
-					response.getWriter().append("메세지룸 생성 성공");
+				if (list != null) {
+					JsonArray resultArray = new JsonArray();
+					Gson gson = new Gson();
+					String jsonString = gson.toJson(list);
+					resultArray.add(JsonParser.parseString(jsonString));
+					JsonObject result = new JsonObject();
+					result.add("result", resultArray);
+					
+					response.getWriter().append(result + "");
+					System.out.println(resultArray);
 				} else {
-					System.out.println("메세지룸 생성 실패");
-					response.getWriter().append("메세지룸 생성 실패");
+					response.getWriter().append("해당 채널에 맴버가 없습니다.");
 				}
+
+			} else if (command.equals("callChannelInviteList")) {
+				int workspace_seq = Integer.parseInt(request.getParameter("workspace_seq"));
+				int channel_seq = Integer.parseInt(request.getParameter("channel_seq"));
+				
+				ChannelDto dto = new ChannelDto();
+				dto.setWorkspace_seq(workspace_seq);
+				dto.setChannel_seq(channel_seq);
+				
+				List<WorkSpaceMemberDto> list = chBiz.callChannelInviteList(dto); 
+				
+				System.out.println(list);
+				if (list != null) {
+					JsonArray resultArray = new JsonArray();
+					Gson gson = new Gson();
+					String jsonString = gson.toJson(list);
+					resultArray.add(JsonParser.parseString(jsonString));
+					JsonObject result = new JsonObject();
+					result.add("result", resultArray);
+					
+					response.getWriter().append(result + "");
+					System.out.println(resultArray);
+				} else {
+					response.getWriter().append("해당 채널에 초대가능한 맴버가 없습니다.");
+				}
+				
 				
 			}
 			

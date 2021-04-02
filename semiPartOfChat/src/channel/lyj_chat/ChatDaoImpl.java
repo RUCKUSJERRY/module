@@ -139,4 +139,24 @@ public class ChatDaoImpl extends SqlMapConfig implements ChatDao {
 		return res;
 	}
 	
+	@Override
+	public int createMessageRoom(MessageRoomDto dto) {
+		SqlSession session = null;
+		int res = 0;
+			try {
+				session = getSqlSessionFactory().openSession(false);
+				res = session.insert("channelmapper-chat.createMessageRoom", dto);
+			
+			if (res > 0) {
+				session.commit();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				session.close();
+			}
+			
+			return res;
+		}	
+	
 }

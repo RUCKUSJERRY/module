@@ -157,6 +157,30 @@ public class ChatController_lyj extends HttpServlet {
 				System.out.println("메세지 저장 실패");
 			}
 			
+		} else if (command.equals("createMessageRoom")) {
+			int workspace_seq = Integer.parseInt(request.getParameter("workspace_seq"));
+			String member_id = request.getParameter("member_id");
+			String member_name = request.getParameter("member_name");
+			String member2_id = request.getParameter("member2_id");
+			String member2_name = request.getParameter("member2_name");
+			
+			MessageRoomDto dto = new MessageRoomDto();
+			dto.setWorkspace_seq(workspace_seq);
+			dto.setMember_id(member_id);
+			dto.setMember_name(member_name);
+			dto.setMember2_id(member2_id);
+			dto.setMember2_name(member2_name);
+			
+			int res = chatBiz.createMessageRoom(dto);
+			
+			if (res > 0) {
+				System.out.println("메세지룸 생성 성공");
+				response.getWriter().append("메세지룸 생성 성공");
+			} else {
+				System.out.println("메세지룸 생성 실패");
+				response.getWriter().append("메세지룸 생성 실패");
+			}
+			
 		}
 		
 	}

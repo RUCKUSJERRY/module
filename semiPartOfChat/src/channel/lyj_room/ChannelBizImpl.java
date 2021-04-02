@@ -169,16 +169,24 @@ public class ChannelBizImpl implements ChannelBiz {
 		return dao.getLastChannelSeq();
 	}
 	
+	// 13. 해당 채널의 맴버 리스트 호출
+	@Override
+	public List<ChannelMemberDto> callChannelMemberList(ChannelMemberDto dto) {
+		return dao.callChannelMemberList(dto);
+	}
+
+	// 14. 해당 채널의 초대 가능한 맴버 리스트 호출
+	@Override
+	public List<WorkSpaceMemberDto> callChannelInviteList(ChannelDto dto) {
+		return dao.callChannelInviteList(dto);
+	}
+	
 	// Message CRUD
 	// 1. 메세지 초대 리스트 불러오기
 	@Override
 	public List<WorkSpaceMemberDto> callInviteMessageMemberList(WorkSpaceMemberDto wsmemDto) {
 		return dao.callInviteMessageMemberList(wsmemDto);
 	}
-	// 2. 메세지 룸 생성
-	@Override
-	public int createMessageRoom(MessageRoomDto dto) {
-		return dao.createMessageRoom(dto);
-	}
+	
 	
 }

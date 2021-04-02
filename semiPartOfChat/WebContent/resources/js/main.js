@@ -228,6 +228,277 @@ function channelInfo(chnum) {
 		}
 	})
 }
+// 채널관리의 맴버 목록 클릭시 해당 채널의 맴버 목록 호출
+function callChannelMemberList() {
+
+	var channel_seq = $("#update_channel_seq").val();
+	var member_id = $("#member_id").val();
+
+	function getParameterValues() {
+
+		return "?command=callChannelMemberList&channel_seq="
+				+ channel_seq + "&member_id=" + member_id;
+	}
+
+	$.ajax({
+		url :"ChannelController" + getParameterValues(),
+		dataType : "json",
+		method : "post",
+		success : function(data) {
+			var list = data.result;
+			console.log(list);
+			
+			$("#channelMemberList").children().remove();
+			$("#channelInviteList").children().remove();
+			$("#workspaceMemberList").children().remove();
+			$("#workspaceInviteList").children().remove();
+			$("#messageInviteMemberList").children().remove();
+			var ul = document.createElement('ul');
+			ul.setAttribute("class", "list-group");
+			document.getElementById('channelMemberList').appendChild(ul);
+
+			for (var i = 0; i < list[0].length; i++) {
+				var channelmember_seq = list[0][i].channelmember_seq;
+				var channel_seq = list[0][i].channel_seq;
+				var member_id = list[0][i].member_id;
+				var member_name = list[0][i].member_name;
+
+				var input = document.createElement('input');
+				input.id = "channelmember_seq";
+				input.type = "hidden";
+				input.value = channelmember_seq;
+				document.getElementById('channelMemberList').appendChild(
+						input);
+				
+				var input = document.createElement('input');
+				input.id = "channel_seq";
+				input.type = "hidden";
+				input.value = channel_seq;
+				document.getElementById('channelMemberList').appendChild(
+						input);
+
+				var li = document.createElement('li');
+				li.setAttribute("class", "list-group-item");
+
+				var div = document.createElement('div');
+				div.setAttribute("class", "input-group");
+
+				var span = document.createElement('span');
+				span.setAttribute("class", "input-group-addon");
+
+				var input = document.createElement('input');
+				input.id = "member_id" + (i + 1);
+				input.type = "checkbox";
+				input.name = "banishChannelChk";
+				input.value = member_id;
+				span.appendChild(input);
+
+				var input = document.createElement('input');
+				input.id = "member_name" + (i + 1);
+				input.type = "hidden";
+				input.value = member_name;
+				span.appendChild(input);
+
+				div.appendChild(span);
+
+				var input = document.createElement('input');
+
+				input.type = "text";
+				input.value = "이름(ID) : " + member_name + " ( " + member_id
+						+ " ) ";
+				input.setAttribute("readonly", "readonly");
+				input.setAttribute("class", "form-control");
+				input.style["background-color"] = "white";
+				div.appendChild(input);
+				li.appendChild(div);
+
+				document.getElementById('channelMemberList').appendChild(li);
+			}
+		},
+		error : function() {
+			alert("통신 실패")
+		}
+
+	})
+
+}
+// 채널에서 체크한 사람들 추방하는 함수
+function banishChannel() {
+
+	var con = confirm("정말로 추방하시겠습니까??");
+
+	if (con) {
+
+		var chks = document.getElementsByName("banishChannelChk");
+		var workspace_seq = $("#workspace_seq").val();
+		var workspace_name = $("#workspace_name").val();
+
+		var param = new Array();
+
+		var count = 0;
+		for (var i = 0; i < chks.length; i++) {
+			if (chks[i].checked) {
+				param[count] = new Array();
+				param[count][0] = workspace_seq;
+				param[count][1] = workspace_name;
+				param[count][2] = $("#member_id" + (i + 1)).val();
+				param[count][3] = $("#member_name" + (i + 1)).val();
+				count++;
+			}
+		}
+		console.log(param);
+		$.ajax({
+			url : "ChannelController?command=banishWorkspace",
+			data : {
+				"banishMember" : param,
+				"count" : count
+			},
+			method : "post",
+			traditional : true,
+			dataType : "text",
+			success : function(msg) {
+				alert(msg);
+				$("#adminWorkspaceCancel").bind("click");
+				$("#adminWorkspaceCancel").trigger("click");
+				callWorkspaceMemberList();
+			},
+			error : function() {
+				alert("통신 실패");
+			}
+		})
+	}
+}
+// 채널 관리에서 초대하기 누르면 밑에 초대맴버 목록 노출
+function callChannelInviteList() {
+
+	var channel_seq = $("#update_channel_seq").val();
+	var workspace_seq = $("#workspace_seq").val();
+
+	function getParameterValues() {
+
+		return "?command=callChannelInviteList&channel_seq=" + channel_seq
+				+ "&workspace_seq=" + workspace_seq;
+	}
+
+	$.ajax({
+		url : "ChannelController" + getParameterValues(),
+		dataType : "json",
+		method : "post",
+		success : function(data) {
+						
+			var list = data.result;
+
+			$("#channelMemberList").children().remove();
+			$("#channelInviteList").children().remove();
+			$("#workspaceMemberList").children().remove();
+			$("#workspaceInviteList").children().remove();
+			$("#messageInviteMemberList").children().remove();
+
+			var label = document.createElement('label');
+			label.setAttribute("class", "control-label");
+			label.innerHTML = "초대 가능 리스트";
+			document.getElementById('channelInviteList').appendChild(label);
+
+			var ul = document.createElement('ul');
+			ul.setAttribute("class", "list-group");
+			document.getElementById('channelInviteList').appendChild(ul);
+
+			for (var i = 0; i < list[0].length; i++) {
+				var member_id = list[0][i].member_id;
+				var member_name = list[0][i].member_name;
+
+				var li = document.createElement('li');
+				li.setAttribute("class", "list-group-item");
+
+				var div = document.createElement('div');
+				div.setAttribute("class", "input-group");
+
+				var span = document.createElement('span');
+				span.setAttribute("class", "input-group-addon");
+
+				var input = document.createElement('input');
+				input.id = "member_id" + (i + 1);
+				input.type = "checkbox";
+				input.name = "inviteChannelChk";
+				input.value = member_id;
+				span.appendChild(input);
+
+				var input = document.createElement('input');
+				input.id = "member_name" + (i + 1);
+				input.type = "hidden";
+				input.value = member_name;
+				span.appendChild(input);
+
+				div.appendChild(span);
+
+				var input = document.createElement('input');
+
+				input.type = "text";
+				input.value = "이름(ID) : " + member_name + " ( " + member_id
+						+ " ) ";
+				input.setAttribute("readonly", "readonly");
+				input.setAttribute("class", "form-control");
+				input.style["background-color"] = "white";
+				div.appendChild(input);
+				li.appendChild(div);
+
+				document.getElementById('channelInviteList').appendChild(li);
+			}
+		},
+		error : function() {
+			alert("통신 실패")
+		}
+
+	})
+
+}
+// 체크한 사람들 초대하는 함수
+function inviteChannel() {
+
+	var chks = document.getElementsByName("inviteWorkspaceChk");
+	var workspace_seq = $("#workspace_seq").val();
+	var workspace_name = $("#workspace_name").val();
+
+	var param = new Array();
+
+	var count = 0;
+	for (var i = 0; i < chks.length; i++) {
+		if (chks[i].checked) {
+			param[count] = new Array();
+			param[count][0] = workspace_seq;
+			param[count][1] = workspace_name;
+			param[count][2] = $("#member_id" + (i + 1)).val();
+			param[count][3] = $("#member_name" + (i + 1)).val();
+			count++;
+		}
+	}
+	console.log(param);
+	$.ajax({
+		url : "ChannelController?command=inviteWorkspace",
+		data : {
+			"inviteMember" : param,
+			"count" : count
+		},
+		method : "post",
+		traditional : true,
+		dataType : "text",
+		success : function(msg) {
+			alert(msg);
+			$("#adminWorkspaceCancel").bind("click");
+			$("#adminWorkspaceCancel").trigger("click");
+			$("#workspaceInviteList").children().remove();
+			$("#channelMemberList").children().remove();
+			$("#channelInviteList").children().remove();
+			$("#workspaceMemberList").children().remove();
+			$("#messageInviteMemberList").children().remove();
+		},
+		error : function() {
+			alert("통신 실패");
+		}
+	})
+
+}
+
 // 메세지방 DB 불러오는 ajax
 function callMessageList(msgRoomNum) {
 	$('#chatarea').children().remove();
@@ -460,6 +731,10 @@ function callInviteMessageMemberList() {
 			console.log(data);
 
 			$("#messageInviteMemberList").children().remove();
+			$("#channelMemberList").children().remove();
+			$("#channelInviteList").children().remove();
+			$("#workspaceMemberList").children().remove();
+			$("#workspaceInviteList").children().remove();
 
 			var ul = document.createElement('ul');
 			ul.setAttribute("class", "list-group");
@@ -538,11 +813,14 @@ function createMessageRoom() {
 		    	}
 		    	
 		    	$.ajax({
-		    		url:"ChannelController"+getParameterValues(),
+		    		url:"ChatController"+getParameterValues(),
 		    		dataType:"text",
 		    		method:"post",
 		    		success:function(msg) {
 		    			alert(msg)
+		    			$("#addMessageCancel").bind("click");
+						$("#addMessageCancel").trigger("click");
+		    			
 		    		},
 		    		error:function(msg){
 		    			alert(msg)
@@ -647,9 +925,6 @@ function onError(event) {
 
 	console.log("서버 연결 에러" + event.data);
 }
-
-
-
 // 웹소켓에 메세지 입력시 보내주는 함수
 function send(msg) {
 	// 채팅 메세지가 널이 아니면~
@@ -940,7 +1215,11 @@ function callWorkspaceMemberList() {
 		success : function(data) {
 			var list = data.result;
 			console.log(list);
+			$("#channelMemberList").children().remove();
+			$("#channelInviteList").children().remove();
 			$("#workspaceMemberList").children().remove();
+			$("#workspaceInviteList").children().remove();
+			$("#messageInviteMemberList").children().remove();
 
 			var ul = document.createElement('ul');
 			ul.setAttribute("class", "list-group");
@@ -1069,7 +1348,11 @@ function callWorkspaceInviteList() {
 			var list = data.result;
 			console.log(data);
 
+			$("#channelMemberList").children().remove();
+			$("#channelInviteList").children().remove();
+			$("#workspaceMemberList").children().remove();
 			$("#workspaceInviteList").children().remove();
+			$("#messageInviteMemberList").children().remove();
 
 			var label = document.createElement('label');
 			label.setAttribute("class", "control-label");
@@ -1171,7 +1454,11 @@ function inviteWorkspace() {
 			alert(msg);
 			$("#adminWorkspaceCancel").bind("click");
 			$("#adminWorkspaceCancel").trigger("click");
+			$("#channelMemberList").children().remove();
+			$("#channelInviteList").children().remove();
+			$("#workspaceMemberList").children().remove();
 			$("#workspaceInviteList").children().remove();
+			$("#messageInviteMemberList").children().remove();
 		},
 		error : function() {
 			alert("통신 실패");

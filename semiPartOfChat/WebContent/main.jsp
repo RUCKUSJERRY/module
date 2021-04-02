@@ -1,5 +1,5 @@
+<%@page import="channel.lyj_room.MessageRoomDto"%>
 <%@page import="channel.lyj_room.WorkSpaceDto"%>
-<%@page import="channel.lyj_chat.MessageRoomDto"%>
 <%@page import="channel.lyj_room.ChannelDto"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -28,9 +28,6 @@ response.setContentType("text/html; charset=UTF-8");
 <!-- include summernote css/js -->
 <link href="./resources/summernote/summernote.css" rel="stylesheet">
 <script src="./resources/summernote/summernote.js"></script>
-
-<!-- 채팅관련 js -->
-<script src="./resources/js/main.js"></script>
 <style>
 body {
 	padding-top: 50px;
@@ -286,7 +283,7 @@ body {
 										onclick="callChatList(<%=chList.get(i).getChannel_seq()%>);"><%=chList.get(i).getChannel_name()%></button>
 								<button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#adminChannelForm"
 								onclick="channelAdmin(<%=chList.get(i).getChannel_seq()%>, '<%=chList.get(i).getChannel_name()%>', '<%=chList.get(i).getChannel_information()%>', '<%=chList.get(i).getChannel_access()%>');">
-								수정
+								관리
 								</button>
 								<button type="button" class="btn btn-default btn-sm" onclick="channeldelcon(<%=chList.get(i).getChannel_seq()%>);">
 								삭제
@@ -449,14 +446,26 @@ body {
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
-					<button type="submit" class="btn btn-primary" form="channelUpdateSubmit">수정하기</button>
+					<button type="submit" class="btn btn-primary" form="channelUpdateSubmit">정보수정</button>
 				</div>
 				<div class="modal-body">
-					채널 친구 추가 하는 곳으로 사용 예정
+					<label for="recipient-name" class="control-label"><input class="btn btn-default" type="button" value="채널 맴버 목록" onclick="callChannelMemberList()"></label>
+						<div id="channelMemberList">
+							
+						</div>
 				</div>
 				<div class="modal-footer">
-				
+					<button type="submit" class="btn btn-primary" onclick="banishChannel();">채널추방</button>
+				</div>	
+				<div class="modal-body">
+					<label for="recipient-name" class="control-label"><input class="btn btn-default" type="button" value="채널 맴버 초대" onclick="callChannelInviteList();"></label>	
+						<div id="channelInviteList">
+							
+						</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal" id="adminChannelCancel">취소</button>
+					<button type="submit" class="btn btn-primary" onclick="inviteChannel()">채널초대</button>
 				</div>
 			</div>
 		</div>
@@ -478,8 +487,8 @@ body {
 						</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
-					<button type="submit" class="btn btn-primary" onclick="createMessageRoom();">메세지 보내기</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal" id="addMessageCancel">취소</button>
+					<button type="submit" class="btn btn-primary" onclick="createMessageRoom();" >메세지 보내기</button>
 				</div>
 			</div>
 		</div>
@@ -495,7 +504,7 @@ body {
 					<h3 class="modal-title" id="addWorkspaceLable">워크스페이스 관리</h3>
 				</div>
 				<div class="modal-body">
-					<label for="recipient-name" class="control-label"><input class="btn btn-default" type="button" value="맴버 목록"></label>
+					<label for="recipient-name" class="control-label"><input class="btn btn-default" onclick="callWorkspaceMemberList()" type="button" value="맴버 목록"></label>
 						<div id="workspaceMemberList">
 							
 						</div>
@@ -506,7 +515,7 @@ body {
 				
 				<div class="modal-body">
 					
-					<label for="message-text" class="control-label"><input class="btn btn-default" type="button" value="맴버 초대" onclick="callWorkspaceInviteList();"></label>	
+					<label for="recipient-name" class="control-label"><input class="btn btn-default" type="button" value="맴버 초대" onclick="callWorkspaceInviteList();"></label>	
 						<div id="workspaceInviteList">
 							
 						</div>
@@ -521,5 +530,6 @@ body {
 		</div>
 	</div>
 </body>
-
+<!-- 채팅관련 js -->
+<script src="./resources/js/main.js"></script>
 </html>

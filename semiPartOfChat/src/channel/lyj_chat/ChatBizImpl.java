@@ -37,4 +37,10 @@ public class ChatBizImpl implements ChatBiz {
 		return dao.messageInsert(dto);
 	}
 	
+
+	@Override
+	public int createMessageRoom(MessageRoomDto dto) {
+		return dao.createMessageRoom(dto);
+	}
+	
 }
