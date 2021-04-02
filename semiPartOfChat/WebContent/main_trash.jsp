@@ -1,3 +1,5 @@
+<%@page import="channel.channel.MessageRoomDto"%>
+<%@page import="channel.workspace.WorkSpaceDto"%>
 <%@page import="channel.channel.ChannelDto"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -26,9 +28,6 @@ response.setContentType("text/html; charset=UTF-8");
 <!-- include summernote css/js -->
 <link href="./resources/summernote/summernote.css" rel="stylesheet">
 <script src="./resources/summernote/summernote.js"></script>
-
-<!-- 채팅관련 js -->
-<script src="./resources/js/chat.js"></script>
 <style>
 body {
 	padding-top: 50px;
@@ -123,13 +122,13 @@ body {
 	border-right: 1px solid gray;
 	border-left: 1px solid gray;
 	border-bottom: 1px solid gray;
-	height: 3em;
+	height: 5em;
 }
 
 #chatarea {
 	background-color: white;
 	color: black;
-	height: 27em;
+	height: 45em;
 	border-left: 1px solid gray;
 	border-right: 1px solid gray;
 	overflow: auto;
@@ -142,7 +141,7 @@ body {
 	color: black;
 	border-right: 1px solid gray;
 	color: black;
-	height: 7em;
+	height: 10em;
 }
 
 #chatarea::-webkit-scrollbar {
@@ -162,15 +161,34 @@ body {
 </head>
 
 <body>
+
+<%
+	
+	int workspace_seq = Integer.parseInt(request.getParameter("workspace_seq"));
+	String workspace_name = request.getParameter("workspace_name");
+	
+	List<ChannelDto> chList = (List<ChannelDto>) request.getAttribute("channelList");
+	List<MessageRoomDto> msgList = (List<MessageRoomDto>) request.getAttribute("messageRoomList");
+	
+%>
 	<input type="hidden" id="member_num" value="${loginDto.member_num }">
 	<input type="hidden" id="member_id" value="${loginDto.member_id }">
 	<input type="hidden" id="member_pw" value="${loginDto.member_pw }">
 	<input type="hidden" id="member_name" value="${loginDto.member_name }">
-
-	<%
-	List<ChannelDto> list = (List<ChannelDto>) request.getAttribute("channelList");
-	%>
-
+	<input type="hidden" id="member_email" value="${loginDto.member_email }">
+	<input type="hidden" id="member_phone" value="${loginDto.member_phone }">
+	<input type="hidden" id="member_pscode" value="${loginDto.member_pscode }">
+	<input type="hidden" id="member_addr" value="${loginDto.member_addr }">
+	<input type="hidden" id="member_addrdt" value="${loginDto.member_addrdt }">
+	<input type="hidden" id="member_type" value="${loginDto.member_type }">
+	<input type="hidden" id="member_auth" value="${loginDto.member_auth }">
+	<input type="hidden" id="member_date" value="${loginDto.member_date }">
+	<input type="hidden" id="member_enabled" value="${loginDto.member_enabled }">
+	<input type="hidden" id="member_statement" value="${loginDto.member_statement }">
+	<input type="hidden" id="workspace_seq" value="<%=workspace_seq %>">
+	<input type="hidden" id="workspace_name" value="<%=workspace_name %>">
+	<input type="hidden" id="channel_seq_onload" value="<%=chList.get(0).getChannel_seq()%>">
+	
 	<nav class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container-fluid">
 			<div class="navbar-header">
@@ -209,7 +227,32 @@ body {
 			<div id="side-navbar" class="col-sm-3 col-md-2 sidebar">
 				<ul class="nav nav-sidebar">
 					<li><a href="">Main</a></li>
-					<li><a href="">People</a></li>
+					<li>
+						<div class="panel-heading" role="tab" id="collapseListWorkspace">
+							<h4 class="panel-title" id="-collapsible-list-group-">
+								<a class="collapsed" data-toggle="collapse" href="#workspacelist"
+									aria-expanded="false" aria-controls="workspacelist">Workspace </a>
+							</h4>
+						</div>
+						<div id="workspacelist" class="panel-collapse collapse"
+							role="tabpanel" aria-labelledby="collapseListWorkspace"
+							aria-expanded="false" style="height: 0px;">
+							<ul class="list-group">
+								<li class="list-group-item">
+									<button type="button" class="btn btn-default btn-lg btn-block"
+										data-toggle="modal" data-target="#workspaceAdminForm" onclick="callWorkspaceMemberList()">워크스페이스 관리</button>
+								</li>
+								<li class="list-group-item">
+									<button type="button" class="btn btn-default btn-lg btn-block"
+										onclick="workspaceDelcon(<%=workspace_seq %>);">워크스페이스 삭제</button>
+								</li>
+								<li class="list-group-item">
+									<button type="button" class="btn btn-default btn-lg btn-block"
+										onclick="location.href='ChannelController?command=WorkSpace'">Change Workspace</button>
+								</li>
+								</ul>
+							</div>
+						</li>
 					<li>
 						<div class="panel-heading" role="tab" id="collapseListChannel">
 							<h4 class="panel-title" id="-collapsible-list-group-">
@@ -222,30 +265,28 @@ body {
 							aria-expanded="false" style="height: 0px;">
 							<ul class="list-group">
 								<%
-								if (list.size() == 0) {
+								if (chList.size() == 0) {
 								%>
 								<li class="list-group-item">채널이 없습니다.<br>채널을 추가해보세요.
 								</li>
 								<%
 								} else {
 								%>
-								<li class="list-group-item"><a href="javascript:void(0)"
-									onclick="callChatList(<%=list.get(0).getChannel_num()%>);"><%=list.get(0).getChannel_name()%>
-								</a></li>
+								<li class="list-group-item">
+								<button type="button" class="btn btn-default btn-lg btn-block"
+										onclick="callChatList(<%=chList.get(0).getChannel_seq()%>);"><%=chList.get(0).getChannel_name()%></button>
+								</li>
 								<%
-								for (int i = 1; i < list.size(); i++) {
+								for (int i = 1; i < chList.size(); i++) {
 								%>
 								<li class="list-group-item">
-								<a href="javascript:void(0)"
-									onclick="callChatList(<%=list.get(i).getChannel_num()%>);">
-										<%=list.get(i).getChannel_name()%>
-								</a>
-								
-								<button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#adminChannelForm"
-								onclick="channelAdmin(<%=list.get(i).getChannel_num()%>, '<%=list.get(i).getChannel_name()%>', '<%=list.get(i).getChannel_information()%>', '<%=list.get(i).getChannel_access()%>');">
-								수정
+								<button type="button" class="btn btn-default btn-lg"
+										onclick="callChatList(<%=chList.get(i).getChannel_seq()%>);"><%=chList.get(i).getChannel_name()%></button>
+								<button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#adminChannelForm"
+								onclick="channelAdmin(<%=chList.get(i).getChannel_seq()%>, '<%=chList.get(i).getChannel_name()%>', '<%=chList.get(i).getChannel_information()%>', '<%=chList.get(i).getChannel_access()%>');">
+								관리
 								</button>
-								<button type="button" class="btn btn-default btn-xs" onclick="channeldelcon(<%=list.get(i).getChannel_num()%>);">
+								<button type="button" class="btn btn-default btn-sm" onclick="channeldelcon(<%=chList.get(i).getChannel_seq()%>);">
 								삭제
 								</button>
 								</li>
@@ -272,11 +313,31 @@ body {
 							role="tabpanel" aria-labelledby="collapseListChannel"
 							aria-expanded="false" style="height: 0px;">
 							<ul class="list-group">
-								<li class="list-group-item">
+								<%
+								if (msgList.size() == 0) {
+								%>
+								<li class="list-group-item">메세지가 없습니다.<br>메세지를 보내보세요.
 								</li>
+								<%
+								} else {
+
+								for (int i = 0; i < msgList.size(); i++) {
+								%>
+								<li class="list-group-item">
+								<button type="button" class="btn btn-default btn-lg"
+										onclick="callMessageList(<%=msgList.get(i).getMessageroom_seq() %>);"><%=msgList.get(i).getMember_id() + ":" + msgList.get(i).getMember2_id() %></button>
+								<button type="button" class="btn btn-default btn-xs" onclick="messagedelcon(<%=msgList.get(i).getMessageroom_seq() %>);">
+								삭제
+								</button>
+								</li>
+								<%
+									}
+
+								}
+								%>
 								<li class="list-group-item">
 									<button type="button" class="btn btn-default btn-lg btn-block"
-										data-toggle="modal" data-target="#addMessageForm">새 메세지</button>
+										data-toggle="modal" data-target="#addMessageForm" onclick="callInviteMessageMemberList();">새 메세지</button>
 								</li>
 							</ul>
 						</div>
@@ -318,10 +379,11 @@ body {
 					<h3 class="modal-title" id="addChannelLable">채널 추가</h3>
 				</div>
 				<div class="modal-body">
-					<form action="RoomController" method="post" id="channelAddSubmit">
+					<form action="ChannelController" method="post" id="channelAddSubmit">
 						<input type="hidden" name="command" value="channelAdd"> 
 						<input type="hidden" name="member_id" value="${loginDto.member_id }">
 						<input type="hidden" name="member_name" value="${loginDto.member_name }">
+						<input type="hidden" name="workspace_seq" value="<%=workspace_seq %>">
 						<div class="form-group">
 							<label for="recipient-name" class="control-label">채널명</label>
 							<input type="text" class="form-control" name="channel_name">
@@ -359,11 +421,12 @@ body {
 					<h3 class="modal-title" id="adminChannelLable">채널 수정</h3>
 				</div>
 				<div class="modal-body">
-					<form action="RoomController" method="post" id="channelUpdateSubmit">
+					<form action="ChannelController" method="post" id="channelUpdateSubmit">
 						<input type="hidden" name="command" value="channelUpdate"> 
 						<input type="hidden" name="member_id" value="${loginDto.member_id }">
 						<input type="hidden" name="member_name" value="${loginDto.member_name }">
-						<input type="hidden" name="channel_num" id="update_channel_num">
+						<input type="hidden" name="workspace_seq" value="<%=workspace_seq %>">
+						<input type="hidden" name="channel_seq" id="update_channel_seq">
 						<div class="form-group">
 							<label for="recipient-name" class="control-label">채널명</label>
 							<input type="text" class="form-control" name="channel_name" id="update_channel_name">
@@ -384,14 +447,26 @@ body {
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
-					<button type="submit" class="btn btn-primary" form="channelUpdateSubmit">수정하기</button>
+					<button type="submit" class="btn btn-primary" form="channelUpdateSubmit">정보수정</button>
 				</div>
 				<div class="modal-body">
-					채널 친구 추가 하는 곳으로 사용 예정
+					<label for="recipient-name" class="control-label"><input class="btn btn-default" type="button" value="채널 맴버 목록" onclick="callChannelMemberList()"></label>
+						<div id="channelMemberList">
+							
+						</div>
 				</div>
 				<div class="modal-footer">
-				
+					<button type="submit" class="btn btn-primary" onclick="banishChannel();">채널추방</button>
+				</div>	
+				<div class="modal-body">
+					<label for="recipient-name" class="control-label"><input class="btn btn-default" type="button" value="채널 맴버 초대" onclick="callChannelInviteList();"></label>	
+						<div id="channelInviteList">
+							
+						</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal" id="adminChannelCancel">취소</button>
+					<button type="submit" class="btn btn-primary" onclick="inviteChannel()">채널초대</button>
 				</div>
 			</div>
 		</div>
@@ -407,45 +482,55 @@ body {
 					<h3 class="modal-title" id="addMessageLable">새 메세지 생성</h3>
 				</div>
 				<div class="modal-body">
-					<form action="RoomController" method="post" id="channelUpdateSubmit">
-						<input type="hidden" name="command" value="channelUpdate">
-						<input type="hidden" name="member_id" value="${loginDto.member_id }">
-						<input type="hidden" name="member_name" value="${loginDto.member_name }">
-						<input type="hidden" name="channel_num" id="update_channel_num">
-						<div class="form-group">
-							<label for="recipient-name" class="control-label">맴버 목록</label>
-							<div class="form-control" id="memberlist">
-								
-							</div>
+					<label for="recipient-name" class="control-label">메세지 가능 리스트</label>
+						<div id="messageInviteMemberList">
+							
 						</div>
-						<div class="form-group">
-							<label for="message-text" class="control-label">채널정보</label>
-							<textarea class="form-control" name="channel_information" id="update_channel_information"></textarea>
-						</div>
-						<div class="form-group">
-							<label for="message-text" class="control-label" >공개/비공개 여부</label>
-						<div class="form-group">
-							<select name="channel_access" id="update_channel_access">
-								<option value="PUBLIC">공개</option>
-								<option value="PRIVATE">비공개</option>
-							</select>
-							</div>
-						</div>
-					</form>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
-					<button type="submit" class="btn btn-primary" form="channelUpdateSubmit">수정하기</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal" id="addMessageCancel">취소</button>
+					<button type="submit" class="btn btn-primary" onclick="createMessageRoom();" >메세지 보내기</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="workspaceAdminForm" tabindex="-1" role="dialog"	aria-labelledby="addWorkspaceLable" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h3 class="modal-title" id="addWorkspaceLable">워크스페이스 관리</h3>
 				</div>
 				<div class="modal-body">
-					채널 친구 추가 하는 곳으로 사용 예정
+					<label for="recipient-name" class="control-label"><input class="btn btn-default" onclick="callWorkspaceMemberList()" type="button" value="맴버 목록"></label>
+						<div id="workspaceMemberList">
+							
+						</div>
 				</div>
 				<div class="modal-footer">
+					<button type="submit" class="btn btn-primary" onclick="banishWorkspace();">추방하기</button>
+				</div>
 				
+				<div class="modal-body">
+					
+					<label for="recipient-name" class="control-label"><input class="btn btn-default" type="button" value="맴버 초대" onclick="callWorkspaceInviteList();"></label>	
+						<div id="workspaceInviteList">
+							
+						</div>
+						
+				
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal" id="adminWorkspaceCancel">취소</button>
+					<button type="submit" class="btn btn-primary" onclick="inviteWorkspace()">초대하기</button>
 				</div>
 			</div>
 		</div>
 	</div>
 </body>
-
+<!-- 채팅관련 js -->
+<script src="./resources/js/main.js"></script>
 </html>

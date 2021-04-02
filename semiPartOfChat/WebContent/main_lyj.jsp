@@ -1,4 +1,4 @@
-<%@page import="channel.lyj_room.ChannelDto"%>
+<%@page import="channel.channel.ChannelDto"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>

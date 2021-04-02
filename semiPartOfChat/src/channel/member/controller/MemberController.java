@@ -26,9 +26,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import channel.lyj_room.ChannelBiz;
-import channel.lyj_room.ChannelBizImpl;
-import channel.lyj_room.ChannelMemberDto;
+import channel.channel.ChannelBiz;
+import channel.channel.ChannelBizImpl;
+import channel.channel.ChannelMemberDto;
 import channel.member.biz.MemberBiz;
 import channel.member.dto.MemberDto;
 import channel.member.dto.MemberGoogleDto;
