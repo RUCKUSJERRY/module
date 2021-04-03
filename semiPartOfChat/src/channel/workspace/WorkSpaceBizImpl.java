@@ -70,8 +70,8 @@ public class WorkSpaceBizImpl implements WorkSpaceBiz {
 	
 	// 10. 해당 워크스페이스의 맴버 리스트 호출 (본인 제외)
 	@Override
-	public List<WorkSpaceMemberDto> callWorkspaceMemberList(WorkSpaceMemberDto wsmemDto) {
-		return dao.callWorkspaceMemberList(wsmemDto);
+	public List<WorkSpaceMemberDto> selectWorkspaceMemberList(WorkSpaceMemberDto wsmemDto) {
+		return dao.selectWorkspaceMemberList(wsmemDto);
 	}
 	
 	// 11. 워크스페이스 초대 맴버 리스트

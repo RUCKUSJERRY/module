@@ -9,13 +9,13 @@ public class ChatBizImpl implements ChatBiz {
 	ChatDao dao = new ChatDaoImpl();
 	
 	@Override
-	public List<ChatDto> callChatList(int channel_num) {
-		return dao.callChatList(channel_num);
+	public List<ChatDto> selectChatList(int channel_num) {
+		return dao.selectChatList(channel_num);
 	}
 
 	@Override
-	public int chatInsert(ChatDto dto) {
-		return dao.chatInsert(dto);
+	public int insertChat(ChatDto dto) {
+		return dao.insertChat(dto);
 	}
 	
 	@Override

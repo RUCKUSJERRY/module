@@ -136,11 +136,11 @@
 		WHERE CHANNEL_NUM = #{channel_num}
 	</select>
 	
-	<select id="callWorkspaceMemberList" parameterType="WorkSpaceMemberDto" resultMap="workSpaceMemberMap">
-		SELECT WORKSPACEMEMBER_NUM, WORKSPACE_NUM, WORKSPACE_NAME, MEMBER_ID, MEMBER_NAME, WORKSPACE_REGDATE
+	<select id="selectWorkspaceMemberList" parameterType="WorkSpaceMemberDto" resultMap="workSpaceMemberMap">
+		SELECT WORKSPACEMEMBER_NUM, WORKSPACE_NUM, WORKSPACE_NAME, MEMBER_NUM, WORKSPACEMEMBER_REGDATE
 		FROM WORKSPACEMEMBER
 		WHERE WORKSPACE_NUM = #{workspace_num}
-		AND MEMBER_ID != #{member_id}
+		AND MEMBER_NUM != #{member_num}
 	</select>
 	
 	<select id="callWorkspaceInviteList" parameterType="int" resultMap="memberMap">

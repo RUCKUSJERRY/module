@@ -10,11 +10,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CHANNEL / Workspace / ${loginDto.member_name }</title>
-<!-- 부트스트랩, JQUERY -->
 <script type="text/javascript" src="resources/js/jquery-3.6.0.min.js"></script>
-<script src="resources/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="resources/js/workspace.js"></script>
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <%@include file="common.jsp" %>
@@ -23,7 +20,7 @@
 	워크스페이스 테스트 영역<br>
 	<button type="button" class="btn btn-default btn-lg btn-block"
 	data-toggle="modal" data-target="#addWorkSpaceForm" >새 워크스페이스 생성</button>
-	<div class="modal fade" id="addWorkSpaceForm" tabindex="-1" role="dialog" aria-labelledby="addChannelLable" aria-hidden="true">
+	<div class="modal fade" id="addWorkSpaceForm" tabindex="-1" role="dialog" aria-labelledby="addWorkSpaceLable" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -31,7 +28,7 @@
 						aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
-					<h3 class="modal-title" id="addChannelLable">새 워크스페이스 추가</h3>
+					<h3 class="modal-title" id="addWorkSpaceLable">새 워크스페이스 추가</h3>
 				</div>
 				<div class="modal-body">
 					<form action="WorkSpaceController" method="post" id="workspaceAddSubmit">
@@ -56,6 +53,43 @@
 			</div>
 		</div>
 	</div>
+	<div class="modal fade" id="workspaceAdminForm" tabindex="-1" role="dialog"	aria-labelledby="addWorkspaceLable" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h3 class="modal-title" id="addWorkspaceLable">워크스페이스 관리</h3>
+				</div>
+				<div class="modal-body">
+					<label for="recipient-name" class="control-label"><input class="btn btn-default" type="button" value="맴버 목록"></label>
+						<div id="workspaceMemberList">
+							
+						</div>
+				</div>
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-primary" onclick="banishWorkspace();">추방하기</button>
+				</div>
+				
+				<div class="modal-body">
+					
+					<label for="recipient-name" class="control-label"><input class="btn btn-default" type="button" value="맴버 초대" onclick="callWorkspaceInviteList();"></label>	
+						<div id="workspaceInviteList">
+							
+						</div>
+						
+				
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal" id="adminWorkspaceCancel">취소</button>
+					<button type="submit" class="btn btn-primary" onclick="inviteWorkspace()">초대하기</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 </div>
 </body>
 </html>

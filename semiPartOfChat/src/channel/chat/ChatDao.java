@@ -7,9 +7,9 @@ import channel.channel.MessageRoomDto;
 public interface ChatDao {
 	
 	// 채팅 DB에서 불러오기
-	public List<ChatDto> callChatList(int channel_num);	
+	public List<ChatDto> selectChatList(int channel_num);	
 	// 채팅 DB에 저장하기
-	public int chatInsert(ChatDto dto);
+	public int insertChat(ChatDto dto);
 	// 메세지 리스트 불러오기
 	public List<MessageRoomDto> messageRoomList(MessageRoomDto msgDto);	
 	// 메세지 DB에서 불러오기

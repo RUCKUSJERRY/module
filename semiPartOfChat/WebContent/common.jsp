@@ -4,7 +4,6 @@
 <% request.setCharacterEncoding("UTF-8"); %>    
 <% response.setContentType("text/html; charset=UTF-8"); %> 
 
-<script type="text/javascript" src="resources/js/jquery-3.6.0.min.js"></script>
 <script src="resources/js/bootstrap.min.js"></script>
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <script type="text/javascript" src="resources/js/member_statement.js"></script>

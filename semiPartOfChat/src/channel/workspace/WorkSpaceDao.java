@@ -30,7 +30,7 @@ public interface WorkSpaceDao {
 	// 9. 가장 최근에 생성된 워크스페이스의 번호
 	public int getLastWorkSpaceSeq();
 	// 10. 해당 워크스페이스의 맴버 리스트 호출 (본인 제외)
-	public List<WorkSpaceMemberDto> callWorkspaceMemberList(WorkSpaceMemberDto wsmemDto);
+	public List<WorkSpaceMemberDto> selectWorkspaceMemberList(WorkSpaceMemberDto wsmemDto);
 	// 11. 워크스페이스 초대 맴버 리스트
 	public List<MemberDto> callWorkspaceInviteList(int workspace_seq);
 	// 12. 체크한 맴버들 워크스페이스로 초대

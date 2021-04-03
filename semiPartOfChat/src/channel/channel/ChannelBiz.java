@@ -12,19 +12,19 @@ public interface ChannelBiz {
 	
 	// Channel CRUD
 	// 1. 채널 추가
-	public int createChannel(ChannelDto dto);
+	public int addChannel(ChannelDto dto);
 	// 2. 채널 정보 수정
-	public int channelUpdate(ChannelDto dto);
+	public int updateChannel(ChannelDto dto);
 	// 3. 채널 삭제
-	public int channelDelete(int channel_num);
+	public int deleteChannel(ChannelDto dto);
 	// 4-1. 아이디가 관리자일 경우 전체 채널 출력
 	public List<ChannelDto> channelAdminList();
 	// 4-2. 해당 아이디가 가지고 있는 채널 출력
-	public List<ChannelDto> channelList(ChannelDto chDto);
+	public List<ChannelDto> selectMemberChannel(ChannelDto chDto);
 	// 5. 1개의 채널 정보만 출력
-	public ChannelDto channelSelect(int channel_num);
+	public ChannelDto selectOneChannel(int channel_num);
 	// 6. 채널참여자 리스트에 인서트
-	public int channelMemberAdd(ChannelMemberDto chmemDto);
+	public int addChannelMember(ChannelMemberDto chmemDto);
 	// 7. 해당 채널의 참여자 출력
 	public List<MemberDto> channelMemeberList(String channel_name);
 	// 8. 전체 회원 조회

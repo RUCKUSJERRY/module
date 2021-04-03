@@ -168,13 +168,13 @@ public class WorkSpaceDaoImpl extends SqlMapConfig implements WorkSpaceDao {
 	
 	// 10. 해당 워크스페이스의 맴버 리스트 호출 (본인 제외)
 	@Override
-	public List<WorkSpaceMemberDto> callWorkspaceMemberList(WorkSpaceMemberDto wsmemDto) {
+	public List<WorkSpaceMemberDto> selectWorkspaceMemberList(WorkSpaceMemberDto wsmemDto) {
 		SqlSession session = null;
 		List<WorkSpaceMemberDto> list = new ArrayList<WorkSpaceMemberDto>();
 		
 		try {
 			session = getSqlSessionFactory().openSession(false);
-			list = session.selectList("channelmapper-channel.callWorkspaceMemberList", wsmemDto);
+			list = session.selectList("channelmapper-channel.selectWorkspaceMemberList", wsmemDto);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

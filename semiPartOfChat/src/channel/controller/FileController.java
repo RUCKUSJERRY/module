@@ -16,10 +16,10 @@ import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
 @WebServlet("/FileController")
-public class FileController_lyj extends HttpServlet {
+public class FileController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-    public FileController_lyj() {
+    public FileController() {
     	
     }
     	

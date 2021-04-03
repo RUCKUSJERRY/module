@@ -13,42 +13,40 @@ public class ChannelBizImpl implements ChannelBiz {
 	
 	
 	// Channel CRUD
-
-	
-
+	// 1. 채널 추가
 	@Override
-	public int createChannel(ChannelDto dto) {
-		return dao.createChannel(dto);
+	public int addChannel(ChannelDto dto) {
+		return dao.addChannel(dto);
 	}
-
+	// 2. 채널 정보 수정
 	@Override
-	public int channelUpdate(ChannelDto dto) {
-		return dao.channelUpdate(dto);
+	public int updateChannel(ChannelDto dto) {
+		return dao.updateChannel(dto);
 	}
-
+	// 3. 채널 삭제
 	@Override
-	public int channelDelete(int channel_num) {
-		return dao.channelDelete(channel_num);
+	public int deleteChannel(ChannelDto dto) {
+		return dao.deleteChannel(dto);
 	}
-
+	// 4-1. 아이디가 관리자일 경우 전체 채널 출력
 	@Override
 	public List<ChannelDto> channelAdminList() {
 		return dao.channelAdminList();
 	}
-
+	// 4-2. 해당 아이디가 가지고 있는 채널 출력
 	@Override
-	public List<ChannelDto> channelList(ChannelDto chDto) {
-		return dao.channelList(chDto);
+	public List<ChannelDto> selectMemberChannel(ChannelDto chDto) {
+		return dao.selectMemberChannel(chDto);
 	}
-
+	// 5. 1개의 채널 정보만 출력
 	@Override
-	public ChannelDto channelSelect(int channel_num) {
-		return dao.channelSelect(channel_num);
+	public ChannelDto selectOneChannel(int channel_num) {
+		return dao.selectOneChannel(channel_num);
 	}
 	// 6. 채널참여자 리스트에 인서트
 	@Override
-	public int channelMemberAdd(ChannelMemberDto chmemDto) {
-		return dao.channelMemberAdd(chmemDto);
+	public int addChannelMember(ChannelMemberDto chmemDto) {
+		return dao.addChannelMember(chmemDto);
 	}
 
 	@Override

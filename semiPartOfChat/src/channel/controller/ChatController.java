@@ -25,10 +25,10 @@ import channel.common.Util;
 import channel.workspace.WorkSpaceMemberDto;
 
 @WebServlet("/ChatController")
-public class ChatController_lyj extends HttpServlet {
+public class ChatController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
-    public ChatController_lyj() {
+    public ChatController() {
 
     }
 
@@ -47,11 +47,11 @@ public class ChatController_lyj extends HttpServlet {
 		System.out.println("["+command+"]");
 		
 		// 채팅 DB에서 불러오기
-		if (command.equals("callChatList")) {
+		if (command.equals("selectChatList")) {
 			
-			int channel_seq = Integer.parseInt(request.getParameter("channel_seq"));
+			int channel_num = Integer.parseInt(request.getParameter("channel_num"));
 
-			List<ChatDto> list = chatBiz.callChatList(channel_seq);
+			List<ChatDto> list = chatBiz.selectChatList(channel_num);
 			JsonArray resultArray = new JsonArray();
 			Gson gson = new Gson();
 
@@ -65,20 +65,21 @@ public class ChatController_lyj extends HttpServlet {
 			System.out.println(resultArray);
 		
 		// 채팅 DB로 저장
-		} else if (command.equals("chatInsert")) {
-			
-			int channel_seq = Integer.parseInt(request.getParameter("channel_seq"));
-			String member_name = request.getParameter("member_name");
+		} else if (command.equals("insertChat")) {
+			int channel_num = Integer.parseInt(request.getParameter("channel_num"));
+			int member_num = Integer.parseInt(request.getParameter("member_num"));
 			String member_id = request.getParameter("member_id");
+			String member_name = request.getParameter("member_name");	
 			String chat_content = request.getParameter("chat_content");
 
 			ChatDto dto = new ChatDto();
-			dto.setChannel_seq(channel_seq);
-			dto.setMember_name(member_name);
+			dto.setChannel_num(channel_num);
+			dto.setMember_num(member_num);
 			dto.setMember_id(member_id);
+			dto.setMember_name(member_name);
 			dto.setChat_content(chat_content);
 
-			int res = chatBiz.chatInsert(dto);
+			int res = chatBiz.insertChat(dto);
 
 			if (res > 0) {
 				System.out.println("메세지 저장 성공");

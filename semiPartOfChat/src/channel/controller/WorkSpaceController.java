@@ -103,7 +103,7 @@ public class WorkSpaceController extends HttpServlet {
 							chDto.setChannel_information(workspace_name+" 워크스페이스의 전체채팅방입니다. 삭제 불가합니다.");
 							chDto.setChannel_access("PUBLIC");
 							chDto.setChannel_enabled("Y");
-							int chRes = chBiz.createChannel(chDto);
+							int chRes = chBiz.addChannel(chDto);
 							
 							if (chRes > 0) {
 								System.out.println(workspace_num + "번 워크스페이스 전체 채팅방 생성");
@@ -116,7 +116,7 @@ public class WorkSpaceController extends HttpServlet {
 									ChannelMemberDto chmemDto = new ChannelMemberDto();
 									chmemDto.setMember_num(member_num);
 									chmemDto.setChannel_num(channel_num);
-									int chmemRes = chBiz.channelMemberAdd(chmemDto);
+									int chmemRes = chBiz.addChannelMember(chmemDto);
 									
 									if (chmemRes > 0) {
 										System.out.println(workspace_num + "번 워크스페이스의 전채채팅방의 맴버 추가 완료" );
@@ -160,6 +160,33 @@ public class WorkSpaceController extends HttpServlet {
 					response.sendRedirect("workspace.jsp");	
 				}
 			
+		} else if (command.equals("selectWorkspaceMemberList")) {
+			int workspace_num = Integer.parseInt(request.getParameter("workspace_num"));
+			int member_num = Integer.parseInt(request.getParameter("member_num"));
+			
+			System.out.println(workspace_num + " : " + member_num);
+			
+			WorkSpaceMemberDto wsmemDto = new WorkSpaceMemberDto();
+			wsmemDto.setWorkspace_num(workspace_num);
+			wsmemDto.setMember_num(member_num);
+			
+			List<WorkSpaceMemberDto> wsmemList = biz.selectWorkspaceMemberList(wsmemDto);
+			
+			if (wsmemList != null) {
+				JsonArray resultArray = new JsonArray();
+				Gson gson = new Gson();
+				String jsonString = gson.toJson(wsmemList);
+				resultArray.add(JsonParser.parseString(jsonString));
+				JsonObject result = new JsonObject();
+				result.add("result", resultArray);
+				
+				response.getWriter().append(result + "");
+				System.out.println(resultArray);
+			} else {
+				response.getWriter().append("맴버가 없습니다.");
+			}
+			
+		// 워크스페이스 초대 맴버 리스트	
 		}
 
 	} 

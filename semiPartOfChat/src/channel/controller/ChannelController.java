@@ -29,10 +29,10 @@ import channel.workspace.WorkSpaceDto;
 import channel.workspace.WorkSpaceMemberDto;
 
 @WebServlet("/ChannelController")
-public class ChannelController_lyj extends HttpServlet {
+public class ChannelController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	public ChannelController_lyj() {
+	public ChannelController() {
 
 	}
 
@@ -53,20 +53,29 @@ public class ChannelController_lyj extends HttpServlet {
 		String command = request.getParameter("command");
 		System.out.println("[" + command + "]");
 		
-		// 워크스페이스로 이동
-		if (command.equals("channelAdminList")) {
-		// 로그인시 어드민으로 로그인 할 경우
+//		(command.equals("channelAdminList")) {
+//			// 로그인시 어드민으로 로그인 할 경우
+//			
+//			int workspace_seq = Integer.parseInt(request.getParameter("workspace_seq"));
+//			List<ChannelDto> list = chBiz.channelAdminList();
+//			
+//				if (list != null) {
+//					request.setAttribute("channelList", list);
+//					dispatch("admin.jsp", request, response);
+//				}
+//
+//			
+//			} else if 
 		
-		int workspace_seq = Integer.parseInt(request.getParameter("workspace_seq"));
-		List<ChannelDto> list = chBiz.channelAdminList();
-		
-			if (list != null) {
-				request.setAttribute("channelList", list);
-				dispatch("admin.jsp", request, response);
-			}
-
-		// 로그인시 일반 유저로 로그인 할 경우
-		} else if (command.equals("channelList")) {
+		if (command.equals("channelIn")) {
+			// 채널.jsp로 전달해주시는 함수
+			int member_num = Integer.parseInt(request.getParameter("member_num"));
+			int workspace_num = Integer.parseInt(request.getParameter("workspace_num"));
+			
+			response.sendRedirect("channel.jsp?member_num="+member_num+"&workspace_num="+workspace_num);
+			
+		} else if (command.equals("selectMemberChannel")) {
+			// 채널.jsp 접속시 에이잭스
 			int member_num = Integer.parseInt(request.getParameter("member_num"));
 			int workspace_num = Integer.parseInt(request.getParameter("workspace_num"));
 			
@@ -74,156 +83,136 @@ public class ChannelController_lyj extends HttpServlet {
 			chDto.setWorkspace_num(workspace_num);
 			chDto.setMember_num(member_num);
 			
-			List<ChannelDto> chList = chBiz.channelList(chDto);
-			request.setAttribute("channelList", chList);		
-			dispatch("channel.jsp", request, response);
+			List<ChannelDto> list = chBiz.selectMemberChannel(chDto);
+			
+			if (list != null) {
+				JsonArray resultArray = new JsonArray();
+				Gson gson = new Gson();
+				String jsonString = gson.toJson(list);
+				resultArray.add(JsonParser.parseString(jsonString));
+				JsonObject result = new JsonObject();
+				result.add("result", resultArray);
+				
+				response.getWriter().append(result + "");
+				System.out.println(resultArray);
+			} else {
+				response.getWriter().append("채널이 없습니다.");
+			}
+			
 			
 //			MessageRoomDto msgDto = new MessageRoomDto();
 //			msgDto.setMember_id(member_id);
 //			msgDto.setWorkspace_seq(workspace_seq);			
 //			List<MessageRoomDto> msgRoomList = msgBiz.messageRoomList(msgDto);			
 //			request.setAttribute("messageRoomList", msgRoomList);
+	
+		} else if (command.equals("addChannel")) {
+			// 채널 추가시	
+			int workspace_num = Integer.parseInt(request.getParameter("workspace_num"));
+			int member_num = Integer.parseInt(request.getParameter("member_num"));
+			String channel_name = request.getParameter("channel_name");
+			String channel_information = request.getParameter("channel_information");
+			String channel_access = request.getParameter("channel_access");
+			
+			ChannelDto chDto = new ChannelDto();
+			chDto.setWorkspace_num(workspace_num);
+			chDto.setMember_num(member_num);
+			chDto.setChannel_name(channel_name);
+			chDto.setChannel_information(channel_information);
+			chDto.setChannel_access(channel_access);
+			chDto.setChannel_enabled("Y");
+			
+			int res = chBiz.addChannel(chDto);
+			
+			if (res > 0) {
+				System.out.println(workspace_num + "번 워크스페이스의 "+channel_name+"채널 생성 완료");
 				
-			
-		// 1개 채널 SELECT
-		} else if (command.equals("channelSelect")) {
-			
-			int channel_seq = Integer.parseInt(request.getParameter("channel_seq"));
+				int channel_num = chBiz.getLastChannelSeq();
+				
+				ChannelMemberDto chmemDto = new ChannelMemberDto();
+				chmemDto.setChannel_num(channel_num);
+				chmemDto.setMember_num(member_num);
 
-			ChannelDto dto = chBiz.channelSelect(channel_seq);
+				int resAdd = chBiz.addChannelMember(chmemDto);
+				
+				if (resAdd > 0) {
+					System.out.println(channel_name+"채널의 맴버로 추가 완료");
+					dispatch("channel.jsp?member_id="+member_num+"&workspace_seq="+workspace_num, request, response);
+				} else {
+					System.out.println("ERROR! 채널의 맴버로 추가되는 데에 실패하였습니다. 관리자에게 문의하세요!");
+					response.sendRedirect("channel.jsp?member_id="+member_num+"&workspace_seq="+workspace_num);
+				}
+			} else {
+				System.out.println("ERROR! 채널 추가에 실패하였습니다. 관리자에게 문의하세요!");
+				response.sendRedirect("channel.jsp?member_id"+member_num+"&workspace_seq="+workspace_num);
+			}		
+		} else if (command.equals("deleteChannel")) {
+			//채널 삭제시
+			int channel_num = Integer.parseInt(request.getParameter("channel_num"));
+			int member_num = Integer.parseInt(request.getParameter("member_num"));
+			
+			ChannelDto dto = new ChannelDto();
+			dto.setChannel_num(channel_num);
+			dto.setMember_num(member_num);
+
+			String msg = "";
+			int res = chBiz.deleteChannel(dto);
+					
+			if (res > 0) {
+				msg = "채널을 삭제하였습니다.";
+				response.getWriter().append(msg);
+			} else {
+				msg = "채널삭제에 실패하였습니다. 권한을 확인해주세요.";
+				response.getWriter().append(msg);	
+			}
+			
+		} else if (command.equals("updateChannel")) {
+			//채널 수정시
+			int workspace_num = Integer.parseInt(request.getParameter("workspace_num"));
+			int channel_num = Integer.parseInt(request.getParameter("channel_num"));
+			int member_num = Integer.parseInt(request.getParameter("member_num"));
+			String channel_name = request.getParameter("channel_name");
+			String channel_information = request.getParameter("channel_information");
+			String channel_access = request.getParameter("channel_access");
+				
+				ChannelDto dto = new ChannelDto();
+				dto.setChannel_num(channel_num);
+				dto.setMember_num(member_num);
+				dto.setChannel_name(channel_name);
+				dto.setChannel_information(channel_information);
+				dto.setChannel_access(channel_access);
+
+				int res = chBiz.updateChannel(dto);
+				 
+				if (res > 0) {
+					System.out.println("채널 정보 수정 성공");
+					dispatch("channel.jsp?member_id="+member_num+"&workspace_seq="+workspace_num, request, response);
+				} else {
+					System.out.println("ERROR! 채널의 정보 수정에 실패하였습니다. 채널 관리자에게 문의하세요!");
+					response.sendRedirect("channel.jsp?member_id="+member_num+"&workspace_seq="+workspace_num);
+				}
+					
+			} else if (command.equals("selectOneChannel")) {
+			// 1개 채널 SELECT
+			int channel_num = Integer.parseInt(request.getParameter("channel_num"));
+			
+			ChannelDto dto = chBiz.selectOneChannel(channel_num);
 			
 			Util util = new Util();
 			
 			String result = "";
 			result += dto.getChannel_num() + "|\\|";
+			result += dto.getWorkspace_num() + "|\\|";
+			result += dto.getMember_num() + "|\\|";
+			result += dto.getChannel_name() + "|\\|";
 			result += dto.getChannel_information() + "|\\|";
+			result += dto.getChannel_access() + "|\\|";
 			result += dto.getChannel_enabled() + "|\\|";
 			result += util.getTostrings(dto.getChannel_regdate());
-
 			System.out.println(result);
-
-			response.getWriter().append(result);
-			
+			response.getWriter().append(result);	
 		
-		} else if (command.equals("channelAdd")) {
-			// 채널 추가시	
-			int workspace_seq = Integer.parseInt(request.getParameter("workspace_seq"));
-			String channel_name = request.getParameter("channel_name");
-			String channel_information = request.getParameter("channel_information");
-			String member_id = request.getParameter("member_id");
-			String member_name = request.getParameter("member_name");
-			String channel_access = request.getParameter("channel_access");
-			
-			ChannelDto chDto = new ChannelDto();
-			chDto.setWorkspace_num(workspace_seq);
-			chDto.setChannel_name(channel_name);
-			chDto.setChannel_information(channel_information);
-			//chDto.setMember_num(member_id);
-			chDto.setChannel_access(channel_access);
-			chDto.setChannel_enabled("Y");
-			
-			int res = chBiz.createChannel(chDto);
-			
-			if (res > 0) {
-				System.out.println(workspace_seq + "번 워크스페이스의 "+channel_name+"채널 생성 완료");
-				
-				int channel_seq = chBiz.getLastChannelSeq();
-				
-				ChannelMemberDto chmemDto = new ChannelMemberDto();
-//				chmemDto.getChannel_num(channel_seq);
-//				chmemDto.setMember_num(member_id);
-//				chmemDto.setMember_name(member_name);
-
-				int resAdd = chBiz.channelMemberAdd(chmemDto);
-				
-				if (resAdd > 0) {
-					System.out.println(channel_name+"채널의 맴버로 추가 완료");
-					dispatch("ChannelController?command=channelList&member_id="+member_id+"&workspace_seq="+workspace_seq, request, response);
-				} else {
-					System.out.println("ERROR! 채널의 맴버로 추가되는 데에 실패하였습니다. 관리자에게 문의하세요!");
-					response.sendRedirect("ChannelController?command=channelList&member_id="+member_id+"&workspace_seq="+workspace_seq);
-				}
-			} else {
-				System.out.println("ERROR! 채널 추가에 실패하였습니다. 관리자에게 문의하세요!");
-				response.sendRedirect("ChannelController?command=channelList&member_id"+member_id+"&workspace_seq="+workspace_seq);
-			}		
-		} else if (command.equals("channelDelete")) {
-			//채널 삭제시
-			String member_id = request.getParameter("member_id");
-			System.out.println(member_id);
-			int channel_seq = Integer.parseInt(request.getParameter("channel_seq"));
-			String msg = "";
-			// 유효성 체크
-			String delIdCheck = chBiz.delIdCheck(channel_seq);
-			System.out.println(delIdCheck);
-			if (delIdCheck.equals(member_id)) {
-				int res = chBiz.channelDelete(channel_seq);
-				 
-				if (res > 0) {
-					msg = "채널을 삭제하였습니다.";
-					response.getWriter().append(msg);
-				} else {
-					msg = "채널을 삭제에 실패하였습니다.";
-					response.getWriter().append(msg);
-				}
-				
-			} else {
-				msg = "채널을 삭제할 권한이 없습니다.";
-				response.getWriter().append(msg);	
-			}	
-		} else if (command.equals("channelUpdate")) {
-			int workspace_seq = Integer.parseInt(request.getParameter("workspace_seq"));
-			int channel_seq = Integer.parseInt(request.getParameter("channel_seq"));
-			String channel_name = request.getParameter("channel_name");
-			String channel_information = request.getParameter("channel_information");
-			String channel_access = request.getParameter("channel_access");
-			String member_id = request.getParameter("member_id");
-				
-				ChannelDto dto = new ChannelDto();
-//				dto.setChannel_seq(channel_seq);
-//				dto.setChannel_name(channel_name);
-//				dto.setChannel_information(channel_information);
-//				dto.setChannel_access(channel_access);
-//				dto.setMember_id(member_id);
-				
-				int res = chBiz.channelUpdate(dto);
-				 
-				if (res > 0) {
-					System.out.println("채널 정보 수정 성공");
-					dispatch("ChannelController?command=channelList&member_id="+member_id+"&workspace_seq="+workspace_seq, request, response);
-				} else {
-					System.out.println("채널 정보 수정 실패 : 권한이 있는지 관리자에게 문의바랍니다.");
-					dispatch("ChannelController?command=channelList&member_id="+member_id+"&workspace_seq="+workspace_seq, request, response);
-				}
-					
-			} else if (command.equals("callWorkspaceMemberList")) {
-				int workspace_seq = Integer.parseInt(request.getParameter("workspace_seq"));
-				String member_id = request.getParameter("member_id");
-				
-				System.out.println(workspace_seq + " : " + member_id);
-				
-				WorkSpaceMemberDto wsmemDto = new WorkSpaceMemberDto();
-//				wsmemDto.setWorkspace_seq(workspace_seq);
-//				wsmemDto.setMember_id(member_id);
-//				
-//				List<WorkSpaceMemberDto> wsmemList = chBiz.callWorkspaceMemberList(wsmemDto);
-//				
-//				if (wsmemList != null) {
-//					JsonArray resultArray = new JsonArray();
-//					Gson gson = new Gson();
-//					String jsonString = gson.toJson(wsmemList);
-//					resultArray.add(JsonParser.parseString(jsonString));
-//					JsonObject result = new JsonObject();
-//					result.add("result", resultArray);
-//					
-//					response.getWriter().append(result + "");
-//					System.out.println(resultArray);
-//				} else {
-//					response.getWriter().append("맴버가 없습니다.");
-//				}
-				
-			// 워크스페이스 초대 맴버 리스트	
-			} else if (command.equals("callWorkspaceInviteList")) {
+		} else if (command.equals("callWorkspaceInviteList")) {
 				
 				int workspace_seq = Integer.parseInt(request.getParameter("workspace_seq"));
 

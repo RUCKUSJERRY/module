@@ -15,15 +15,16 @@ public class ChannelDaoImpl extends SqlMapConfig implements ChannelDao {
 	
 	
 	
-	
+	// Channel CRUD
+	// 1. 채널 추가
 	@Override
-	public int createChannel(ChannelDto dto) {
+	public int addChannel(ChannelDto dto) {
 		SqlSession session = null;
 		int res = 0;
 		
 		try {
 			session = getSqlSessionFactory().openSession(false);
-			res = session.insert("channelmapper-channel.createChannel", dto);
+			res = session.insert("channelmapper-channel.addChannel", dto);
 		
 		if (res > 0) {
 			session.commit();
@@ -38,13 +39,13 @@ public class ChannelDaoImpl extends SqlMapConfig implements ChannelDao {
 	}
 
 	@Override
-	public int channelUpdate(ChannelDto dto) {
+	public int updateChannel(ChannelDto dto) {
 		SqlSession session = null;
 		int res = 0;
 		
 		try {
 			session = getSqlSessionFactory().openSession(false);
-			res = session.update("channelmapper-channel.channelUpdate", dto);
+			res = session.update("channelmapper-channel.updateChannel", dto);
 			if (res > 0) {
 				session.commit();
 			}
@@ -56,15 +57,15 @@ public class ChannelDaoImpl extends SqlMapConfig implements ChannelDao {
 		
 		return res;
 	}
-
+	// 3. 채널 삭제
 	@Override
-	public int channelDelete(int channel_num) {
+	public int deleteChannel(ChannelDto dto) {
 		SqlSession session = null;
 		int res = 0;
 		
 		try {
 			session = getSqlSessionFactory().openSession(false);
-			res = session.delete("channelmapper-channel.channelDelete", channel_num);
+			res = session.delete("channelmapper-channel.deleteChannel", dto);
 		
 		if (res > 0) {
 			session.commit();
@@ -77,7 +78,7 @@ public class ChannelDaoImpl extends SqlMapConfig implements ChannelDao {
 		
 		return res;
 	}
-
+	// 4-1. 아이디가 관리자일 경우 전체 채널 출력
 	@Override
 	public List<ChannelDto> channelAdminList() {
 		SqlSession session = null;
@@ -94,15 +95,15 @@ public class ChannelDaoImpl extends SqlMapConfig implements ChannelDao {
 		
 		return list;
 	}
-
+	// 4-2. 해당 아이디가 가지고 있는 채널 출력
 	@Override
-	public List<ChannelDto> channelList(ChannelDto chDto) {
+	public List<ChannelDto> selectMemberChannel(ChannelDto chDto) {
 		SqlSession session = null;
 		List<ChannelDto> list = new ArrayList<ChannelDto>();
 		
 		try {
 			session = getSqlSessionFactory().openSession(false);
-			list = session.selectList("channelmapper-channel.channelList", chDto);
+			list = session.selectList("channelmapper-channel.selectMemberChannel", chDto);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -111,15 +112,15 @@ public class ChannelDaoImpl extends SqlMapConfig implements ChannelDao {
 		
 		return list;
 	}
-
+	// 5. 1개의 채널 정보만 출력
 	@Override
-	public ChannelDto channelSelect(int channel_num) {
+	public ChannelDto selectOneChannel(int channel_num) {
 		SqlSession session = null;
 		ChannelDto dto = new ChannelDto();
 		
 		try {
 			session = getSqlSessionFactory().openSession(false);
-			dto = session.selectOne("channelmapper-channel.channelSelect", channel_num);
+			dto = session.selectOne("channelmapper-channel.selectOneChannel", channel_num);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -130,7 +131,7 @@ public class ChannelDaoImpl extends SqlMapConfig implements ChannelDao {
 	}
 	// 6. 채널참여자 리스트에 인서트
 	@Override
-	public int channelMemberAdd(ChannelMemberDto chmemDto) {
+	public int addChannelMember(ChannelMemberDto chmemDto) {
 		SqlSession session = null;
 		int res = 0;
 		try {

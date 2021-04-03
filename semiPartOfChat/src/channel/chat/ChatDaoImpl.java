@@ -12,13 +12,13 @@ import channel.workspace.WorkSpaceMemberDto;
 public class ChatDaoImpl extends SqlMapConfig implements ChatDao {
 
 	@Override
-	public List<ChatDto> callChatList(int channel_num) {
+	public List<ChatDto> selectChatList(int channel_num) {
 		SqlSession session = null;
 		List<ChatDto> list = new ArrayList<ChatDto>();
 
 		try {
 			session = getSqlSessionFactory().openSession(false);
-			list = session.selectList("channelmapper-chat.callChatList", channel_num);
+			list = session.selectList("channelmapper-chat.selectChatList", channel_num);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -29,13 +29,13 @@ public class ChatDaoImpl extends SqlMapConfig implements ChatDao {
 	}
 
 	@Override
-	public int chatInsert(ChatDto dto) {
+	public int insertChat(ChatDto dto) {
 		SqlSession session = null;
 		int res = 0;
 
 		try {
 			session = getSqlSessionFactory().openSession(false);
-			res = session.insert("channelmapper-chat.chatInsert", dto);
+			res = session.insert("channelmapper-chat.insertChat", dto);
 			
 			if (res > 0) {
 				session.commit();

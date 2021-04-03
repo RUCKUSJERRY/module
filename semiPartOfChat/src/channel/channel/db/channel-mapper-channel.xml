@@ -55,7 +55,7 @@
 		<result property="regdate" column="REGDATE"/>	
 	</resultMap>
 
-	<insert id="createChannel" parameterType="channelDto">
+	<insert id="addChannel" parameterType="channelDto">
 		INSERT INTO CHANNEL
 		VALUES
 		(CHANNELSEQ.NEXTVAL, #{workspace_num}, #{member_num}, #{channel_name}, #{channel_information}, #{channel_access}, #{channel_enabled}, SYSDATE)	
@@ -73,7 +73,7 @@
 		(CHANNELMEMBERSEQ.NEXTVAL, #{channel_num}, #{member_num}, SYSDATE)
 	</insert>
 	
-	<select id="channelList" parameterType="channelDto" resultMap="channelMap">
+	<select id="selectMemberChannel" parameterType="channelDto" resultMap="channelMap">
 		SELECT CHANNEL_NUM, WORKSPACE_NUM,  MEMBER_NUM, CHANNEL_NAME, CHANNEL_INFORMATION, CHANNEL_ACCESS, CHANNEL_ENABLED, CHANNEL_REGDATE
 		FROM CHANNEL
 		WHERE CHANNEL_NUM IN (SELECT CHANNEL_NUM FROM CHANNELMEMBER WHERE MEMBER_NUM = #{member_num})
@@ -81,12 +81,35 @@
 		ORDER BY CHANNEL_NUM
 	</select>
 	
-	<update id="channelUpdate" parameterType="channelDto">
+	<delete id="deleteChannel" parameterType="channelDto">
+		DELETE FROM CHANNEL
+		WHERE CHANNEL_NUM = #{channel_num}
+		AND MEMBER_NUM = #{member_num}
+	</delete>
+	
+	<update id="updateChannel" parameterType="channelDto">
 		UPDATE CHANNEL
 		SET CHANNEL_NAME = #{channel_name}, CHANNEL_INFORMATION = #{channel_information}, CHANNEL_ACCESS = #{channel_access}
 		WHERE CHANNEL_NUM = #{channel_num}
-		AND MEMBER_ID = #{member_id}
+		AND MEMBER_NUM = #{member_num}
 	</update>
+	
+	<select id="selectOneChannel" parameterType="int" resultMap="channelMap">
+		SELECT CHANNEL_NUM, WORKSPACE_NUM, MEMBER_NUM, CHANNEL_NAME, CHANNEL_INFORMATION, CHANNEL_ACCESS, CHANNEL_ENABLED, CHANNEL_REGDATE
+		FROM CHANNEL
+		WHERE CHANNEL_NUM = #{channel_num}
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	<select id="delIdCheck" parameterType="int" resultType="String">
 		SELECT MEMBER_ID
@@ -94,16 +117,9 @@
 		WHERE CHANNEL_NUM = #{channel_num}
 	</select>
 	
-	<delete id="channelDelete" parameterType="int">
-		DELETE FROM CHANNEL
-		WHERE CHANNEL_NUM = #{channel_num}
-	</delete>
 	
-	<select id="channelSelect" parameterType="int" resultMap="channelMap">
-		SELECT CHANNEL_NUM, WORKSPACE_NUM, CHANNEL_NAME, CHANNEL_INFORMATION, MEMBER_ID, CHANNEL_ACCESS, CHANNEL_ENABLED, CHANNEL_REGDATE
-		FROM CHANNEL
-		WHERE CHANNEL_NUM = #{channel_num}
-	</select>
+	
+	
 	
 	<select id="callWorkspaceMemberList" parameterType="WorkSpaceMemberDto" resultMap="workSpaceMemberMap">
 		SELECT WORKSPACEMEMBER_NUM, WORKSPACE_NUM, WORKSPACE_NAME, MEMBER_ID, MEMBER_NAME, WORKSPACE_REGDATE
