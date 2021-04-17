@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="pehmapper">
+  
+  <resultMap type="alarmDto" id="alarmMap">
+  	<result property="member_name" column="MEMBER_NAME"/>
+  	<result property="ala_content" column="ALA_CONTENT"/>
+  	<result property="ala_regdate" column="ALA_REGDATE"/>
+  </resultMap>
+  
+  	<resultMap type="chatDto" id="chatMap">
+		<result property="chat_num" column="CHAT_NUM"/>
+		<result property="channel_num" column="CHANNEL_NUM"/>
+		<result property="member_num" column="MEMBER_NUM"/>
+		<result property="member_id" column="MEMBER_ID"/>
+		<result property="member_name" column="MEMBER_NAME"/>
+		<result property="chat_content" column="CHAT_CONTENT"/>
+		<result property="chat_regdate" column="CHAT_REGDATE"/>	
+	</resultMap>
+	
+	<resultMap type="messageDto" id="messageMap">
+		<result property="message_num" column="MESSAGE_NUM"/>
+		<result property="messageroom_num" column="MESSAGEROOM_NUM"/>
+		<result property="to_id" column="TO_ID"/>
+		<result property="to_name" column="TO_NAME"/>
+		<result property="from_id" column="FROM_ID"/>
+		<result property="from_name" column="FROM_NAME"/>
+		<result property="message_content" column="MESSAGE_CONTENT"/>
+		<result property="message_regdate" column="MESSAGE_REGDATE"/>	
+	</resultMap>
+  
+  
+  
+  <select id="alarmlist" resultType="alarmDto">
+  	SELECT ALA_SEQ, MEMBER_NUM, LASTCHAT_NUM
+  	FROM ALARM
+  </select>
+  
+  
+  <select id="chatnum" parameterType="int" resultType="chatDto">
+ 	SELECT * FROM (SELECT * FROM CHAT WHERE CHAT_NUM > (SELECT MAX(CHAT_NUM) FROM CHAT WHERE MEMBER_NUM = #{member_num}) AND CHANNEL_NUM IN (SELECT CHANNEL_NUM FROM CHAT WHERE MEMBER_NUM = #{member_num}) ORDER BY CHAT_NUM DESC)
+  </select>
+  
+  <select id="chatList" parameterType="int" resultMap="chatMap">
+ 	SELECT * FROM (SELECT * FROM CHAT WHERE CHAT_NUM > (SELECT MAX(CHAT_NUM) FROM CHAT WHERE MEMBER_NUM = #{member_num}) AND CHANNEL_NUM IN (SELECT CHANNEL_NUM FROM CHAT WHERE MEMBER_NUM = #{member_num}) ORDER BY CHAT_NUM DESC)
+  </select>
+  
+</mapper>

@@ -118,6 +118,7 @@ function onError(event) {
 
 	console.log("서버 연결 에러" + event.data);
 }
+// 내가 보낸 메세지 내 화면에 출력 및 onMessage로 해당 채팅값 전달
 function send(msg) {
 	
 	var chat_content = msg;
@@ -135,7 +136,7 @@ function send(msg) {
 	if (chat_content.value != "") {
 		
 		var member_name = $("#member_name").val();
-
+			//onMessage로 보내는 웹소켓 메소드
 			webSocket.send(member_name + "|\|" + chat_content);
 			var query = document.querySelector('#chatarea');
 			if (member_name != re_send) {
@@ -183,6 +184,8 @@ function send(msg) {
 
 			chat_content.value = '';
 
+			
+			// 채팅 append 후에 스크롤 최하단으로 내리기
 			const $messageTextBox = $('#chatarea'); 
 			$messageTextBox.scrollTop($messageTextBox[0].scrollHeight);
 			//chatarea.scrollTop = chatarea.scrollHeight;

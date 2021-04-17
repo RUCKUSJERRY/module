@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<script src="resources/js/jquery-3.6.0.min.js"></script>
+<script src="//d1p7wdleee1q2z.cloudfront.net/post/search.min.js"></script>
+
+<script type="text/javascript">
+
+$(document).ready(function(){
+
+	$(function() { $('#postcodify_search_button').postcodifyPopUp(); });
+	
+});
+
+
+</script>
+
+
+</head>
+<body>
+
+
+<p>도로명주소</p>
+		
+<input type="text" name="pscode" class="postcodify_postcode5" value=""/>				
+<br/>	
+	
+<input type="button" id="postcodify_search_button" value="우편번호 검색">	
+<br/>
+		
+<input type="text" name="addr" class="postcodify_address" value="" />
+<br/>	
+		
+	
+<p>상세주소</p> 
+<input type="text" name="addrdt" class="postcodify_detail" value="" />
+			
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

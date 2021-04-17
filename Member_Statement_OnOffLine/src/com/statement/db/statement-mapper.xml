@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="statement-mapper">
+
+	<select id="allCheck" resultType="statementDto">
+		SELECT MEMBER_NUM, MEMBER_ID, MEMBER_PW, MEMBER_NAME, MEMBER_EMAIL, MEMBER_PHONE,
+		MEMBER_PSCODE, MEMBER_ADDR, MEMBER_ADDRDT, MEMBER_TYPE, MEMBER_AUTH, MEMBER_DATE,
+		MEMBER_ENABLED, MEMBER_STATEMENT
+		FROM MEMBER
+	</select>
+	
+	<update id="updateStatement" parameterType="statementDto">
+		UPDATE MEMBER
+		SET MEMBER_STATEMENT = #{member_statement}
+		WHERE MEMBER_NUM = #{member_num}		
+	</update>
+
+</mapper>

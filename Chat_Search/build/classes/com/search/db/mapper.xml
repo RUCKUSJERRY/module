@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="search-mapper">
+	
+	<select id="chatlist" resultType="searchDto">
+		SELECT CHAT_NUM, CHANNEL_NUM, MEMBER_NUM, MEMBER_ID, MEMBER_NAME, CHAT_CONTENT, CHAT_REGDATE
+		FROM CHAT	
+	</select>
+
+</mapper>

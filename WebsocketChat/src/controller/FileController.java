@@ -32,10 +32,9 @@ public class FileController extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=UTF-8");
 		System.out.println("[fileupload]");
-		 // 이미지 업로드할 경로
+		// 이미지 업로드할 경로
 		String saveDirectory = request.getSession().getServletContext().getRealPath("resources/image/upload");
-		
-		// 파일 저장 경로
+
 				File file = new File(saveDirectory);
 				try {
 					if (!file.exists()) {
